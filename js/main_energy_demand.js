@@ -221,32 +221,6 @@ Promise.all([
     'Flow_long': 'flows'
   }
 
-  secondaryMenus.forEach(d => state[d] = 'All')
-
-  let regions = getUniquesMenu(energyDemandPathway, 'Region'),
-      scenarios = getUniquesMenu(energyDemandPathway, 'Scenario'),
-      years = energyDemandPathway.columns.filter(d => !isNaN(+d));
-
-  let regionsOp = addOptions("regions", regions, regions);
-  state.region = regionsOp.node().value;
-  regionsOp.on("change", function(d){
-    state.region = d3.select(this).node().value;
-    updateGroupByMenu();
-    filterData();
-    getMenuOptions();
-    updatePlot();
-  });
-
-  let scenariosOp = addOptions("scenarios", scenarios, scenarios);
-  state.scenario = scenariosOp.node().value;
-  scenariosOp.on("change", function(d){
-    state.scenario = d3.select(this).node().value;
-    updateGroupByMenu();
-    filterData();
-    getMenuOptions();
-    updatePlot();
-  });
-
   function getMenuOptions() {
     secondaryMenus.forEach(s => {
       if (state[s] === 'All') {
@@ -265,7 +239,37 @@ Promise.all([
     })
   }
 
-  getMenuOptions()
+  function resetOptions(){
+    secondaryMenus.forEach(d => state[d] = 'All');
+    getMenuOptions()
+  }
+
+  resetOptions();
+
+  let regions = getUniquesMenu(energyDemandPathway, 'Region'),
+      scenarios = getUniquesMenu(energyDemandPathway, 'Scenario'),
+      years = energyDemandPathway.columns.filter(d => !isNaN(+d));
+
+  let regionsOp = addOptions("regions", regions, regions);
+  state.region = regionsOp.node().value;
+  regionsOp.on("change", function(d){
+    state.region = d3.select(this).node().value;
+    resetOptions();
+    updateGroupByMenu();
+    filterData();
+    getMenuOptions();
+    updatePlot();
+  });
+
+  let scenariosOp = addOptions("scenarios", scenarios, scenarios);
+  state.scenario = scenariosOp.node().value;
+  scenariosOp.on("change", function(d){
+    state.scenario = d3.select(this).node().value;
+    updateGroupByMenu();
+    filterData();
+    getMenuOptions();
+    updatePlot();
+  });
 
   energyDemandPathway.forEach(d => {
     years.forEach(y => {
