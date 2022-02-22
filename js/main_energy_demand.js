@@ -126,6 +126,20 @@ var svg = plot.append("svg")
 var g = svg.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+var rule = g.append("g")
+  .attr("class", "rule");
+
+rule.append("line")
+  .attr("y1", margin.top)
+  .attr("y2", height - margin.bottom - 15)
+  .attr("stroke", "black");
+
+let ruleLabel = rule.append("text")
+  .attr("y", height - margin.bottom - 15)
+  .attr("fill", "black")
+  .attr("text-anchor", "middle")
+  .attr("dy", "1em");
+
 var gXAxis = svg.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(" + margin.left + "," + (margin.top + height - margin.bottom) + ")");
@@ -436,68 +450,85 @@ Promise.all([
           // .on("click", click);
 
       function moved(event) {
-        const xm = xScale.invert(event.offsetX - margin.left); // TODO: CONSTRAIN WITHIN RIGHT MARGIN
-        const ym = yScale.invert(event.offsetY - margin.top);
-        const i1 = d3.bisectLeft(state.years, xm, 1);
-        const i0 = i1 - 1;
-        const i = xm - state.years[i0] > state.years[i1] - xm ? i1 : i0;
-        var s;
-        if (state.scale === "log"){
-          s = d3.least(state.dataToPlot, d => Math.abs(d.values[i].number - ym + 1));
-        } else if (state.scale === "linear") {
-          s = d3.least(state.dataToPlot, d => Math.abs(d.values[i].number - ym));
-        }
-        // const sIdx = state.selected.indexOf(s[state.microzona]);
-        //
-        function hoverColor(){
-          return "red";
-          // return colors[i];
-          // return sIdx < 0 ? colors[state.selected.length] : colors[sIdx];
-        }
-
-        d3.selectAll(".curve")
-          .attr("opacity", curveOpacity)
-          .attr("stroke", curveColor)
-          .attr("stroke-width", curveWidth)
-
-        d3.select(".curve."+nameNoSpaces(s.name))
-          .attr("opacity", 1.0)
-          .attr("stroke", hoverColor)
-          .attr("stroke-width", 2.5)
-
-        // dot.attr("opacity", 0.0)
-
-        // Circle showing value
-        // if (sIdx >= 0) {
-
-          // dot.attr("fill", hoverColor)
-          //   .attr("opacity", 1.0)
-          //   .attr("transform", function(d){
-          //     if (state.escala == "escala-logaritmica"){
-          //       return `translate(${xScale(state.dates[i])+margin.left},${yScale(s.values[i]+1)+margin.top})`;
-          //     } else if (state.escala == "escala-lineal") {
-          //       return `translate(${xScale(state.dates[i])+margin.left},${yScale(s.values[i])+margin.top})`;
-          //     }
-          //   });
-          // dot.select("text").text(s.values[i]);
-
-        // } else {
-
+        let thisX = d3.pointer(event, this)[0] - margin.left;
+        if ((margin.left < thisX) && (thisX < width - margin.right)) {
+          const xm = xScale.invert(thisX); // TODO: CONSTRAIN WITHIN RIGHT MARGIN
+          const ym = yScale.invert(d3.pointer(event, this)[1] - margin.top);
+          const i1 = d3.bisectLeft(state.years, xm, 1);
+          const i0 = i1 - 1;
+          const i = xm - state.years[i0] > state.years[i1] - xm ? i1 : i0;
+          var s;
+          console.log(event.offsetX - margin.left, margin.left)
+          if (state.scale === "log"){
+            s = d3.least(state.dataToPlot, d => Math.abs(d.values[i].number - ym + 1));
+          } else if (state.scale === "linear") {
+            s = d3.least(state.dataToPlot, d => Math.abs(d.values[i].number - ym));
+          }
+          // const sIdx = state.selected.indexOf(s[state.microzona]);
           //
-          label
-            // .attr("fill", curveColor(s))
-            .attr("fill", "red")
-            .attr("opacity", 1.0)
-            .attr("transform", function(d){
-              if (state.scale === "log"){
-                return `translate(${xScale(state.years[state.years.length-1])+margin.left+5},${yScale(s.values[s.values.length-1].number + 1)+margin.top+2})`;
-              } else if (state.scale === "linear") {
-                return `translate(${xScale(state.years[state.years.length-1])+margin.left+5},${yScale(s.values[s.values.length-1].number)+margin.top+2})`;
-              }
-            })
-          label.select("text").text(s.name)
+          function hoverColor(){
+            return "red";
+            // return colors[i];
+            // return sIdx < 0 ? colors[state.selected.length] : colors[sIdx];
+          }
 
-        // }
+          d3.selectAll(".curve")
+            .attr("opacity", curveOpacity)
+            .attr("stroke", curveColor)
+            .attr("stroke-width", curveWidth)
+
+          d3.select(".curve."+nameNoSpaces(s.name))
+            .attr("opacity", 1.0)
+            .attr("stroke", hoverColor)
+            .attr("stroke-width", 2.5)
+
+          d3.selectAll(".rule")
+            .attr("transform", `translate(${xScale(state.years[i])},0)`)
+            .style("opacity", 1);
+          d3.selectAll(".rule text")
+            .text(d3.timeFormat("%Y")(state.years[i]))
+            .style("opacity", 1);
+
+          // dot.attr("opacity", 0.0)
+
+          // Circle showing value
+          // if (sIdx >= 0) {
+
+            // dot.attr("fill", hoverColor)
+            //   .attr("opacity", 1.0)
+            //   .attr("transform", function(d){
+            //     if (state.escala == "escala-logaritmica"){
+            //       return `translate(${xScale(state.dates[i])+margin.left},${yScale(s.values[i]+1)+margin.top})`;
+            //     } else if (state.escala == "escala-lineal") {
+            //       return `translate(${xScale(state.dates[i])+margin.left},${yScale(s.values[i])+margin.top})`;
+            //     }
+            //   });
+            // dot.select("text").text(s.values[i]);
+
+          // } else {
+
+            //
+            label
+              // .attr("fill", curveColor(s))
+              .attr("fill", "red")
+              .attr("opacity", 1.0)
+              .attr("transform", function(d){
+                if (state.scale === "log"){
+                  return `translate(${xScale(state.years[state.years.length-1])+margin.left+5},${yScale(s.values[s.values.length-1].number + 1)+margin.top+2})`;
+                } else if (state.scale === "linear") {
+                  return `translate(${xScale(state.years[state.years.length-1])+margin.left+5},${yScale(s.values[s.values.length-1].number)+margin.top+2})`;
+                }
+              })
+            label.select("text").text(s.name)
+
+          // }
+        } else {
+          console.log("here")
+          d3.selectAll(".rule")
+            .style("opacity", 0);
+          d3.selectAll(".rule text")
+            .style("opacity", 0);
+        }
       }
 
       function entered() {
