@@ -135,11 +135,11 @@ var rule = g.append("g")
 rule.append("line")
   .attr("y1", margin.top)
   .attr("y2", height - margin.bottom - 15)
-  .attr("stroke", "black");
+  .attr("stroke", "lightgray");
 
 let ruleLabel = rule.append("text")
   .attr("y", height - margin.bottom - 15)
-  .attr("fill", "black")
+  .attr("fill", "lightgray")
   .attr("text-anchor", "middle")
   .attr("dy", "1em");
 
@@ -479,15 +479,16 @@ Promise.all([
             // return sIdx < 0 ? colors[state.selected.length] : colors[sIdx];
           }
 
-          d3.selectAll(".curve")
-            .attr("opacity", curveOpacity)
-            .attr("stroke", curveColor)
-            .attr("stroke-width", curveWidth)
-
-          d3.select(".curve."+nameNoSpaces(s.name))
-            .attr("opacity", 1.0)
-            .attr("stroke", hoverColor)
-            .attr("stroke-width", 2.5)
+          // Highlight current curve
+          // d3.selectAll(".curve")
+          //   .attr("opacity", curveOpacity)
+          //   .attr("stroke", curveColor)
+          //   .attr("stroke-width", curveWidth)
+          //
+          // d3.select(".curve."+nameNoSpaces(s.name))
+          //   .attr("opacity", 1.0)
+          //   .attr("stroke", hoverColor)
+          //   .attr("stroke-width", 2.5)
 
           d3.selectAll(".rule")
             .attr("transform", `translate(${xScale(state.years[idx])},0)`)
@@ -533,18 +534,18 @@ Promise.all([
           // } else {
 
             //
-            label
-              // .attr("fill", curveColor(s))
-              .attr("fill", "red")
-              .attr("opacity", 1.0)
-              .attr("transform", function(d){
-                if (state.scale === "log"){
-                  return `translate(${xScale(state.years[state.years.length-1])+margin.left+5},${yScale(s.values[s.values.length-1].number + 1)+margin.top+2})`;
-                } else if (state.scale === "linear") {
-                  return `translate(${xScale(state.years[state.years.length-1])+margin.left+5},${yScale(s.values[s.values.length-1].number)+margin.top+2})`;
-                }
-              })
-            label.select("text").text(s.name)
+            // label
+            //   // .attr("fill", curveColor(s))
+            //   .attr("fill", "red")
+            //   .attr("opacity", 1.0)
+            //   .attr("transform", function(d){
+            //     if (state.scale === "log"){
+            //       return `translate(${xScale(state.years[state.years.length-1])+margin.left+5},${yScale(s.values[s.values.length-1].number + 1)+margin.top+2})`;
+            //     } else if (state.scale === "linear") {
+            //       return `translate(${xScale(state.years[state.years.length-1])+margin.left+5},${yScale(s.values[s.values.length-1].number)+margin.top+2})`;
+            //     }
+            //   })
+            // label.select("text").text(s.name)
 
           // }
         } else {
