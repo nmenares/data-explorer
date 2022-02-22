@@ -104,6 +104,8 @@ const margin = {top: 20, right: 80, bottom: 20, left: 50},
     width = plotWidth - margin.left - margin.right,
     height = plotHeight - margin.top - margin.bottom;
 
+const circleRadius = 3;
+
 const dateParse = d3.timeParse("%Y");
 
 const colors = ['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00', '#a65628','#f781bf','#999999']
@@ -127,7 +129,8 @@ var g = svg.append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
 var rule = g.append("g")
-  .attr("class", "rule");
+  .attr("class", "rule")
+  .style("opacity", 0);
 
 rule.append("line")
   .attr("y1", margin.top)
@@ -139,6 +142,11 @@ let ruleLabel = rule.append("text")
   .attr("fill", "black")
   .attr("text-anchor", "middle")
   .attr("dy", "1em");
+
+let tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0)
+    // .style("max-width", margin.left * 4/3 + "px");
 
 var gXAxis = svg.append("g")
     .attr("class", "x axis")
@@ -308,7 +316,6 @@ Promise.all([
       let filtered = secondaryMenus.map(s => {
         return state[s] === 'All' ? true : d[s] === state[s];
       });
-      // console.log(filtered)
       return ((d.Region === state.region) && (d.Scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
     })
     state.dataToPlot = [];
@@ -317,7 +324,6 @@ Promise.all([
       let obj = {};
       obj.name = d;
       let thisGroup = state.filteredData.filter(s => s[state.groupBy] === d);
-      console.log(thisGroup)
       obj.values = years.map(y => {
         let values = {};
         values.date = dateParse(y);
@@ -423,8 +429,9 @@ Promise.all([
       // return idx < 0 ? lineOpacity : 1.0;
     }
 
-    function curveColor(d) {
-      return "steelblue";
+    function curveColor(d, i) {
+      return colors[i];
+      // return "steelblue";
       // let idx = sectors.indexOf(d.Sector);
       // return idx < 0 ? "lightgray" : colors[idx];
     }
@@ -450,19 +457,19 @@ Promise.all([
           // .on("click", click);
 
       function moved(event) {
+        console.log(state.dataToPlot)
         let thisX = d3.pointer(event, this)[0] - margin.left;
         if ((margin.left < thisX) && (thisX < width - margin.right)) {
           const xm = xScale.invert(thisX); // TODO: CONSTRAIN WITHIN RIGHT MARGIN
           const ym = yScale.invert(d3.pointer(event, this)[1] - margin.top);
           const i1 = d3.bisectLeft(state.years, xm, 1);
           const i0 = i1 - 1;
-          const i = xm - state.years[i0] > state.years[i1] - xm ? i1 : i0;
+          const idx = xm - state.years[i0] > state.years[i1] - xm ? i1 : i0;
           var s;
-          console.log(event.offsetX - margin.left, margin.left)
           if (state.scale === "log"){
-            s = d3.least(state.dataToPlot, d => Math.abs(d.values[i].number - ym + 1));
+            s = d3.least(state.dataToPlot, d => Math.abs(d.values[idx].number - ym + 1));
           } else if (state.scale === "linear") {
-            s = d3.least(state.dataToPlot, d => Math.abs(d.values[i].number - ym));
+            s = d3.least(state.dataToPlot, d => Math.abs(d.values[idx].number - ym));
           }
           // const sIdx = state.selected.indexOf(s[state.microzona]);
           //
@@ -483,11 +490,29 @@ Promise.all([
             .attr("stroke-width", 2.5)
 
           d3.selectAll(".rule")
-            .attr("transform", `translate(${xScale(state.years[i])},0)`)
+            .attr("transform", `translate(${xScale(state.years[idx])},0)`)
             .style("opacity", 1);
           d3.selectAll(".rule text")
-            .text(d3.timeFormat("%Y")(state.years[i]))
+            .text(d3.timeFormat("%Y")(state.years[idx]))
             .style("opacity", 1);
+
+          // update dots
+          let dots = d3.selectAll(".rule").selectAll("circle")
+            .data(state.dataToPlot.map(d => d.values[idx]));
+          // console.log(state.dataToPlot.map(d => d.values[idx]))
+
+          dots.enter().append("circle")
+            .attr("cx", 0)
+            .attr("cy", d => yScale(d.number))
+            .attr("r", circleRadius)
+            .attr("fill", curveColor)
+
+          dots.attr("cx", 0)
+            .attr("cy", d => yScale(d.number))
+            .attr("r", circleRadius)
+            .attr("fill", curveColor)
+
+          dots.exit().remove();
 
           // dot.attr("opacity", 0.0)
 
