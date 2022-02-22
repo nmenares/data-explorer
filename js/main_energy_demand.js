@@ -104,6 +104,8 @@ const margin = {top: 20, right: 80, bottom: 20, left: 50},
     width = plotWidth - margin.left - margin.right,
     height = plotHeight - margin.top - margin.bottom;
 
+const tooltipMarginLeft = 20;
+
 const circleRadius = 3;
 
 const dateParse = d3.timeParse("%Y");
@@ -136,12 +138,6 @@ rule.append("line")
   .attr("y1", margin.top)
   .attr("y2", height - margin.bottom - 15)
   .attr("stroke", "lightgray");
-
-let ruleLabel = rule.append("text")
-  .attr("y", height - margin.bottom - 15)
-  .attr("fill", "lightgray")
-  .attr("text-anchor", "middle")
-  .attr("dy", "1em");
 
 let tooltip = d3.select("body").append("div")
     .attr("class", "tooltip")
@@ -457,7 +453,6 @@ Promise.all([
           // .on("click", click);
 
       function moved(event) {
-        console.log(state.dataToPlot)
         let thisX = d3.pointer(event, this)[0] - margin.left;
         if ((margin.left < thisX) && (thisX < width - margin.right)) {
           const xm = xScale.invert(thisX); // TODO: CONSTRAIN WITHIN RIGHT MARGIN
@@ -493,29 +488,114 @@ Promise.all([
           d3.selectAll(".rule")
             .attr("transform", `translate(${xScale(state.years[idx])},0)`)
             .style("opacity", 1);
-          d3.selectAll(".rule text")
-            .text(d3.timeFormat("%Y")(state.years[idx]))
-            .style("opacity", 1);
 
-          // update dots
-          let dots = d3.selectAll(".rule").selectAll("circle")
+          // update dots in plot
+          let gRule = d3.selectAll(".rule");
+
+          let dots = gRule.selectAll(".circle-plot")
             .data(state.dataToPlot.map(d => d.values[idx]));
           // console.log(state.dataToPlot.map(d => d.values[idx]))
 
           dots.enter().append("circle")
+            .attr("class", "circle-plot")
             .attr("cx", 0)
             .attr("cy", d => yScale(d.number))
             .attr("r", circleRadius)
             .attr("fill", curveColor)
 
-          dots.attr("cx", 0)
+          dots.attr("class", "circle-plot")
+            .attr("cx", 0)
             .attr("cy", d => yScale(d.number))
             .attr("r", circleRadius)
             .attr("fill", curveColor)
 
           dots.exit().remove();
 
-          // dot.attr("opacity", 0.0)
+          let yearLabel = gRule.selectAll(".year-label")
+            .data([d3.timeFormat("%Y")(state.years[idx])])
+
+          yearLabel.enter().append("text")
+            .attr("class", "year-label")
+            .attr("x", tooltipMarginLeft)
+            .attr("y", 0)
+            .attr("fill", "darkgray")
+            .attr("text-anchor", "left")
+            .attr("dy", "1em")
+            .text(d => d);
+
+          yearLabel
+            .attr("class", "year-label")
+            .attr("fill", "darkgray")
+            .attr("text-anchor", "left")
+            .attr("dy", "1em")
+            .attr("x", tooltipMarginLeft)
+            .attr("y", 0)
+            .text(d => d);
+
+          yearLabel.exit().remove();
+
+          let labels = gRule.selectAll(".tooltip-label")
+            .data(state.dataToPlot.map((d,i) => {
+              let obj = {};
+              obj.name = d.name;
+              obj.value = d.values[idx];
+              obj.index = i;
+              return obj
+            }).sort((a,b) => b.value.number - a.value.number));
+
+          labels.enter().append("g")
+            .attr("class", "tooltip-label")
+            .attr("transform", d => `translate(${tooltipMarginLeft},0)`)
+
+          labels
+            .attr("class", "tooltip-label")
+            .attr("transform", d => `translate(${tooltipMarginLeft},0)`)
+
+          labels.exit().remove();
+
+          let dotsTooltip = labels.selectAll(".dots-tooltip")
+            .data((d, i) => {
+              d.orderIndex = i;
+              return [d];
+            });
+          // console.log(state.dataToPlot.map(d => d.values[idx]))
+
+          dotsTooltip.enter().append("circle")
+            .attr("class", "dots-tooltip")
+            .attr("cx", circleRadius)
+            .attr("cy", d => 18 * d.orderIndex + 40)
+            .attr("r", circleRadius)
+            .attr("fill", d => colors[d.index])
+
+          dotsTooltip.attr("class", "dots-tooltip")
+            .attr("cx", circleRadius)
+            .attr("cy", d => 18 * d.orderIndex + 40)
+            .attr("r", circleRadius)
+            .attr("fill", d => colors[d.index])
+
+          dotsTooltip.exit().remove();
+
+          let textTooltip = labels.selectAll(".text-tooltip")
+            .data((d, i) => {
+              d.orderIndex = i;
+              return [d];
+            });
+          // console.log(state.dataToPlot.map(d => d.values[idx]))
+
+          textTooltip.enter().append("text")
+            .attr("class", "dots-tooltip")
+            .attr("x", 3 * circleRadius + 10)
+            .attr("y", d => 18 * d.orderIndex + 40 + 6)
+            .attr("fill", "darkgray")
+            .text(d => d.name)
+
+          textTooltip.attr("class", "dots-tooltip")
+            .attr("x", 3 * circleRadius + 10)
+            .attr("y", d => 18 * d.orderIndex + 40 + 6)
+            .attr("fill", "darkgray")
+            .text(d => d.name)
+
+          textTooltip.exit().remove();
 
           // Circle showing value
           // if (sIdx >= 0) {
@@ -549,10 +629,7 @@ Promise.all([
 
           // }
         } else {
-          console.log("here")
           d3.selectAll(".rule")
-            .style("opacity", 0);
-          d3.selectAll(".rule text")
             .style("opacity", 0);
         }
       }
