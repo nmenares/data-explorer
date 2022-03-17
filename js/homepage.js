@@ -9,10 +9,56 @@ let regions = ["Global", "Other"];
 let scenarios = ["Default case", "Policy Led", "Carbon Pricing", "Max NCS", "Custom"];
 let vectors = ["All", "Electricity", "Buildings", "Transportation", "Industry", "Agriculture",
                "F&W", "CO2 Removal"];
+let results = {
+  "Global": [
+    {
+      "name": "Climate",
+      "children": ["Temperature", "PPM", "Rad Forcing", "Sea Level Rise"]
+    },
+    {
+      "name": "Emissions",
+      "children": ["Mitigated", "DAU21"]
+    },
+    {
+      "name": "Economy",
+      "children": ["PD Adoption"]
+    },
+    {
+      "name": "Energy",
+      "children": ["Energy Supply", "Energy Demand"]
+    }
+  ],
+  "Other": [
+    {
+      "name": "Country data",
+      "children": []
+    },
+    {
+      "name": "V7 Sector Transitions",
+      "children": ["Transportation", "AFOLU", "Regenerative Agriculture"]
+    },
+    {
+      "name": "Macro-Econ Transition",
+      "children": ["Energy Supply", "Energy Demand"]
+    },
+    {
+      "name": "NDC Calculator",
+      "children": ["Climate Mitigation Potential", "Emissions Pathway"]
+    },
+    {
+      "name": "Sector Impact Opps",
+      "children": []
+    }
+  ]
+}
 
 state.region = regions[0];
 state.scenario = scenarios[0];
 state.vector = vectors[0];
+
+var nameNoSpaces = function(name) {
+  return name.toLowerCase().split(" ").join("");
+}
 
 function addOptions(id, values) {
   var element = d3.select("#"+id);
@@ -24,6 +70,39 @@ function addOptions(id, values) {
   options.exit().remove();
 
   return element;
+}
+
+function updateResultsMenu() {
+  let resultsElements = state.region === "Global" ? results["Global"] : results["Other"];
+
+  let resultsColumn = d3.select("#results");
+
+  let resultsItems = resultsColumn.selectAll(".results-item").data(resultsElements)
+    .join("div")
+      .attr("class", "results-item")
+
+  resultsItems.selectAll(".results-item-main")
+    .data(d => [d])
+    .join("div")
+      .attr("class", "results-item-main")
+      .html((d, i) => d.name)
+      .on("click", (event, d) => {
+        secondaryItems.filter(item => item !== d).classed("show", false);
+        d3.select("#secondary-items-" + nameNoSpaces(d.name)).classed("show", !d3.select("#secondary-items-" + nameNoSpaces(d.name)).classed("show"));
+      })
+
+  let secondaryItems = resultsItems.selectAll(".results-item-secondary")
+    .data(d => [d])
+    .join("div")
+      .attr("id", d => "secondary-items-" + nameNoSpaces(d.name))
+      .attr("class", "results-item-secondary")
+
+  secondaryItems.selectAll(".secondary-item")
+    .data(d => d.children)
+    .join("div")
+      .attr("class", "secondary-item")
+      .html(d => d)
+
 }
 
 function updateDropdownLabel(id, label) {
@@ -53,6 +132,7 @@ selectRegion.selectAll("a").on("click", (event, d) => {
     } else {
       showCountryDivs();
     }
+    updateResultsMenu();
   }
 });
 
@@ -66,6 +146,7 @@ selectScenario.selectAll("a").on("click", (event, d) => {
   if (d !== state.scenario) {
     state.scenario = d;
     updateDropdownLabel("#dropdown-scenario", state.scenario);
+    updateResultsMenu();
   }
 });
 
@@ -79,8 +160,11 @@ selectVector.selectAll("a").on("click", (event, d) => {
   if (d !== state.vector) {
     state.vector = d;
     updateDropdownLabel("#dropdown-vector", state.vector);
+    updateResultsMenu();
   }
 });
+
+updateResultsMenu();
 
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = function(event) {
