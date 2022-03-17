@@ -102,6 +102,10 @@ function updateResultsMenu() {
     .join("div")
       .attr("class", "secondary-item")
       .html(d => d)
+      .on("click", (event, d) => {
+        secondaryItems.filter(item => item !== d).selectAll(".secondary-item").classed("selected", false);
+        d3.select(event.target).classed("selected", true)
+      })
 
 }
 
