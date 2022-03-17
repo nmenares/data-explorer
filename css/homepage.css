@@ -83,11 +83,15 @@ body {
 .dropdown-content a:hover {background-color: #ddd}
 
 .results-item {
-  padding: 5px 20px;
+  padding: 0 20px;
+}
+
+.results-item-main {
+  padding: 5px 5px;
 }
 
 .secondary-item {
-  padding: 0 20px;
+  padding: 3px 20px;
 }
 
 .results-item-secondary {
