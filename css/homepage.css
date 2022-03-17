@@ -107,6 +107,8 @@ body {
 
 .results-item-main, .secondary-item {
   cursor: pointer;
+  border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px;
 }
 
 .results-item-main:hover, .secondary-item:hover {
@@ -119,7 +121,7 @@ body {
 }
 
 .selected {
-  background-color: var(--bs-gray-100);
+  background-color: var(--bs-gray-200);
   border-left: 3px solid var(--bs-gray-500);
   font-weight: 500;
 }
