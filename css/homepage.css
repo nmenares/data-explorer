@@ -1,5 +1,6 @@
 body {
   color: #000;
+  font-size: 14px;
 }
 
 .header {
@@ -82,21 +83,27 @@ body {
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {background-color: #ddd}
 
+.results-title {
+  font-size: 24px;
+  padding: 10px 20px;
+}
+
 .results-item {
-  padding: 0 20px;
+  padding: 0 15px;
 }
 
 .results-item-main {
   padding: 5px 5px;
+  font-weight: 700;
 }
 
 .secondary-item {
   padding: 3px 20px;
 }
 
-.results-item-secondary {
+/* .results-item-secondary {
   display: none;
-}
+} */
 
 .results-item-main, .secondary-item {
   cursor: pointer;
@@ -114,4 +121,5 @@ body {
 .selected {
   background-color: var(--bs-gray-100);
   border-left: 3px solid var(--bs-gray-500);
+  font-weight: 500;
 }

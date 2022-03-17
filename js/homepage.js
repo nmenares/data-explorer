@@ -77,6 +77,12 @@ function updateResultsMenu() {
 
   let resultsColumn = d3.select("#results");
 
+  resultsColumn.selectAll(".results-title")
+    .data(["Explore results"])
+    .join("div")
+      .attr("class", "results-title")
+      .html(d => d)
+
   let resultsItems = resultsColumn.selectAll(".results-item").data(resultsElements)
     .join("div")
       .attr("class", "results-item")
