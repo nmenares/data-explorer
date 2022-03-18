@@ -112,7 +112,7 @@ body {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  padding: 0.375rem 0.75rem;
+  padding: 4px 8px;
   transition: color .15s
 }
 
