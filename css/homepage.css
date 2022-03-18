@@ -30,7 +30,7 @@ body {
   background-position-y: 100%;
   background-size: 30px;
   display: block;
-  height: 10px;
+  height: 8px;
 }
 
 .title {
@@ -49,8 +49,7 @@ body {
 }
 
 .filters {
-  margin-top: 10px;
-  margin-bottom: 15px;
+  margin: 10px 0;
 }
 
 .select-label {
@@ -155,7 +154,7 @@ body {
 }
 
 .outputs {
-  margin: 20px 0;
+  margin: 20px 20px;
 }
 
 .results-title {
@@ -197,4 +196,8 @@ body {
   background-color: var(--ei-150);
   border-left: 3px solid var(--ei-200);
   font-weight: 500;
+}
+
+#chart {
+  margin: 0 10px;
 }
