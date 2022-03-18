@@ -6,7 +6,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Data Explorer</title>
 
-	<!-- <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Oswald&display=swap" rel="stylesheet"> -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Exo+2:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/homepage.css">
 </head>
@@ -30,7 +32,7 @@
 			</div>
 			<div class="col-10">
 				<div class="row select">
-					<div class="col-4 select-country">
+					<div class="col-3 select-country">
 						<span class="select-label">Region</span>
 						<div class="dropdown" id="dropdown-region">
 		          <div class="dropbtn" id="dropbtn-region"></div>
@@ -39,16 +41,12 @@
 					</div>
 					<div class="col-4 select-scenario">
 						<span class="select-label">Scenario</span>
-						<div class="dropdown" id="dropdown-scenario">
-		          <div class="dropbtn" id="dropbtn-scenario"></div>
-		          <div id="scenarios-menu" class="dropdown-content"></div>
+						<div class="buttons" id="buttons-scenario">
 		        </div>
 					</div>
-					<div class="col-4 select-vector">
+					<div class="col-5 select-vector">
 						<span class="select-label">Vector</span>
-						<div class="dropdown" id="dropdown-vector">
-		          <div class="dropbtn" id="dropbtn-vector"></div>
-		          <div id="vectors-menu" class="dropdown-content"></div>
+						<div class="buttons" id="buttons-vector">
 		        </div>
 					</div>
 				</div>

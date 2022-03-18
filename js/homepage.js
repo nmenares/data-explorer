@@ -72,6 +72,19 @@ function addOptions(id, values) {
   return element;
 }
 
+function addButtons(id, values) {
+  var element = d3.select("#"+id);
+  var options = element.selectAll("button").data(values);
+
+  options.enter().append("button")
+    .attr("class", "btn-ei")
+    .html(d => d);
+
+  options.exit().remove();
+
+  return element;
+}
+
 function updateResultsMenu() {
   let resultsElements = state.region === "Global" ? results["Global"] : results["Other"];
 
@@ -119,6 +132,11 @@ function updateDropdownLabel(id, label) {
   d3.select(id).select(".dropbtn").html(label);
 }
 
+function updateSelectedButton(element, stateVar) {
+  element.selectAll(".btn-ei").filter(d => d !== stateVar).classed("btn-ei-selected", false);
+  element.selectAll(".btn-ei").filter(d => d === stateVar).classed("btn-ei-selected", true);
+}
+
 function hideCountryDivs() {
   d3.select(".select-vector").style("display", "none");
 }
@@ -146,30 +164,22 @@ selectRegion.selectAll("a").on("click", (event, d) => {
   }
 });
 
-let selectScenario = addOptions("scenarios-menu", scenarios)
-d3.select("#dropdown-scenario")
-  .on("click", function(d){
-    document.getElementById("scenarios-menu").classList.toggle("show");
-  });
-updateDropdownLabel("#dropdown-scenario", state.scenario);
-selectScenario.selectAll("a").on("click", (event, d) => {
+let selectScenario = addButtons("buttons-scenario", scenarios)
+updateSelectedButton(selectScenario, state.scenario);
+selectScenario.selectAll(".btn-ei").on("click", (event, d) => {
   if (d !== state.scenario) {
     state.scenario = d;
-    updateDropdownLabel("#dropdown-scenario", state.scenario);
+    updateSelectedButton(selectScenario, state.scenario);
     updateResultsMenu();
   }
 });
 
-let selectVector = addOptions("vectors-menu", vectors)
-d3.select("#dropdown-vector")
-  .on("click", function(d){
-    document.getElementById("vectors-menu").classList.toggle("show");
-  });
-updateDropdownLabel("#dropdown-vector", state.vector);
-selectVector.selectAll("a").on("click", (event, d) => {
+let selectVector = addButtons("buttons-vector", vectors)
+updateSelectedButton(selectVector, state.vector);
+selectVector.selectAll(".btn-ei").on("click", (event, d) => {
   if (d !== state.vector) {
     state.vector = d;
-    updateDropdownLabel("#dropdown-vector", state.vector);
+    updateSelectedButton(selectVector, state.vector);
     updateResultsMenu();
   }
 });
@@ -180,18 +190,6 @@ updateResultsMenu();
 window.onclick = function(event) {
   if (!event.target.matches('#dropbtn-region')) {
     var dropdown = document.getElementById("regions-menu");
-    if (dropdown.classList.contains('show')) {
-      dropdown.classList.remove('show');
-    }
-  }
-  if (!event.target.matches('#dropbtn-scenario')) {
-    var dropdown = document.getElementById("scenarios-menu");
-    if (dropdown.classList.contains('show')) {
-      dropdown.classList.remove('show');
-    }
-  }
-  if (!event.target.matches('#dropbtn-vector')) {
-    var dropdown = document.getElementById("vectors-menu");
     if (dropdown.classList.contains('show')) {
       dropdown.classList.remove('show');
     }
