@@ -21,7 +21,7 @@ body {
   font-weight: 400;
   text-transform: uppercase;
   text-align: center;
-  line-height: 68px;
+  line-height: 64px;
   letter-spacing: 0.2rem;
 }
 
@@ -54,7 +54,7 @@ body {
 }
 
 .title {
-  line-height: 68px;
+  line-height: 64px;
 }
 
 .icon-col {
