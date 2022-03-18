@@ -91,7 +91,7 @@ function updateResultsMenu() {
   let resultsColumn = d3.select("#results");
 
   resultsColumn.selectAll(".results-title")
-    .data(["Explore results"])
+    .data(["Outputs"])
     .join("div")
       .attr("class", "results-title")
       .html(d => d)
