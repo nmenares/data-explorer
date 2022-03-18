@@ -10,6 +10,20 @@ body {
   height: 80px;
 }
 
+.ei-line-border-top-left {
+  background: url("../img/border-line-vertical.png") left top no-repeat,
+              url("../img/border-line-horizontal.png") center top no-repeat,
+              url("../img/border-line-vertical.png") right top no-repeat,
+              url("../img/border-line-vertical.png") left bottom no-repeat,
+              url("../img/border-line-horizontal.png") center bottom no-repeat,
+              url("../img/border-line-vertical.png") right bottom no-repeat;
+  background-size: 7px 40px, 100% 7px, 7px 40px,
+                   7px 40px, 100% 7px, 7px 40px;
+  background-origin: border-box, border-box, border-box,
+                     border-box, border-box, border-box;
+  padding: 20px;
+}
+
 .ei-border-bottom {
   background: url("../img/border.png") repeat-x;
   background-position-x: 0;
@@ -140,8 +154,14 @@ body {
   font-weight: 500;
 }
 
+.outputs {
+  margin: 20px 0;
+}
+
 .results-title {
+  color: var(--ei-title);
   font-size: 24px;
+  font-weight: 500;
   padding: 10px 20px;
 }
 
