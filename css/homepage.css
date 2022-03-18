@@ -7,11 +7,21 @@ body {
 
 .header {
   color: #FFF;
-  height: 70px;
+  height: 80px;
+}
+
+.ei-border-bottom {
+  background: url("../img/border.png") repeat-x;
+  background-position-x: 0;
+  background-position-y: 100%;
+  background-size: 30px;
+  display: block;
+  height: 10px;
 }
 
 .title {
   padding: 10px 0;
+  margin-bottom: 20px;
 }
 
 .title img {
@@ -25,7 +35,8 @@ body {
 }
 
 .filters {
-  margin: 20px 0;
+  margin-top: 10px;
+  margin-bottom: 15px;
 }
 
 .select-label {
