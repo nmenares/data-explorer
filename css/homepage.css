@@ -6,11 +6,26 @@ body {
 }
 
 .header {
+  font-family: 'Josefin Sans', sans-serif;
   color: #FFF;
   height: 80px;
 }
 
-.ei-line-border-top-left {
+.header-item {
+  font-size: 16px;
+  font-weight: 400;
+  text-transform: uppercase;
+  text-align: center;
+  line-height: 88px;
+  letter-spacing: 0.2rem;
+}
+
+.header-item:hover {
+  cursor: pointer;
+  color: var(--ei-title);
+}
+
+.ei-border-bracket {
   background: url("../img/border-line-vertical.png") left top no-repeat,
               url("../img/border-line-horizontal.png") center top no-repeat,
               url("../img/border-line-vertical.png") right top no-repeat,
@@ -34,18 +49,21 @@ body {
 }
 
 .title {
-  padding: 10px 0;
-  margin-bottom: 20px;
+  line-height: 88px;
 }
 
-.title img {
-  max-height: 50px;
+.icon-col {
+  text-align: center;
+}
+
+.icon-col img {
+  max-height: 60px;
+  margin: 10px auto;
 }
 
 .title span {
   font-size: 28px;
   margin-left: 20px;
-  vertical-align: middle;
 }
 
 .filters {
@@ -149,7 +167,7 @@ body {
 .btn-ei-selected {
   background-color: transparent;
   color: var(--ei-400);
-  border: 2px solid var(--ei-400);
+  border: 1.5px solid var(--ei-400);
   font-weight: 500;
 }
 
@@ -177,13 +195,15 @@ body {
   padding: 3px 20px;
 }
 
-.results-item-main, .secondary-item {
+/* .results-item-main, .secondary-item { */
+.secondary-item {
   cursor: pointer;
-  border-bottom-right-radius: 5px;
-  border-top-right-radius: 5px;
+  /* border-bottom-right-radius: 5px;
+  border-top-right-radius: 5px; */
 }
 
-.results-item-main:hover, .secondary-item:hover {
+/* .results-item-main:hover,  .secondary-item:hover {*/
+.secondary-item:hover {
   background-color: var(--ei-200);
 }
 
