@@ -25,7 +25,7 @@ class LineChart {
           }
         })
         .ticks(d3.timeYear.every(1))
-        .tickSizeOuter(0);
+        .tickSize(6);
     this.yAxis = d3.axisLeft()
         .scale(this.yScale)
         .tickFormat(d => d * 100 + '%')
@@ -98,7 +98,7 @@ class LineChart {
             }
           })
           .tickValues(d3.range(0, 1.01, 0.01))
-          .tickSize(10)
+          .tickSize(6)
       vis.line.x((d, i) => vis.xScale(d.x))
         .y((d, i) => vis.yScale(d.y));
     }
@@ -124,6 +124,11 @@ class LineChart {
         return 'tick small-tick';
       }
     })
+
+    vis.gXAxis.selectAll(".small-tick").select("line")
+      .attr("y2", 4)
+    vis.gYAxis.selectAll(".small-tick").select("line")
+      .attr("x2", -4);
 
     vis.gYAxis.select(".y.axis-title")
       .attr("text-anchor", "end")
