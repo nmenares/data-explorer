@@ -195,3 +195,63 @@ window.onclick = function(event) {
     }
   }
 }
+
+const plotWidth = d3.select("#chart").node().getBoundingClientRect().width - 40,
+    plotHeight = window.innerHeight - d3.select(".header").node().getBoundingClientRect().height
+                - d3.select(".filters").node().getBoundingClientRect().height
+                - 2 * d3.select(".ei-border-bottom").node().getBoundingClientRect().height
+                - 40;
+
+let plot = d3.select("#chart")
+    .attr("width", plotWidth)
+    .attr("height", plotHeight);
+
+const margin = {top: 20, right: 20, bottom: 20, left: 30},
+    width = plotWidth - margin.left - margin.right,
+    height = plotHeight - margin.top - margin.bottom;
+
+var svg = plot.append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
+
+Promise.all([
+    d3.csv('data/adoptioncurves.csv'),
+]).then(function(data) {
+  console.log(data)
+
+  const adoptionCurves = data[0];
+
+  const dateParse = d3.timeParse("%Y");
+
+  let filteredData = adoptionCurves.filter(d => d.Region === "World " & d.Scenario === 'baseline');
+  console.log(filteredData)
+
+  let sectors = getUniquesMenu(filteredData, 'Sector'),
+      years = adoptionCurves.columns.filter(d => !isNaN(+d));
+
+  let processedData = {};
+
+  processedData.lines = [];
+
+  filteredData.forEach(d => {
+    obj = {}
+    obj.Sector = d.Sector;
+    obj.Scenario = d.Scenario;
+    obj.Region = d.Region;
+    obj.values = years.map(y => {
+      let objValues = {};
+      objValues.x = dateParse(y);
+      objValues.y = +d[y];
+      return objValues;
+    })
+    processedData.lines.push(obj)
+  })
+
+  console.log(processedData)
+
+  let chart = new LineChart(processedData, svg, width, height, margin);
+
+
+})
+
+// let chart = Chart()

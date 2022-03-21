@@ -232,3 +232,24 @@ body {
 #chart {
   margin: 0 10px;
 }
+
+#chart svg {
+  background-color: var(--ei-100);
+}
+
+.axis line {
+  stroke-linecap: round;
+}
+
+.axis .big-tick line {
+  stroke-width: 2px;
+}
+
+.axis .small-tick line {
+  stroke-width: 0.5px;
+}
+
+.tick text {
+  font-weight: 500;
+  font-size: 12px;
+}
