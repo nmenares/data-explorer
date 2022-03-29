@@ -33,10 +33,10 @@ class LineChart {
         .tickSize(6);
     vis.yAxis = d3.axisLeft()
         .scale(vis.yScale)
+        // .tickSize(6);
         // .tickFormat(d => d * 100 + '%')
 
     vis.initPlot();
-    vis.updatePlot();
   }
 
   updateData(newData) {
@@ -84,7 +84,25 @@ class LineChart {
     let ymin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.y));
     let ymax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.y));
     vis.yScale.domain([ymin, ymax]);
-    vis.yAxis.scale(vis.yScale);
+    vis.yAxis.scale(vis.yScale)
+
+    let nTicks = 5;
+    let yValues = vis.yAxis.scale().ticks();
+    let deltaY = (yValues[1] - yValues[0]) / nTicks;
+    let yNewValues = ymin < 0 ?
+                  [...d3.range(yValues[0] + deltaY, ymin, -deltaY).reverse(), ...d3.range(yValues[0], ymax, deltaY)] :
+                  [...d3.range(yValues[0] - deltaY, ymin, -deltaY).reverse(), ...d3.range(yValues[0], ymax, deltaY)];
+
+    vis.yScale.domain([ymin, ymax]);
+    vis.yAxis.scale(vis.yScale)
+      .tickFormat(d => {
+        if (yValues.includes(d)) {
+          return d;
+        } else {
+          return '';
+        }
+      })
+      .tickValues(yNewValues);
 
     vis.line.x((d, i) => vis.xScale(d.x))
       .y((d, i) => vis.yScale(d.y));
@@ -136,27 +154,27 @@ class LineChart {
       } else {
         return 'tick small-tick';
       }
-    })
+    });
 
     vis.gYAxis.selectAll(".tick").attr("class", d => {
-      if (Math.round(d * 100) % 10 === 0) {
+      if (yValues.includes(d)) {
         return 'tick big-tick';
       } else {
         return 'tick small-tick';
       }
-    })
+    });
 
     vis.gXAxis.selectAll(".small-tick").select("line")
       .attr("y2", 4)
     vis.gYAxis.selectAll(".small-tick").select("line")
       .attr("x2", -4);
 
-    vis.gYAxis.select(".y.axis-title")
-      .attr("text-anchor", "end")
-      .style("font-size", "12px")
-      .attr("fill", "white")
-      .attr("transform", "translate(18, 5) rotate(-90)")
-      .text("Adoption Curves");
+    // vis.gYAxis.select(".y.axis-title")
+    //   .attr("text-anchor", "end")
+    //   .style("font-size", "12px")
+    //   .attr("fill", "white")
+    //   .attr("transform", "translate(18, 5) rotate(-90)")
+    //   .text("Adoption Curves");
   };
 
   updateCurves() {

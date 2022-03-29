@@ -261,6 +261,11 @@ function loadData(path, type='csv') {
       'Flow_long': 'flows'
     }
 
+    function updatePlot() {
+      chart.updateData(state.dataToPlot);
+      chart.updatePlot();
+    }
+
     function getMenuOptions() {
       secondaryMenus.forEach(s => {
         if (state[s] === 'All') {
@@ -273,8 +278,7 @@ function loadData(path, type='csv') {
             updateGroupByMenu();
             filterData();
             getMenuOptions();
-            chart.updateData(state.dataToPlot);
-            chart.updatePlot();
+            updatePlot();
           });
         }
       })
