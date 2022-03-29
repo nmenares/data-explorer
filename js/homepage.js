@@ -123,7 +123,9 @@ function updateResultsMenu() {
       .html(d => d)
       .on("click", (event, d) => {
         secondaryItems.filter(item => item !== d).selectAll(".secondary-item").classed("selected", false);
-        d3.select(event.target).classed("selected", true)
+        d3.select(event.target).classed("selected", true);
+        d3.select("#chart svg").selectAll("g").remove();
+        loadData('data/energy_demand_pathway.csv');
       })
 
 }
@@ -214,44 +216,46 @@ var svg = plot.append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom);
 
-Promise.all([
-    d3.csv('data/adoptioncurves.csv'),
-]).then(function(data) {
-  console.log(data)
+const dateParse = d3.timeParse("%Y");
 
-  const adoptionCurves = data[0];
+function loadData(path, type='csv') {
+  let loaded;
+  if (type === 'csv') {
+    loaded = d3.csv(path)
+  } else {
+    loaded = de.json(path)
+  }
+  Promise.all([loaded]).then(function(data){
+    console.log(data);
 
-  const dateParse = d3.timeParse("%Y");
+    const adoptionCurves = data[0];
 
-  let filteredData = adoptionCurves.filter(d => d.Region === "World " & d.Scenario === 'baseline');
-  console.log(filteredData)
+    let filteredData = adoptionCurves.filter(d => d.Region === "World " & d.Scenario === 'baseline');
+    console.log(filteredData)
 
-  let sectors = getUniquesMenu(filteredData, 'Sector'),
-      years = adoptionCurves.columns.filter(d => !isNaN(+d));
+    let sectors = getUniquesMenu(filteredData, 'Sector'),
+        years = adoptionCurves.columns.filter(d => !isNaN(+d));
 
-  let processedData = {};
+    let processedData = {};
 
-  processedData.lines = [];
+    processedData.lines = [];
 
-  filteredData.forEach(d => {
-    obj = {}
-    obj.Sector = d.Sector;
-    obj.Scenario = d.Scenario;
-    obj.Region = d.Region;
-    obj.values = years.map(y => {
-      let objValues = {};
-      objValues.x = dateParse(y);
-      objValues.y = +d[y];
-      return objValues;
+    filteredData.forEach(d => {
+      obj = {}
+      obj.Sector = d.Sector;
+      obj.Scenario = d.Scenario;
+      obj.Region = d.Region;
+      obj.values = years.map(y => {
+        let objValues = {};
+        objValues.x = dateParse(y);
+        objValues.y = +d[y];
+        return objValues;
+      })
+      processedData.lines.push(obj)
     })
-    processedData.lines.push(obj)
+
+    console.log(processedData)
+
+    let chart = new LineChart(processedData, svg, width, height, margin);
   })
-
-  console.log(processedData)
-
-  let chart = new LineChart(processedData, svg, width, height, margin);
-
-
-})
-
-// let chart = Chart()
+}
