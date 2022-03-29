@@ -264,7 +264,6 @@ function loadData(path, type='csv') {
     function getMenuOptions() {
       secondaryMenus.forEach(s => {
         if (state[s] === 'All') {
-          console.log('here')
           let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
 
           let ops = addOptions(menuIds[s], uniqueItems, uniqueItems);
@@ -317,12 +316,9 @@ function loadData(path, type='csv') {
         d[y] = +d[y]
       })
     })
-    console.log(regions, sectors, scenarios, productCategories, products, flowCategories, flows, years)
 
     state.yearsStr = years;
     state.years = years.map(d => dateParse(d));
-    // xScale.domain(d3.extent(state.years, d => +d));
-    // xAxis.scale(xScale);
 
     function filterData(){
       state.filteredData = energyDemandPathway.filter((d, i) => {
@@ -344,7 +340,6 @@ function loadData(path, type='csv') {
           values.y = thisGroup.reduce((a,b) => a + b[y], 0)
           return values;
         })
-        console.log(obj)
         state.dataToPlot.lines.push(obj)
       })
     }
