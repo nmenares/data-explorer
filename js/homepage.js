@@ -235,6 +235,8 @@ var svg = plot.append("svg")
 
 const dateParse = d3.timeParse("%Y");
 
+let chart;
+
 function loadData(path, type='csv') {
   let loaded;
   if (type === 'csv') {
@@ -329,21 +331,21 @@ function loadData(path, type='csv') {
         });
         return ((d.Region === state.Region) && (d.Scenario === state.Scenario) && filtered.reduce((a, b) => a && b, true))
       })
-      state.dataToPlot = [];
+      state.dataToPlot = {};
+      state.dataToPlot.lines = [];
       let uniqueGroupBy = getUniquesMenu(state.filteredData, state.groupBy);
       uniqueGroupBy.forEach(d => {
-        console.log(d)
         let obj = {};
         obj.name = d;
         let thisGroup = state.filteredData.filter(s => s[state.groupBy] === d);
         obj.values = years.map(y => {
           let values = {};
-          values.date = dateParse(y);
-          values.number = thisGroup.reduce((a,b) => a + b[y], 0)
+          values.x = dateParse(y);
+          values.y = thisGroup.reduce((a,b) => a + b[y], 0)
           return values;
         })
         console.log(obj)
-        state.dataToPlot.push(obj)
+        state.dataToPlot.lines.push(obj)
       })
     }
 
@@ -364,7 +366,7 @@ function loadData(path, type='csv') {
     filterData();
 
     // console.log(state)
-    // let chart = new LineChart(state.dataToPlot, svg, width, height, margin);
+    chart = new LineChart(state.dataToPlot, svg, width, height, margin);
 
   })
 }
