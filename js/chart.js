@@ -215,8 +215,7 @@ class LineChart {
     }
 
     function curveColor(d, i) {
-      return vis.colors[i]
-      // return "white";
+      return vis.colors[i % vis.colors.length]
     }
 
     function curveWidth(d) {
