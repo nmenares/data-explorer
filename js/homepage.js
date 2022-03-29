@@ -273,7 +273,8 @@ function loadData(path, type='csv') {
             updateGroupByMenu();
             filterData();
             getMenuOptions();
-            updatePlot();
+            chart.updateData(state.dataToPlot);
+            chart.updatePlot();
           });
         }
       })
@@ -362,6 +363,7 @@ function loadData(path, type='csv') {
 
     // console.log(state)
     chart = new LineChart(state.dataToPlot, svg, width, height, margin);
+    chart.updatePlot();
 
   })
 }

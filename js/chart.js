@@ -1,22 +1,27 @@
 class LineChart {
   constructor(data, svg, width, height, margin, scale='linear') {
-    this.data = data;
-    this.svg = svg;
-    this.width = width;
-    this.height = height;
-    this.margin = margin;
-    this.scale = scale;
+    const vis = this;
 
-    this.transition = 500;
+    vis.data = data;
+    vis.svg = svg;
+    vis.width = width;
+    vis.height = height;
+    vis.margin = margin;
+    vis.scale = scale;
 
-    this.xScale = d3.scaleTime()
-        .range([this.margin.left, this.width - this.margin.right]);
-    this.yScale = d3.scaleLinear()
-        .range([this.height - this.margin.bottom, 0]);
-    this.line = d3.line()
+    vis.colors = ["#00e3e6", "#6797fd", "#6bd384", "#954e9f",
+                  "#a84857", "#cce982", "#eba562"]
+
+    vis.transition = 500;
+
+    vis.xScale = d3.scaleTime()
+        .range([vis.margin.left, vis.width - vis.margin.right]);
+    vis.yScale = d3.scaleLinear()
+        .range([vis.height - vis.margin.bottom, 0]);
+    vis.line = d3.line()
         .curve(d3.curveMonotoneX);
 
-    this.xAxis = d3.axisBottom()
+    vis.xAxis = d3.axisBottom()
         .tickFormat(d => {
           if (d.getFullYear() % 10 === 0) {
             return d3.timeFormat("%Y")(d);
@@ -26,12 +31,18 @@ class LineChart {
         })
         .ticks(d3.timeYear.every(1))
         .tickSize(6);
-    this.yAxis = d3.axisLeft()
-        .scale(this.yScale)
-        .tickFormat(d => d * 100 + '%')
+    vis.yAxis = d3.axisLeft()
+        .scale(vis.yScale)
+        // .tickFormat(d => d * 100 + '%')
 
-    this.initPlot();
-    this.updateAxes();
+    vis.initPlot();
+    vis.updatePlot();
+  }
+
+  updateData(newData) {
+    const vis = this;
+
+    vis.data = newData;
   }
 
   initPlot() {
@@ -53,10 +64,12 @@ class LineChart {
         .attr("class", "y axis-title");
   }
 
-  // updatePlot(data) {
-  //   this.data = data;
-  //   update
-  // }
+  updatePlot() {
+    const vis = this;
+
+    vis.updateAxes();
+    vis.updateCurves();
+  }
 
   updateAxes() {
 
@@ -68,40 +81,48 @@ class LineChart {
     vis.xScale.domain([xmin, xmax]);
     vis.xAxis.scale(vis.xScale);
 
-    if (vis.scale === "log"){
-      let yMax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.y)) + 1;
-      vis.yScale = d3.scaleLog()
-          .range([vis.height - vis.margin.bottom, 0])
-          .domain([1, yMax])
-      let tickValues = d3.range(yMax.toString().length)
-        .map(d => [1 * 10**d, 2 * 10**d, 5 * 10**d])
-        .flat()
-        .filter(d => d <= yMax);
-      vis.yAxis = d3.axisLeft()
-          .scale(vis.yScale)
-          .tickValues(tickValues)
-          .tickFormat(d3.format('i'))
-      vis.line.x((d, i) => vis.xScale(d.x))
-        .y(d => vis.yScale(d.y + 1));
-    } else if (this.scale === "linear") {
-      let yMax = 1.0;
-      vis.yScale = d3.scaleLinear()
-          .range([vis.height - vis.margin.bottom, 0])
-          .domain([0, yMax]).nice()
-      vis.yAxis = d3.axisLeft()
-          .scale(vis.yScale)
-          .tickFormat(d => {
-            if (Math.round(d * 100) % 10 === 0) {
-              return Math.round(d * 100) + '%';
-            } else {
-              return '';
-            }
-          })
-          .tickValues(d3.range(0, 1.01, 0.01))
-          .tickSize(6)
-      vis.line.x((d, i) => vis.xScale(d.x))
-        .y((d, i) => vis.yScale(d.y));
-    }
+    let ymin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.y));
+    let ymax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.y));
+    vis.yScale.domain([ymin, ymax]);
+    vis.yAxis.scale(vis.yScale);
+
+    vis.line.x((d, i) => vis.xScale(d.x))
+      .y((d, i) => vis.yScale(d.y));
+
+    // if (vis.scale === "log"){
+    //   let yMax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.y)) + 1;
+    //   vis.yScale = d3.scaleLog()
+    //       .range([vis.height - vis.margin.bottom, 0])
+    //       .domain([1, yMax])
+    //   let tickValues = d3.range(yMax.toString().length)
+    //     .map(d => [1 * 10**d, 2 * 10**d, 5 * 10**d])
+    //     .flat()
+    //     .filter(d => d <= yMax);
+    //   vis.yAxis = d3.axisLeft()
+    //       .scale(vis.yScale)
+    //       .tickValues(tickValues)
+    //       .tickFormat(d3.format('i'))
+    //   vis.line.x((d, i) => vis.xScale(d.x))
+    //     .y(d => vis.yScale(d.y + 1));
+    // } else if (this.scale === "linear") {
+    //   let yMax = 1.0;
+    //   vis.yScale = d3.scaleLinear()
+    //       .range([vis.height - vis.margin.bottom, 0])
+    //       .domain([0, yMax]).nice()
+    //   vis.yAxis = d3.axisLeft()
+    //       .scale(vis.yScale)
+    //       .tickFormat(d => {
+    //         if (Math.round(d * 100) % 10 === 0) {
+    //           return Math.round(d * 100) + '%';
+    //         } else {
+    //           return '';
+    //         }
+    //       })
+    //       .tickValues(d3.range(0, 1.01, 0.01))
+    //       .tickSize(6)
+    //   vis.line.x((d, i) => vis.xScale(d.x))
+    //     .y((d, i) => vis.yScale(d.y));
+    // }
 
     vis.gXAxis.call(vis.xAxis);
     vis.gYAxis.call(vis.yAxis);
@@ -151,7 +172,7 @@ class LineChart {
       .attr("stroke-width", curveWidth)
       .attr("stroke-linejoin", "round")
       .attr("stroke-linecap", "round")
-      .style("mix-blend-mode", "multiply")
+      // .style("mix-blend-mode", "multiply")
       .attr("opacity", curveOpacity)
       // .attr("class", d => "curve "+nameNoSpaces(d.Sector))
       .attr("stroke",  curveColor)
@@ -163,24 +184,25 @@ class LineChart {
       .attr("stroke-width", curveWidth)
       .attr("stroke-linejoin", "round")
       .attr("stroke-linecap", "round")
-      .style("mix-blend-mode", "multiply")
+      // .style("mix-blend-mode", "multiply")
       .attr("opacity", curveOpacity)
       // .attr("class", d => "curve "+nameNoSpaces(d.Sector))
       .attr("stroke", curveColor)
       .attr("d", d => vis.line(d.values));
 
-    path.exit().remove();
+    vis.path.exit().remove();
 
     function curveOpacity(d) {
       return 1.0;
     }
 
-    function curveColor(d) {
-      return "steelblue";
+    function curveColor(d, i) {
+      return vis.colors[i]
+      // return "white";
     }
 
     function curveWidth(d) {
-      return 1.0;
+      return 1.5;
     }
 
   } // updateCurves
