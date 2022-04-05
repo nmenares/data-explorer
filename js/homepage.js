@@ -225,6 +225,8 @@ let plot = d3.select("#chart")
     .attr("width", plotWidth)
     .attr("height", plotHeight);
 
+let tooltipDiv = d3.select("body").append("div");
+
 const margin = {top: 20, right: 20, bottom: 20, left: 30},
     width = plotWidth - margin.left - margin.right,
     height = plotHeight - margin.top - margin.bottom;
@@ -366,7 +368,7 @@ function loadData(path, type='csv') {
     filterData();
 
     // console.log(state)
-    chart = new LineChart(state.dataToPlot, svg, width, height, margin);
+    chart = new LineChart(state.dataToPlot, svg, width, height, margin, 'linear', tooltipDiv);
     chart.updatePlot();
 
   })

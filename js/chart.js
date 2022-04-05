@@ -1,5 +1,5 @@
 class LineChart {
-  constructor(data, svg, width, height, margin, scale='linear') {
+  constructor(data, svg, width, height, margin, scale, tooltipDiv) {
     const vis = this;
 
     vis.data = data;
@@ -8,6 +8,7 @@ class LineChart {
     vis.height = height;
     vis.margin = margin;
     vis.scale = scale;
+    vis.tooltip = new Tooltip(tooltipDiv);
 
     vis.colors = ["#00e3e6", "#6797fd", "#6bd384", "#954e9f",
                   "#a84857", "#cce982", "#eba562"]
@@ -62,6 +63,15 @@ class LineChart {
     vis.yLabel = vis.gYAxis.append("g")
         .append("text")
         .attr("class", "y axis-title");
+
+    vis.rule = vis.g.append("g")
+      .attr("class", "rule")
+      .style("opacity", 0);
+
+    vis.rule.append("line")
+      .attr("y1", 0)
+      .attr("y2", vis.height - vis.margin.bottom)
+      .attr("stroke", "lightgray");
   }
 
   updatePlot() {
@@ -209,6 +219,7 @@ class LineChart {
       .attr("d", d => vis.line(d.values));
 
     vis.path.exit().remove();
+    vis.svg.call(hover, vis.path);
 
     function curveOpacity(d) {
       return 1.0;
@@ -221,6 +232,53 @@ class LineChart {
     function curveWidth(d) {
       return 1.5;
     }
+
+    function hover(svg, path) {
+      if ("ontouchstart" in document) svg
+          .style("-webkit-tap-highlight-color", "transparent")
+          .on("touchmove", moved)
+          // .on("touchstart", entered)
+          // .on("touchend", left)
+          // .on("touch", click);
+      else svg
+          .on("mousemove", moved)
+          // .on("mouseenter", entered)
+          // .on("mouseleave", left)
+          // .on("click", click);
+
+      function moved(event) {
+        let thisX = d3.pointer(event, this)[0] - vis.margin.left;
+        if ((vis.margin.left < thisX) && (thisX < vis.width - vis.margin.right)) {
+          const xm = vis.xScale.invert(thisX),
+            xYear = xm.getFullYear();
+          let dataValues = vis.data.lines.map(d => {
+            let obj = {};
+            obj.name = d.name;
+            obj.y = d.values.filter(v => v.x.getFullYear() === xYear)[0].y;
+            return obj;
+          });
+
+        d3.selectAll(".rule")
+          .attr("transform", `translate(${vis.xScale(xm)},0)`)
+          .style("opacity", 1);
+
+        //   const i1 = d3.bisectLeft(state.years, xm, 1);
+        //   const i0 = i1 - 1;
+        //   const idx = xm - state.years[i0] > state.years[i1] - xm ? i1 : i0;
+        //   var s;
+        //   if (state.scale === "log"){
+        //     s = d3.least(state.dataToPlot, d => Math.abs(d.values[idx].number - ym + 1));
+        //   } else if (state.scale === "linear") {
+        //     s = d3.least(state.dataToPlot, d => Math.abs(d.values[idx].number - ym));
+        //   }
+        } else {
+          d3.selectAll(".rule")
+            .style("opacity", 0);
+        }
+      }
+    }
+
+
 
   } // updateCurves
 
