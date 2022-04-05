@@ -237,6 +237,11 @@ class LineChart {
       return 3.0;
     }
 
+    function getCircleHtml(color) {
+      let circleRadius = 4;
+      return `<svg width="${2 * circleRadius}px" height="${2 * circleRadius}px"><circle cx="${circleRadius}px" cy="${circleRadius}px" r="${circleRadius}px" fill="${color}"></circle></svg>`
+    }
+
     function hover(svg, path) {
       if ("ontouchstart" in document) svg
           .style("-webkit-tap-highlight-color", "transparent")
@@ -256,18 +261,29 @@ class LineChart {
           const xm = vis.xScale.invert(thisX),
             xYear = xm.getFullYear(),
             xPoint = new Date(xYear, 1, 1);
-          let dataValues = vis.data.lines.map(d => {
+          let dataValues = vis.data.lines.map((d, i) => {
             let obj = {};
             obj.name = d.name;
             obj.y = d.values.filter(v => v.x.getFullYear() === xYear)[0].y;
+            obj.color = curveColor(d, i);
             return obj;
           });
 
-        d3.selectAll(".rule")
-          .attr("transform", `translate(${vis.xScale(xPoint)},0)`)
-          .style("opacity", 1);
+          let legendHtml = dataValues.sort((a,b) => b.y - a.y)
+            .map((d,i) => {
+              let spanCircle = `<span class="legend-circle">${getCircleHtml(d.color)}</span>`,
+                  spanName = `<span class="legend-name">${d.name}</span>`,
+                  spanNumber = `<span class="legend-value">${d.y.toFixed(0)}</span>`;
 
-        let dots = vis.rule.selectAll(".circle-plot")
+              return `<div class="legend-item">${spanCircle}${spanName}${spanNumber}</div>`;
+            })
+            .reduce((a,b) => a + b, "");
+
+          d3.selectAll(".rule")
+            .attr("transform", `translate(${vis.xScale(xPoint)},0)`)
+            .style("opacity", 1);
+
+          let dots = vis.rule.selectAll(".circle-plot")
             .data(dataValues);
 
           dots.enter().append("circle")
@@ -275,18 +291,26 @@ class LineChart {
             .attr("cx", 0)
             .attr("cy", d => vis.yScale(d.y))
             .attr("r", circleRadius)
-            .attr("fill", curveColor)
+            .attr("fill", d => d.color)
 
           dots.attr("class", "circle-plot")
             .attr("cx", 0)
             .attr("cy", d => vis.yScale(d.y))
             .attr("r", circleRadius)
-            .attr("fill", curveColor)
+            .attr("fill", d => d.color)
 
           dots.exit().remove();
+
+          let offset = vis.svg.node().getBoundingClientRect();
+          console.log(vis.svg.node(), offset)
+
+          vis.tooltip.update(`<div class="legend"><div class="legend-header">${xYear}</div><div class="legend-body">${legendHtml}</div></div>`,
+                             offset.left + vis.margin.left + vis.xScale(xPoint) + 10,
+                             document.documentElement.scrollTop + vis.margin.top + offset.top);
         } else {
           d3.selectAll(".rule")
             .style("opacity", 0);
+          tooltip.hide();
         }
       }
     }

@@ -229,6 +229,8 @@ body {
   font-weight: 600;
 }
 
+/* CHART */
+
 #chart {
   margin: 0 10px;
 }
@@ -252,4 +254,27 @@ body {
 .tick text {
   font-weight: 500;
   font-size: 12px;
+}
+
+.ei-tooltip {
+  background-color: var(--ei-background);
+  padding: 10px 15px;
+  position: absolute;
+  pointer-events: none;
+}
+
+.legend-circle {
+  display: inline-block;
+  margin-right: 5px;
+}
+
+.legend-name {
+  display: inline-block;
+  width: 100px;
+}
+
+.legend-value {
+  display: inline-block;
+  text-align: right;
+  width: 50px;
 }
