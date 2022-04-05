@@ -233,6 +233,10 @@ class LineChart {
       return 1.5;
     }
 
+    function circleRadius(d) {
+      return 3.0;
+    }
+
     function hover(svg, path) {
       if ("ontouchstart" in document) svg
           .style("-webkit-tap-highlight-color", "transparent")
@@ -250,7 +254,8 @@ class LineChart {
         let thisX = d3.pointer(event, this)[0] - vis.margin.left;
         if ((vis.margin.left < thisX) && (thisX < vis.width - vis.margin.right)) {
           const xm = vis.xScale.invert(thisX),
-            xYear = xm.getFullYear();
+            xYear = xm.getFullYear(),
+            xPoint = new Date(xYear, 1, 1);
           let dataValues = vis.data.lines.map(d => {
             let obj = {};
             obj.name = d.name;
@@ -259,18 +264,26 @@ class LineChart {
           });
 
         d3.selectAll(".rule")
-          .attr("transform", `translate(${vis.xScale(xm)},0)`)
+          .attr("transform", `translate(${vis.xScale(xPoint)},0)`)
           .style("opacity", 1);
 
-        //   const i1 = d3.bisectLeft(state.years, xm, 1);
-        //   const i0 = i1 - 1;
-        //   const idx = xm - state.years[i0] > state.years[i1] - xm ? i1 : i0;
-        //   var s;
-        //   if (state.scale === "log"){
-        //     s = d3.least(state.dataToPlot, d => Math.abs(d.values[idx].number - ym + 1));
-        //   } else if (state.scale === "linear") {
-        //     s = d3.least(state.dataToPlot, d => Math.abs(d.values[idx].number - ym));
-        //   }
+        let dots = vis.rule.selectAll(".circle-plot")
+            .data(dataValues);
+
+          dots.enter().append("circle")
+            .attr("class", "circle-plot")
+            .attr("cx", 0)
+            .attr("cy", d => vis.yScale(d.y))
+            .attr("r", circleRadius)
+            .attr("fill", curveColor)
+
+          dots.attr("class", "circle-plot")
+            .attr("cx", 0)
+            .attr("cy", d => vis.yScale(d.y))
+            .attr("r", circleRadius)
+            .attr("fill", curveColor)
+
+          dots.exit().remove();
         } else {
           d3.selectAll(".rule")
             .style("opacity", 0);
