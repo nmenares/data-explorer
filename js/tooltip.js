@@ -1,8 +1,9 @@
 class Tooltip {
-  constructor(div) {
+  constructor(div, padding) {
     const vis = this;
 
     vis.div = div;
+    vis.padding = padding || 10;
 
     vis.div.attr("class", "ei-tooltip")
         .style("display", "none");
@@ -14,7 +15,7 @@ class Tooltip {
     vis.div.html(text);
 
     vis.div.style("top", `${top}px`)
-      .style("left", `${left}px`)
+      .style("left", `${left + vis.padding}px`)
       .style("display", "block");
   }
 
