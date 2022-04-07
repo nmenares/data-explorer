@@ -16,10 +16,15 @@ function getUniquesMenu(df, thisVariable) {
   return uniqueList;
 }
 
-var nameNoSpaces = function(name) {
-  return name.toLowerCase().split(" ").join("");
-}
-
 var capitalize = function(string) {
   return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
+var nameNoSpaces = function(name) {
+  let newName = name.toLowerCase().split(" ").join("")
+      .replace("(", "")
+      .replace(")", "")
+      .replace(".", "")
+      .replace("/", "");
+  return newName;
 }

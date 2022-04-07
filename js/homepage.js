@@ -2,7 +2,8 @@ let state = {
   region: null,
   scenario: null,
   vector: null,
-  result: null
+  result: null,
+  filteredData: null
 }
 
 let regions = ["Global", "Other"];
@@ -72,6 +73,22 @@ function addOptions(id, values) {
   return element;
 }
 
+function addOptions(id, values, attrs=values.map(d => null)) {
+  var element = d3.select("#"+id);
+  var options = element.selectAll("option").data(values);
+
+  options.enter().append("option")
+    .attr("value", (d,i) => attrs[i])
+    .html(d => d);
+
+  options.attr("value", (d,i) => attrs[i])
+    .html(d => d);
+
+  options.exit().remove();
+
+  return element;
+}
+
 function addButtons(id, values) {
   var element = d3.select("#"+id);
   var options = element.selectAll("button").data(values);
@@ -123,7 +140,9 @@ function updateResultsMenu() {
       .html(d => d)
       .on("click", (event, d) => {
         secondaryItems.filter(item => item !== d).selectAll(".secondary-item").classed("selected", false);
-        d3.select(event.target).classed("selected", true)
+        d3.select(event.target).classed("selected", true);
+        d3.select("#chart svg").selectAll("g").remove();
+        loadData('data/energy_demand_pathway.csv');
       })
 
 }
@@ -206,6 +225,8 @@ let plot = d3.select("#chart")
     .attr("width", plotWidth)
     .attr("height", plotHeight);
 
+let tooltipDiv = d3.select("body").append("div");
+
 const margin = {top: 20, right: 20, bottom: 20, left: 30},
     width = plotWidth - margin.left - margin.right,
     height = plotHeight - margin.top - margin.bottom;
@@ -214,44 +235,141 @@ var svg = plot.append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom);
 
-Promise.all([
-    d3.csv('data/adoptioncurves.csv'),
-]).then(function(data) {
-  console.log(data)
+const dateParse = d3.timeParse("%Y");
 
-  const adoptionCurves = data[0];
+let chart;
 
-  const dateParse = d3.timeParse("%Y");
+function loadData(path, type='csv') {
+  let loaded;
+  if (type === 'csv') {
+    loaded = d3.csv(path)
+  } else {
+    loaded = de.json(path)
+  }
+  Promise.all([loaded]).then(function(data){
+    let energyDemandPathway = data[0];
+    console.log(energyDemandPathway);
 
-  let filteredData = adoptionCurves.filter(d => d.Region === "World " & d.Scenario === 'baseline');
-  console.log(filteredData)
+    state.filteredData = energyDemandPathway;
 
-  let sectors = getUniquesMenu(filteredData, 'Sector'),
-      years = adoptionCurves.columns.filter(d => !isNaN(+d));
+    let primaryMenus = ['Region', 'Scenario'],
+        secondaryMenus = ['Sector', 'Product_category', 'Product_long', 'Flow_category', 'Flow_long'];
 
-  let processedData = {};
+    let menuIds = {
+      'Sector': 'sectors',
+      'Product_category': 'productCategories',
+      'Product_long': 'products',
+      'Flow_category': 'flowCategories',
+      'Flow_long': 'flows'
+    }
 
-  processedData.lines = [];
+    function updatePlot() {
+      chart.updateData(state.dataToPlot);
+      chart.updatePlot();
+    }
 
-  filteredData.forEach(d => {
-    obj = {}
-    obj.Sector = d.Sector;
-    obj.Scenario = d.Scenario;
-    obj.Region = d.Region;
-    obj.values = years.map(y => {
-      let objValues = {};
-      objValues.x = dateParse(y);
-      objValues.y = +d[y];
-      return objValues;
+    function getMenuOptions() {
+      secondaryMenus.forEach(s => {
+        if (state[s] === 'All') {
+          let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
+
+          let ops = addOptions(menuIds[s], uniqueItems, uniqueItems);
+          state[s] = ops.node().value;
+          ops.on("change", function(){
+            state[s] = d3.select(this).node().value;
+            updateGroupByMenu();
+            filterData();
+            getMenuOptions();
+            updatePlot();
+          });
+        }
+      })
+    }
+
+    function resetOptions(){
+      secondaryMenus.forEach(d => state[d] = 'All');
+      getMenuOptions()
+    }
+
+    resetOptions();
+
+    let regions = getUniquesMenu(energyDemandPathway, 'Region'),
+        scenarios = getUniquesMenu(energyDemandPathway, 'Scenario'),
+        years = energyDemandPathway.columns.filter(d => !isNaN(+d));
+
+    let regionsOp = addOptions("regions", regions, regions);
+    state.Region = regionsOp.node().value;
+    regionsOp.on("change", function(d){
+      state.Region = d3.select(this).node().value;
+      resetOptions();
+      updateGroupByMenu();
+      filterData();
+      getMenuOptions();
+      updatePlot();
+    });
+
+    let scenariosOp = addOptions("scenarios", scenarios, scenarios);
+    state.Scenario = scenariosOp.node().value;
+    scenariosOp.on("change", function(d){
+      state.Scenario = d3.select(this).node().value;
+      updateGroupByMenu();
+      filterData();
+      getMenuOptions();
+      updatePlot();
+    });
+
+    energyDemandPathway.forEach(d => {
+      years.forEach(y => {
+        d[y] = +d[y]
+      })
     })
-    processedData.lines.push(obj)
+
+    state.yearsStr = years;
+    state.years = years.map(d => dateParse(d));
+
+    function filterData(){
+      state.filteredData = energyDemandPathway.filter((d, i) => {
+        let filtered = secondaryMenus.map(s => {
+          return state[s] === 'All' ? true : d[s] === state[s];
+        });
+        return ((d.Region === state.Region) && (d.Scenario === state.Scenario) && filtered.reduce((a, b) => a && b, true))
+      })
+      state.dataToPlot = {};
+      state.dataToPlot.lines = [];
+      let uniqueGroupBy = getUniquesMenu(state.filteredData, state.groupBy);
+      uniqueGroupBy.forEach(d => {
+        let obj = {};
+        obj.name = d;
+        let thisGroup = state.filteredData.filter(s => s[state.groupBy] === d);
+        obj.values = years.map(y => {
+          let values = {};
+          values.x = dateParse(y);
+          values.y = thisGroup.reduce((a,b) => a + b[y], 0)
+          return values;
+        })
+        state.dataToPlot.lines.push(obj)
+      })
+    }
+
+    function updateGroupByMenu() {
+      let groupByOptions = [];
+      secondaryMenus.forEach(s => {
+        if (state[s] === 'All') groupByOptions.push(s)
+      })
+      let groupByOps = addOptions("groupby", groupByOptions, groupByOptions);
+      state.groupBy = groupByOps.node().value;
+      groupByOps.on("change", function(d){
+        state.groupBy = d3.select(this).node().value;
+        filterData();
+        updatePlot();
+      });
+    }
+    updateGroupByMenu();
+    filterData();
+
+    // console.log(state)
+    chart = new LineChart(state.dataToPlot, svg, width, height, margin, 'linear', tooltipDiv);
+    chart.updatePlot();
+
   })
-
-  console.log(processedData)
-
-  let chart = new LineChart(processedData, svg, width, height, margin);
-
-
-})
-
-// let chart = Chart()
+}
