@@ -302,98 +302,17 @@ class LineChart {
           dots.exit().remove();
 
           let offset = vis.svg.node().getBoundingClientRect();
-          console.log(vis.svg.node(), offset)
-
           vis.tooltip.update(`<div class="legend"><div class="legend-header">${xYear}</div><div class="legend-body">${legendHtml}</div></div>`,
-                             offset.left + vis.margin.left + vis.xScale(xPoint) + 10,
+                             offset.left + vis.margin.left + vis.xScale(xPoint),
                              document.documentElement.scrollTop + vis.margin.top + offset.top);
         } else {
           d3.selectAll(".rule")
             .style("opacity", 0);
-          tooltip.hide();
+          vis.tooltip.hide();
         }
       }
     }
 
-
-
   } // updateCurves
 
-
 }
-
-
-// const dateParse = d3.timeParse("%Y");
-// const colors = ['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00', '#a65628','#f781bf','#999999']
-// var lineOpacity = 0.5;
-// var yScale;
-// var transition = 500;
-// var dateFormat = d3.timeFormat("%d de %B");
-// var yAxis;
-//
-// var label = svg.append("g")
-//     .attr("display", "none")
-//
-// label.append("text")
-//     .attr("font-family", "sans-serif")
-//     .attr("font-size", 12)
-//     .attr("class", "curve-label")
-//     .attr("text-anchor", "middle")
-//     .attr("text-anchor", "start")
-//
-//
-// function addOptions(id, values, attrs) {
-//   var element = d3.select("#"+id);
-//   var options = element.selectAll("option").data(values);
-//
-//   options.enter().append("option")
-//     .attr("value", (d,i) => attrs[i])
-//     .html(d => d);
-//
-//   options.attr("value", (d,i) => attrs[i])
-//     .html(d => d);
-//
-//   options.exit().remove();
-//
-//   return element;
-// }
-//
-// Promise.all([
-//     d3.csv('data/adoptioncurves.csv'),
-// ]).then(function(data) {
-//   let adoptionCurves = data[0];
-//   console.log(adoptionCurves);
-//
-//   let regions = getUniquesMenu(adoptionCurves, 'Region'),
-//       vectors = getUniquesMenu(adoptionCurves, 'Sector'),
-//       scenarios = getUniquesMenu(adoptionCurves, 'Scenario'),
-//       years = adoptionCurves.columns.filter(d => !isNaN(+d));
-//
-//   adoptionCurves.forEach(d => {
-//     d.values = years.map(y => {
-//       let obj = {};
-//       obj.date = dateParse(y);
-//       obj.number = +d[y];
-//       return obj;
-//     })
-//   })
-//   console.log(regions, vectors, scenarios, years)
-//
-//   state.yearsStr = years;
-//   state.years = years.map(d => dateParse(d));
-//   xScale.domain(d3.extent(state.years, d => +d));
-//   xAxis.scale(xScale);
-//
-//
-//
-//   function updatePlot() {
-//     updateAxes();
-//     // updateSearchBox();
-//     updateCurves();
-//     // updateLabels();
-//   }
-//
-//   filterData();
-//   updatePlot();
-//
-// })
