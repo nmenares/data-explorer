@@ -266,6 +266,7 @@ body {
 .legend-circle {
   display: inline-block;
   margin-right: 5px;
+  vertical-align: top;
 }
 
 .legend-name {
@@ -276,5 +277,6 @@ body {
 .legend-value {
   display: inline-block;
   text-align: right;
+  vertical-align: top;
   width: 50px;
 }
