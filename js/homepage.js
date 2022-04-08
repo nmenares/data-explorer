@@ -73,7 +73,7 @@ function addOptions(id, values) {
   return element;
 }
 
-function addOptions(id, values, attrs=values.map(d => null)) {
+function addStandardOptions(id, values, attrs=values.map(d => null)) {
   var element = d3.select("#"+id);
   var options = element.selectAll("option").data(values);
 
@@ -273,7 +273,7 @@ function loadData(path, type='csv') {
         if (state[s] === 'All') {
           let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
 
-          let ops = addOptions(menuIds[s], uniqueItems, uniqueItems);
+          let ops = addStandardOptions(menuIds[s], uniqueItems, uniqueItems);
           state[s] = ops.node().value;
           ops.on("change", function(){
             state[s] = d3.select(this).node().value;
@@ -297,7 +297,7 @@ function loadData(path, type='csv') {
         scenarios = getUniquesMenu(energyDemandPathway, 'Scenario'),
         years = energyDemandPathway.columns.filter(d => !isNaN(+d));
 
-    let regionsOp = addOptions("regions", regions, regions);
+    let regionsOp = addStandardOptions("regions", regions, regions);
     state.Region = regionsOp.node().value;
     regionsOp.on("change", function(d){
       state.Region = d3.select(this).node().value;
@@ -308,7 +308,7 @@ function loadData(path, type='csv') {
       updatePlot();
     });
 
-    let scenariosOp = addOptions("scenarios", scenarios, scenarios);
+    let scenariosOp = addStandardOptions("scenarios", scenarios, scenarios);
     state.Scenario = scenariosOp.node().value;
     scenariosOp.on("change", function(d){
       state.Scenario = d3.select(this).node().value;
@@ -356,7 +356,7 @@ function loadData(path, type='csv') {
       secondaryMenus.forEach(s => {
         if (state[s] === 'All') groupByOptions.push(s)
       })
-      let groupByOps = addOptions("groupby", groupByOptions, groupByOptions);
+      let groupByOps = addStandardOptions("groupby", groupByOptions, groupByOptions);
       state.groupBy = groupByOps.node().value;
       groupByOps.on("change", function(d){
         state.groupBy = d3.select(this).node().value;
