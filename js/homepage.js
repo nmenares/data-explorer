@@ -269,21 +269,82 @@ function loadData(path, type='csv') {
     }
 
     function getMenuOptions() {
-      secondaryMenus.forEach(s => {
-        if (state[s] === 'All') {
-          let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
+      let graphFilters = d3.select("#graph-filters");
 
-          let ops = addStandardOptions(menuIds[s], uniqueItems, uniqueItems);
-          state[s] = ops.node().value;
-          ops.on("change", function(){
-            state[s] = d3.select(this).node().value;
-            updateGroupByMenu();
-            filterData();
-            getMenuOptions();
-            updatePlot();
-          });
-        }
-      })
+      let graphMenus = graphFilters.selectAll(".graph-menu")
+        .data(secondaryMenus);
+
+      graphMenus.attr("class", "graph-menu");
+
+      graphMenus.enter().append("div")
+        .attr("class", "graph-menu");
+
+      graphMenus.exit().remove();
+
+      let graphMenuTitle = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-title")
+        .data(d => [d])
+
+      graphMenuTitle.attr("class", "graph-menu-title")
+        .html(d => d);
+
+      graphMenuTitle.enter().append("span")
+        .attr("class", "graph-menu-title")
+        .html(d => d);
+
+      graphMenuTitle.exit().remove();
+
+      let graphMenuDropdown = graphFilters.selectAll(".graph-menu").selectAll(".dropdown")
+        .data(d => [d]);
+
+      graphMenuDropdown.attr("class", "dropdown")
+        .attr("id", d => d+'-dropdown');
+
+      graphMenuDropdown.enter().append("div")
+        .attr("class", "dropdown")
+        .attr("id", d => d+'-dropdown');
+
+      graphMenuDropdown.exit().remove();
+
+      let graphMenuDropbtn = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropbtn")
+        .data(d => [d]);
+
+      graphMenuDropbtn.attr("class", "dropbtn")
+        .attr("id", d => d+'-dropbtn');
+
+      graphMenuDropbtn.enter().append("div")
+        .attr("class", "dropbtn")
+        .attr("id", d => d+'-dropbtn');
+
+      graphMenuDropbtn.exit().remove();
+
+      let graphMenuDropcontent = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropdown-content")
+        .data(d => [d]);
+
+      graphMenuDropcontent.attr("class", "dropdown-content")
+        .attr("id", d => d+'-menu');
+
+      graphMenuDropcontent.enter().append("div")
+        .attr("class", "dropdown-content")
+        .attr("id", d => d+'-menu');
+
+      graphMenuDropcontent.exit().remove();
+
+
+      // secondaryMenus.forEach(s => {
+      //   if (state[s] === 'All') {
+      //     let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
+      //
+      //     let ops = addStandardOptions(menuIds[s], uniqueItems, uniqueItems);
+      //     state[s] = ops.node().value;
+      //     ops.on("change", function(){
+      //       state[s] = d3.select(this).node().value;
+      //       updateGroupByMenu();
+      //       filterData();
+      //       getMenuOptions();
+      //       updatePlot();
+      //     });
+      //   }
+      // })
     }
 
     function resetOptions(){
