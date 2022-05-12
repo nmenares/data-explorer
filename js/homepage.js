@@ -329,22 +329,39 @@ function loadData(path, type='csv') {
 
       graphMenuDropcontent.exit().remove();
 
+      secondaryMenus.forEach(s => {
+        if (state[s] === 'All') {
+          let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
 
-      // secondaryMenus.forEach(s => {
-      //   if (state[s] === 'All') {
-      //     let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
-      //
-      //     let ops = addStandardOptions(menuIds[s], uniqueItems, uniqueItems);
-      //     state[s] = ops.node().value;
-      //     ops.on("change", function(){
-      //       state[s] = d3.select(this).node().value;
-      //       updateGroupByMenu();
-      //       filterData();
-      //       getMenuOptions();
-      //       updatePlot();
-      //     });
-      //   }
-      // })
+          let selectRegion = addOptions(s+"-menu", uniqueItems)
+          d3.select("#"+s+"-dropdown")
+            .on("click", function(d){
+              document.getElementById(s+"-menu").classList.toggle("show");
+            });
+          updateDropdownLabel("#"+s+"-dropdown", state[s]);
+          selectRegion.selectAll("a").on("click", (event, d) => {
+            if (d !== state[s]) {
+              state[s] = d;
+              updateDropdownLabel("#"+s+"-dropdown", state[s]);
+              // updateGroupByMenu();
+              filterData();
+              getMenuOptions();
+              updatePlot();
+              document.getElementById(s+"-menu").classList.toggle("show");
+            }
+          });
+
+          // let ops = addStandardOptions(menuIds[s], uniqueItems, uniqueItems);
+          // state[s] = ops.node().value;
+          // ops.on("change", function(){
+          //   state[s] = d3.select(this).node().value;
+          //   updateGroupByMenu();
+          //   filterData();
+          //   getMenuOptions();
+          //   updatePlot();
+          // });
+        }
+      })
     }
 
     function resetOptions(){
@@ -358,26 +375,26 @@ function loadData(path, type='csv') {
         scenarios = getUniquesMenu(energyDemandPathway, 'Scenario'),
         years = energyDemandPathway.columns.filter(d => !isNaN(+d));
 
-    let regionsOp = addStandardOptions("regions", regions, regions);
-    state.Region = regionsOp.node().value;
-    regionsOp.on("change", function(d){
-      state.Region = d3.select(this).node().value;
-      resetOptions();
-      updateGroupByMenu();
-      filterData();
-      getMenuOptions();
-      updatePlot();
-    });
-
-    let scenariosOp = addStandardOptions("scenarios", scenarios, scenarios);
-    state.Scenario = scenariosOp.node().value;
-    scenariosOp.on("change", function(d){
-      state.Scenario = d3.select(this).node().value;
-      updateGroupByMenu();
-      filterData();
-      getMenuOptions();
-      updatePlot();
-    });
+    // let regionsOp = addStandardOptions("regions", regions, regions);
+    // state.Region = regionsOp.node().value;
+    // regionsOp.on("change", function(d){
+    //   state.Region = d3.select(this).node().value;
+    //   resetOptions();
+    //   updateGroupByMenu();
+    //   filterData();
+    //   getMenuOptions();
+    //   updatePlot();
+    // });
+    //
+    // let scenariosOp = addStandardOptions("scenarios", scenarios, scenarios);
+    // state.Scenario = scenariosOp.node().value;
+    // scenariosOp.on("change", function(d){
+    //   state.Scenario = d3.select(this).node().value;
+    //   updateGroupByMenu();
+    //   filterData();
+    //   getMenuOptions();
+    //   updatePlot();
+    // });
 
     energyDemandPathway.forEach(d => {
       years.forEach(y => {
@@ -412,20 +429,20 @@ function loadData(path, type='csv') {
       })
     }
 
-    function updateGroupByMenu() {
-      let groupByOptions = [];
-      secondaryMenus.forEach(s => {
-        if (state[s] === 'All') groupByOptions.push(s)
-      })
-      let groupByOps = addStandardOptions("groupby", groupByOptions, groupByOptions);
-      state.groupBy = groupByOps.node().value;
-      groupByOps.on("change", function(d){
-        state.groupBy = d3.select(this).node().value;
-        filterData();
-        updatePlot();
-      });
-    }
-    updateGroupByMenu();
+    // function updateGroupByMenu() {
+    //   let groupByOptions = [];
+    //   secondaryMenus.forEach(s => {
+    //     if (state[s] === 'All') groupByOptions.push(s)
+    //   })
+    //   let groupByOps = addStandardOptions("groupby", groupByOptions, groupByOptions);
+    //   state.groupBy = groupByOps.node().value;
+    //   groupByOps.on("change", function(d){
+    //     state.groupBy = d3.select(this).node().value;
+    //     filterData();
+    //     updatePlot();
+    //   });
+    // }
+    // updateGroupByMenu();
     filterData();
 
     // console.log(state)
