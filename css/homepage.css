@@ -280,3 +280,64 @@ body {
   vertical-align: top;
   width: 50px;
 }
+
+/* FILTERS */
+
+#show-filters {
+  display: none;
+  text-transform: uppercase;
+  cursor: pointer;
+  position: relative;
+  border: 2px solid #165163;
+  padding: 10px 14px;
+  width: 280px;
+}
+
+#show-filters.checked {
+  border-bottom: 1px solid rgba(28, 87, 104, 0.5);
+}
+
+#show-filters::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 200%;
+  top: -50%;
+  right: 20px;
+  /* z-index: -1; */
+  background-image: url("../img/icon-chevron-down.svg");
+  background-repeat: no-repeat;
+  background-position-x: 100%;
+  background-position-y: 50%;
+  background-size: 16px;
+}
+
+#show-filters.checked::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 200%;
+  top: -50%;
+  left: calc(100% - 36px);
+  /* z-index: -1; */
+  background-image: url("../img/icon-chevron-down.svg");
+  background-repeat: no-repeat;
+  background-position-x: 100%;
+  background-position-y: 50%;
+  background-size: 16px;
+
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+#graph-filters {
+  display: none;
+  width: 280px;
+  padding: 10px 14px;
+  border-left: 2px solid #165163;
+  border-right: 2px solid #165163;
+  border-bottom: 2px solid #165163;
+}
