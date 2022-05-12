@@ -6,8 +6,9 @@ let state = {
   filteredData: null
 }
 
-let regions = ["Global", "Other"];
-let scenarios = ["Default case", "Policy Led", "Carbon Pricing", "Max NCS", "Custom"];
+let regions = ['albania', 'algeria', 'angola', 'argentina', 'armenia', 'australi', 'austria', 'azerbaijan', 'bahrain', 'bangladesh', 'belarus', 'belgium', 'benin', 'bolivia', 'bosniaherz', 'botswana', 'brazil', 'brunei', 'bulgaria', 'cambodia', 'cameroon', 'canada', 'chile', 'china', 'colombia', 'congo', 'congorep', 'costarica', 'coteivoire', 'croatia', 'cuba', 'curacao', 'cyprus', 'czech', 'denmark', 'dominicanr', 'ecuador', 'egypt', 'elsalvador', 'eqguinea', 'eritrea', 'estonia', 'ethiopia', 'finland', 'france', 'gabon', 'georgia', 'germany', 'ghana', 'gibraltar', 'greece', 'guatemala', 'guyana', 'haiti', 'honduras', 'hongkong', 'hungary', 'iceland', 'india', 'indonesia', 'iran', 'iraq', 'ireland', 'israel', 'italy', 'jamaica', 'japan', 'jordan', 'kazakhstan', 'kenya', 'korea', 'koreadpr', 'kosovo', 'kuwait', 'kyrgyzstan', 'lao', 'latvia', 'lebanon', 'libya', 'lithuania', 'luxembou', 'malaysia', 'malta', 'mauritius', 'mburkinafa', 'mchad', 'mexico', 'mgreenland', 'mmadagasca', 'mmali', 'mmauritani', 'moldova', 'mongolia', 'montenegro', 'morocco', 'mozambique', 'mrwanda', 'muganda', 'myanmar', 'namibia'];
+// let scenarios = ["Default case", "Policy Led", "Carbon Pricing", "Max NCS", "Custom"];
+let scenarios = ["pathway"]
 let vectors = ["All", "Electricity", "Buildings", "Transportation", "Industry", "Agriculture",
                "F&W", "CO2 Removal"];
 let results = {
@@ -53,8 +54,8 @@ let results = {
   ]
 }
 
-state.region = 'albania';
-state.scenario = 'pathway';
+state.region = regions[0];
+state.scenario = scenarios[0];
 state.vector = vectors[0];
 
 var nameNoSpaces = function(name) {
@@ -180,6 +181,8 @@ selectRegion.selectAll("a").on("click", (event, d) => {
       showCountryDivs();
     }
     updateResultsMenu();
+    filterData();
+    updatePlot();
   }
 });
 
@@ -251,7 +254,6 @@ function loadData(path, type='csv') {
     console.log(energyDemandPathway);
 
     state.filteredData = energyDemandPathway;
-    // console.log(getUniquesMenu(state.filteredData, 'Region'))
 
     let primaryMenus = ['Region', 'Scenario'],
         secondaryMenus = ['Sector', 'Product_category', 'Product_long', 'Flow_category', 'Flow_long'];
@@ -264,7 +266,7 @@ function loadData(path, type='csv') {
       'Flow_long': 'flows'
     }
 
-    function updatePlot() {
+    updatePlot = function() {
       chart.updateData(state.dataToPlot);
       chart.updatePlot();
     }
@@ -374,7 +376,7 @@ function loadData(path, type='csv') {
     state.yearsStr = years;
     state.years = years.map(d => dateParse(d));
 
-    function filterData(){
+    filterData = function(){
       state.filteredData = energyDemandPathway.filter((d, i) => {
         let filtered = secondaryMenus.map(s => {
           return state[s] === 'All' ? true : d[s] === state[s];
