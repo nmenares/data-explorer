@@ -429,20 +429,101 @@ function loadData(path, type='csv') {
       })
     }
 
-    // function updateGroupByMenu() {
-    //   let groupByOptions = [];
-    //   secondaryMenus.forEach(s => {
-    //     if (state[s] === 'All') groupByOptions.push(s)
-    //   })
-    //   let groupByOps = addStandardOptions("groupby", groupByOptions, groupByOptions);
-    //   state.groupBy = groupByOps.node().value;
-    //   groupByOps.on("change", function(d){
-    //     state.groupBy = d3.select(this).node().value;
-    //     filterData();
-    //     updatePlot();
-    //   });
-    // }
-    // updateGroupByMenu();
+    function updateGroupByMenu() {
+
+      let graphFilters = d3.select("#graph-filters");
+
+      let groupByMenus = graphFilters.selectAll(".groupby-menu")
+        .data(['Group by']);
+
+      groupByMenus.attr("class", "groupby-menu");
+
+      groupByMenus.enter().append("div")
+        .attr("class", "groupby-menu");
+
+      groupByMenus.exit().remove();
+
+      let groupByMenuTitle = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-title")
+        .data(d => [d])
+
+      groupByMenuTitle.attr("class", "groupby-menu-title")
+        .html(d => d);
+
+      groupByMenuTitle.enter().append("span")
+        .attr("class", "groupby-menu-title")
+        .html(d => d);
+
+      groupByMenuTitle.exit().remove();
+
+      let groupByMenuDropdown = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown")
+        .data(d => [d]);
+
+      groupByMenuDropdown.attr("class", "dropdown")
+        .attr("id", d => 'groupby-dropdown');
+
+      groupByMenuDropdown.enter().append("div")
+        .attr("class", "dropdown")
+        .attr("id", d => 'groupby-dropdown');
+
+      groupByMenuDropdown.exit().remove();
+
+      let groupByMenuDropbtn = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropbtn")
+        .data(d => [d]);
+
+      groupByMenuDropbtn.attr("class", "dropbtn")
+        .attr("id", d => 'groupby-dropbtn');
+
+      groupByMenuDropbtn.enter().append("div")
+        .attr("class", "dropbtn")
+        .attr("id", d => 'groupby-dropbtn');
+
+      groupByMenuDropbtn.exit().remove();
+
+      let groupByMenuDropcontent = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropdown-content")
+        .data(d => [d]);
+
+      groupByMenuDropcontent.attr("class", "dropdown-content")
+        .attr("id", d => 'groupby-menu');
+
+      groupByMenuDropcontent.enter().append("div")
+        .attr("class", "dropdown-content")
+        .attr("id", d => 'groupby-menu');
+
+      groupByMenuDropcontent.exit().remove();
+
+      let groupByOptions = [];
+      secondaryMenus.forEach(s => {
+        if (state[s] === 'All') groupByOptions.push(s)
+      })
+
+      // let groupByOps = addStandardOptions("groupby", groupByOptions, groupByOptions);
+      // state.groupBy = groupByOps.node().value;
+      // groupByOps.on("change", function(d){
+      //   state.groupBy = d3.select(this).node().value;
+      //   filterData();
+      //   updatePlot();
+      // });
+
+      let groupByOps = addOptions("groupby-menu", groupByOptions)
+      d3.select("#groupby-dropdown")
+        .on("click", function(d){
+          document.getElementById("groupby-menu").classList.toggle("show");
+        });
+      state.groupBy = groupByOptions[0];
+      updateDropdownLabel("#groupby-dropdown", state.groupBy);
+      groupByOps.selectAll("a").on("click", (event, d) => {
+        if (d !== state.groupBy) {
+          state.groupBy = d;
+          updateDropdownLabel("#groupby-dropdown", state.groupBy);
+          // updateGroupByMenu();
+          filterData();
+          // getMenuOptions();
+          updatePlot();
+          document.getElementById("groupby-menu").classList.toggle("show");
+        }
+      });
+    }
+    updateGroupByMenu();
     filterData();
 
     // console.log(state)
