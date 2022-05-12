@@ -344,23 +344,12 @@ function loadData(path, type='csv') {
             if (d !== state[s]) {
               state[s] = d;
               updateDropdownLabel("#"+s+"-dropdown", state[s]);
-              // updateGroupByMenu();
               filterData();
               getMenuOptions();
               updatePlot();
               document.getElementById(s+"-menu").classList.toggle("show");
             }
           });
-
-          // let ops = addStandardOptions(menuIds[s], uniqueItems, uniqueItems);
-          // state[s] = ops.node().value;
-          // ops.on("change", function(){
-          //   state[s] = d3.select(this).node().value;
-          //   updateGroupByMenu();
-          //   filterData();
-          //   getMenuOptions();
-          //   updatePlot();
-          // });
         }
       })
     }
@@ -375,27 +364,6 @@ function loadData(path, type='csv') {
     let regions = getUniquesMenu(energyDemandPathway, 'Region'),
         scenarios = getUniquesMenu(energyDemandPathway, 'Scenario'),
         years = energyDemandPathway.columns.filter(d => !isNaN(+d));
-
-    // let regionsOp = addStandardOptions("regions", regions, regions);
-    // state.Region = regionsOp.node().value;
-    // regionsOp.on("change", function(d){
-    //   state.Region = d3.select(this).node().value;
-    //   resetOptions();
-    //   updateGroupByMenu();
-    //   filterData();
-    //   getMenuOptions();
-    //   updatePlot();
-    // });
-    //
-    // let scenariosOp = addStandardOptions("scenarios", scenarios, scenarios);
-    // state.Scenario = scenariosOp.node().value;
-    // scenariosOp.on("change", function(d){
-    //   state.Scenario = d3.select(this).node().value;
-    //   updateGroupByMenu();
-    //   filterData();
-    //   getMenuOptions();
-    //   updatePlot();
-    // });
 
     energyDemandPathway.forEach(d => {
       years.forEach(y => {
@@ -497,14 +465,6 @@ function loadData(path, type='csv') {
         if (state[s] === 'All') groupByOptions.push(s)
       })
 
-      // let groupByOps = addStandardOptions("groupby", groupByOptions, groupByOptions);
-      // state.groupBy = groupByOps.node().value;
-      // groupByOps.on("change", function(d){
-      //   state.groupBy = d3.select(this).node().value;
-      //   filterData();
-      //   updatePlot();
-      // });
-
       let groupByOps = addOptions("groupby-menu", groupByOptions)
       d3.select("#groupby-dropdown")
         .on("click", function(d){
@@ -516,18 +476,14 @@ function loadData(path, type='csv') {
         if (d !== state.groupBy) {
           state.groupBy = d;
           updateDropdownLabel("#groupby-dropdown", state.groupBy);
-          // updateGroupByMenu();
           filterData();
-          // getMenuOptions();
           updatePlot();
-          document.getElementById("groupby-menu").classList.toggle("show");
         }
       });
     }
     updateGroupByMenu();
     filterData();
 
-    // console.log(state)
     chart = new LineChart(state.dataToPlot, svg, width, height, margin, 'linear', tooltipDiv);
     chart.updatePlot();
 
