@@ -53,8 +53,8 @@ let results = {
   ]
 }
 
-state.region = regions[0];
-state.scenario = scenarios[0];
+state.region = 'albania';
+state.scenario = 'pathway';
 state.vector = vectors[0];
 
 var nameNoSpaces = function(name) {
@@ -251,6 +251,7 @@ function loadData(path, type='csv') {
     console.log(energyDemandPathway);
 
     state.filteredData = energyDemandPathway;
+    // console.log(getUniquesMenu(state.filteredData, 'Region'))
 
     let primaryMenus = ['Region', 'Scenario'],
         secondaryMenus = ['Sector', 'Product_category', 'Product_long', 'Flow_category', 'Flow_long'];
@@ -410,7 +411,7 @@ function loadData(path, type='csv') {
         let filtered = secondaryMenus.map(s => {
           return state[s] === 'All' ? true : d[s] === state[s];
         });
-        return ((d.Region === state.Region) && (d.Scenario === state.Scenario) && filtered.reduce((a, b) => a && b, true))
+        return ((d.Region === state.region) && (d.Scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
       })
       state.dataToPlot = {};
       state.dataToPlot.lines = [];
