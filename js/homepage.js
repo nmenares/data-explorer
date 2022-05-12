@@ -64,7 +64,9 @@ var nameNoSpaces = function(name) {
 
 function addOptions(id, values) {
   var element = d3.select("#"+id);
-  var options = element.selectAll("option").data(values);
+  var options = element.selectAll("a").data(values);
+
+  options.html(d => d);
 
   options.enter().append("a")
     .html(d => d);
