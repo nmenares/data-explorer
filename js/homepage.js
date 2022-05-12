@@ -347,8 +347,9 @@ function loadData(path, type='csv') {
               state[s] = d;
               updateDropdownLabel("#"+s+"-dropdown", state[s]);
               filterData();
-              getMenuOptions();
               updatePlot();
+              updateGroupByMenu();
+              getMenuOptions();
               document.getElementById(s+"-menu").classList.toggle("show");
             }
           });
