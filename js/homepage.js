@@ -348,10 +348,10 @@ function loadData(path, type='csv') {
             if (d !== state[s]) {
               state[s] = d;
               updateDropdownLabel("#"+s+"-dropdown", state[s]);
-              filterData();
-              updatePlot();
               updateGroupByMenu();
+              filterData();
               getMenuOptions();
+              updatePlot();
               document.getElementById(s+"-menu").classList.toggle("show");
             }
           });
