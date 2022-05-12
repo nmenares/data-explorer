@@ -479,21 +479,29 @@ function loadData(path, type='csv') {
         if (state[s] === 'All') groupByOptions.push(s)
       })
 
-      let groupByOps = addOptions("groupby-menu", groupByOptions)
-      d3.select("#groupby-dropdown")
-        .on("click", function(d){
-          document.getElementById("groupby-menu").classList.toggle("show");
+      if (groupByOptions.length === 0) {
+        d3.select(".groupby-menu")
+          .style("display", "none");
+      } else {
+        d3.select(".groupby-menu")
+          .style("display", "block");
+
+        let groupByOps = addOptions("groupby-menu", groupByOptions)
+        d3.select("#groupby-dropdown")
+          .on("click", function(d){
+            document.getElementById("groupby-menu").classList.toggle("show");
+          });
+        state.groupBy = groupByOptions[0];
+        updateDropdownLabel("#groupby-dropdown", state.groupBy);
+        groupByOps.selectAll("a").on("click", (event, d) => {
+          if (d !== state.groupBy) {
+            state.groupBy = d;
+            updateDropdownLabel("#groupby-dropdown", state.groupBy);
+            filterData();
+            updatePlot();
+          }
         });
-      state.groupBy = groupByOptions[0];
-      updateDropdownLabel("#groupby-dropdown", state.groupBy);
-      groupByOps.selectAll("a").on("click", (event, d) => {
-        if (d !== state.groupBy) {
-          state.groupBy = d;
-          updateDropdownLabel("#groupby-dropdown", state.groupBy);
-          filterData();
-          updatePlot();
-        }
-      });
+      }
     }
     updateGroupByMenu();
     filterData();
