@@ -6,8 +6,9 @@ let state = {
   filteredData: null
 }
 
-let regions = ["Global", "Other"];
-let scenarios = ["Default case", "Policy Led", "Carbon Pricing", "Max NCS", "Custom"];
+let regions = ['albania', 'algeria', 'angola', 'argentina', 'armenia', 'australi', 'austria', 'azerbaijan', 'bahrain', 'bangladesh', 'belarus', 'belgium', 'benin', 'bolivia', 'bosniaherz', 'botswana', 'brazil', 'brunei', 'bulgaria', 'cambodia', 'cameroon', 'canada', 'chile', 'china', 'colombia', 'congo', 'congorep', 'costarica', 'coteivoire', 'croatia', 'cuba', 'curacao', 'cyprus', 'czech', 'denmark', 'dominicanr', 'ecuador', 'egypt', 'elsalvador', 'eqguinea', 'eritrea', 'estonia', 'ethiopia', 'finland', 'france', 'gabon', 'georgia', 'germany', 'ghana', 'gibraltar', 'greece', 'guatemala', 'guyana', 'haiti', 'honduras', 'hongkong', 'hungary', 'iceland', 'india', 'indonesia', 'iran', 'iraq', 'ireland', 'israel', 'italy', 'jamaica', 'japan', 'jordan', 'kazakhstan', 'kenya', 'korea', 'koreadpr', 'kosovo', 'kuwait', 'kyrgyzstan', 'lao', 'latvia', 'lebanon', 'libya', 'lithuania', 'luxembou', 'malaysia', 'malta', 'mauritius', 'mburkinafa', 'mchad', 'mexico', 'mgreenland', 'mmadagasca', 'mmali', 'mmauritani', 'moldova', 'mongolia', 'montenegro', 'morocco', 'mozambique', 'mrwanda', 'muganda', 'myanmar', 'namibia'];
+// let scenarios = ["Default case", "Policy Led", "Carbon Pricing", "Max NCS", "Custom"];
+let scenarios = ["pathway"]
 let vectors = ["All", "Electricity", "Buildings", "Transportation", "Industry", "Agriculture",
                "F&W", "CO2 Removal"];
 let results = {
@@ -31,24 +32,13 @@ let results = {
   ],
   "Other": [
     {
-      "name": "Country data",
-      "children": []
-    },
-    {
-      "name": "V7 Sector Transitions",
-      "children": ["Transportation", "AFOLU", "Regenerative Agriculture"]
-    },
-    {
       "name": "Macro-Econ Transition",
-      "children": ["Energy Supply", "Energy Demand"]
-    },
-    {
-      "name": "NDC Calculator",
-      "children": ["Climate Mitigation Potential", "Emissions Pathway"]
-    },
-    {
-      "name": "Sector Impact Opps",
-      "children": []
+      "children": [
+        {
+          "name": "Energy Demand",
+          "folder": "energy_demand"
+        }
+      ]
     }
   ]
 }
@@ -63,7 +53,9 @@ var nameNoSpaces = function(name) {
 
 function addOptions(id, values) {
   var element = d3.select("#"+id);
-  var options = element.selectAll("option").data(values);
+  var options = element.selectAll("a").data(values);
+
+  options.html(d => d);
 
   options.enter().append("a")
     .html(d => d);
@@ -137,14 +129,16 @@ function updateResultsMenu() {
     .data(d => d.children)
     .join("div")
       .attr("class", "secondary-item")
-      .html(d => d)
+      .html(d => d.name)
       .on("click", (event, d) => {
-        secondaryItems.filter(item => item !== d).selectAll(".secondary-item").classed("selected", false);
-        d3.select(event.target).classed("selected", true);
-        d3.select("#chart svg").selectAll("g").remove();
-        loadData('data/energy_demand_pathway.csv');
+        if (state.result !== d) {
+          state.result = d;
+          secondaryItems.filter(item => item !== d).selectAll(".secondary-item").classed("selected", false);
+          d3.select(event.target).classed("selected", true);
+          d3.select("#chart svg").selectAll("g").remove();
+          loadData('data/'+state.result.folder+'/'+state.region+'.csv');
+        }
       })
-
 }
 
 function updateDropdownLabel(id, label) {
@@ -179,7 +173,11 @@ selectRegion.selectAll("a").on("click", (event, d) => {
     } else {
       showCountryDivs();
     }
-    updateResultsMenu();
+    d3.select("#chart svg").selectAll("g").remove();
+    loadData('data/'+state.result.folder+'/'+state.region+'.csv');
+    // updateResultsMenu();
+    // filterData();
+    // updatePlot();
   }
 });
 
@@ -263,27 +261,104 @@ function loadData(path, type='csv') {
       'Flow_long': 'flows'
     }
 
-    function updatePlot() {
+    updatePlot = function() {
       chart.updateData(state.dataToPlot);
       chart.updatePlot();
     }
 
     function getMenuOptions() {
+      let graphFilters = d3.select("#graph-filters");
+
+      let graphMenus = graphFilters.selectAll(".graph-menu")
+        .data(secondaryMenus);
+
+      graphMenus.attr("class", "graph-menu");
+
+      graphMenus.enter().append("div")
+        .attr("class", "graph-menu");
+
+      graphMenus.exit().remove();
+
+      let graphMenuTitle = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-title")
+        .data(d => [d])
+
+      graphMenuTitle.attr("class", "graph-menu-title")
+        .html(d => d);
+
+      graphMenuTitle.enter().append("span")
+        .attr("class", "graph-menu-title")
+        .html(d => d);
+
+      graphMenuTitle.exit().remove();
+
+      let graphMenuDropdown = graphFilters.selectAll(".graph-menu").selectAll(".dropdown")
+        .data(d => [d]);
+
+      graphMenuDropdown.attr("class", "dropdown")
+        .attr("id", d => d+'-dropdown');
+
+      graphMenuDropdown.enter().append("div")
+        .attr("class", "dropdown")
+        .attr("id", d => d+'-dropdown');
+
+      graphMenuDropdown.exit().remove();
+
+      let graphMenuDropbtn = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropbtn")
+        .data(d => [d]);
+
+      graphMenuDropbtn.attr("class", "dropbtn")
+        .attr("id", d => d+'-dropbtn');
+
+      graphMenuDropbtn.enter().append("div")
+        .attr("class", "dropbtn")
+        .attr("id", d => d+'-dropbtn');
+
+      graphMenuDropbtn.exit().remove();
+
+      let graphMenuDropcontent = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropdown-content")
+        .data(d => [d]);
+
+      graphMenuDropcontent.attr("class", "dropdown-content")
+        .attr("id", d => d+'-menu');
+
+      graphMenuDropcontent.enter().append("div")
+        .attr("class", "dropdown-content")
+        .attr("id", d => d+'-menu');
+
+      graphMenuDropcontent.exit().remove();
+
       secondaryMenus.forEach(s => {
         if (state[s] === 'All') {
           let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
 
-          let ops = addStandardOptions(menuIds[s], uniqueItems, uniqueItems);
-          state[s] = ops.node().value;
-          ops.on("change", function(){
-            state[s] = d3.select(this).node().value;
-            updateGroupByMenu();
-            filterData();
-            getMenuOptions();
-            updatePlot();
+          let selectRegion = addOptions(s+"-menu", uniqueItems)
+          d3.select("#"+s+"-dropdown")
+            .on("click", function(d){
+              document.getElementById(s+"-menu").classList.toggle("show");
+            });
+          updateDropdownLabel("#"+s+"-dropdown", state[s]);
+          selectRegion.selectAll("a").on("click", (event, d) => {
+            if (d !== state[s]) {
+              state[s] = d;
+              updateDropdownLabel("#"+s+"-dropdown", state[s]);
+              updateGroupByMenu();
+              filterData();
+              getMenuOptions();
+              updatePlot();
+              document.getElementById(s+"-menu").classList.toggle("show");
+            }
           });
         }
-      })
+      });
+
+      d3.select("#show-filters")
+        .style("display", "block")
+        .on("click", (event, d) => {
+          let filter = d3.select(event.target);
+          filter.classed("checked", !filter.classed("checked"));
+
+          document.getElementById("graph-filters").classList.toggle("show");
+        });
     }
 
     function resetOptions(){
@@ -297,27 +372,6 @@ function loadData(path, type='csv') {
         scenarios = getUniquesMenu(energyDemandPathway, 'Scenario'),
         years = energyDemandPathway.columns.filter(d => !isNaN(+d));
 
-    let regionsOp = addStandardOptions("regions", regions, regions);
-    state.Region = regionsOp.node().value;
-    regionsOp.on("change", function(d){
-      state.Region = d3.select(this).node().value;
-      resetOptions();
-      updateGroupByMenu();
-      filterData();
-      getMenuOptions();
-      updatePlot();
-    });
-
-    let scenariosOp = addStandardOptions("scenarios", scenarios, scenarios);
-    state.Scenario = scenariosOp.node().value;
-    scenariosOp.on("change", function(d){
-      state.Scenario = d3.select(this).node().value;
-      updateGroupByMenu();
-      filterData();
-      getMenuOptions();
-      updatePlot();
-    });
-
     energyDemandPathway.forEach(d => {
       years.forEach(y => {
         d[y] = +d[y]
@@ -327,12 +381,12 @@ function loadData(path, type='csv') {
     state.yearsStr = years;
     state.years = years.map(d => dateParse(d));
 
-    function filterData(){
+    filterData = function(){
       state.filteredData = energyDemandPathway.filter((d, i) => {
         let filtered = secondaryMenus.map(s => {
           return state[s] === 'All' ? true : d[s] === state[s];
         });
-        return ((d.Region === state.Region) && (d.Scenario === state.Scenario) && filtered.reduce((a, b) => a && b, true))
+        return ((d.Scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
       })
       state.dataToPlot = {};
       state.dataToPlot.lines = [];
@@ -352,22 +406,99 @@ function loadData(path, type='csv') {
     }
 
     function updateGroupByMenu() {
+
+      let graphFilters = d3.select("#graph-filters");
+
+      let groupByMenus = graphFilters.selectAll(".groupby-menu")
+        .data(['Group by']);
+
+      groupByMenus.attr("class", "groupby-menu");
+
+      groupByMenus.enter().append("div")
+        .attr("class", "groupby-menu");
+
+      groupByMenus.exit().remove();
+
+      let groupByMenuTitle = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-title")
+        .data(d => [d])
+
+      groupByMenuTitle.attr("class", "groupby-menu-title")
+        .html(d => d);
+
+      groupByMenuTitle.enter().append("span")
+        .attr("class", "groupby-menu-title")
+        .html(d => d);
+
+      groupByMenuTitle.exit().remove();
+
+      let groupByMenuDropdown = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown")
+        .data(d => [d]);
+
+      groupByMenuDropdown.attr("class", "dropdown")
+        .attr("id", d => 'groupby-dropdown');
+
+      groupByMenuDropdown.enter().append("div")
+        .attr("class", "dropdown")
+        .attr("id", d => 'groupby-dropdown');
+
+      groupByMenuDropdown.exit().remove();
+
+      let groupByMenuDropbtn = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropbtn")
+        .data(d => [d]);
+
+      groupByMenuDropbtn.attr("class", "dropbtn")
+        .attr("id", d => 'groupby-dropbtn');
+
+      groupByMenuDropbtn.enter().append("div")
+        .attr("class", "dropbtn")
+        .attr("id", d => 'groupby-dropbtn');
+
+      groupByMenuDropbtn.exit().remove();
+
+      let groupByMenuDropcontent = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropdown-content")
+        .data(d => [d]);
+
+      groupByMenuDropcontent.attr("class", "dropdown-content")
+        .attr("id", d => 'groupby-menu');
+
+      groupByMenuDropcontent.enter().append("div")
+        .attr("class", "dropdown-content")
+        .attr("id", d => 'groupby-menu');
+
+      groupByMenuDropcontent.exit().remove();
+
       let groupByOptions = [];
       secondaryMenus.forEach(s => {
         if (state[s] === 'All') groupByOptions.push(s)
       })
-      let groupByOps = addStandardOptions("groupby", groupByOptions, groupByOptions);
-      state.groupBy = groupByOps.node().value;
-      groupByOps.on("change", function(d){
-        state.groupBy = d3.select(this).node().value;
-        filterData();
-        updatePlot();
-      });
+
+      if (groupByOptions.length === 0) {
+        d3.select(".groupby-menu")
+          .style("display", "none");
+      } else {
+        d3.select(".groupby-menu")
+          .style("display", "block");
+
+        let groupByOps = addOptions("groupby-menu", groupByOptions)
+        d3.select("#groupby-dropdown")
+          .on("click", function(d){
+            document.getElementById("groupby-menu").classList.toggle("show");
+          });
+        state.groupBy = groupByOptions[0];
+        updateDropdownLabel("#groupby-dropdown", state.groupBy);
+        groupByOps.selectAll("a").on("click", (event, d) => {
+          if (d !== state.groupBy) {
+            state.groupBy = d;
+            updateDropdownLabel("#groupby-dropdown", state.groupBy);
+            filterData();
+            updatePlot();
+          }
+        });
+      }
     }
     updateGroupByMenu();
     filterData();
 
-    // console.log(state)
     chart = new LineChart(state.dataToPlot, svg, width, height, margin, 'linear', tooltipDiv);
     chart.updatePlot();
 
