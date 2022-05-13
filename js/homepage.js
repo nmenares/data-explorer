@@ -32,24 +32,13 @@ let results = {
   ],
   "Other": [
     {
-      "name": "Country data",
-      "children": []
-    },
-    {
-      "name": "V7 Sector Transitions",
-      "children": ["Transportation", "AFOLU", "Regenerative Agriculture"]
-    },
-    {
       "name": "Macro-Econ Transition",
-      "children": ["Energy Supply", "Energy Demand"]
-    },
-    {
-      "name": "NDC Calculator",
-      "children": ["Climate Mitigation Potential", "Emissions Pathway"]
-    },
-    {
-      "name": "Sector Impact Opps",
-      "children": []
+      "children": [
+        {
+          "name": "Energy Demand",
+          "folder": "energy_demand"
+        }
+      ]
     }
   ]
 }
@@ -140,14 +129,16 @@ function updateResultsMenu() {
     .data(d => d.children)
     .join("div")
       .attr("class", "secondary-item")
-      .html(d => d)
+      .html(d => d.name)
       .on("click", (event, d) => {
-        secondaryItems.filter(item => item !== d).selectAll(".secondary-item").classed("selected", false);
-        d3.select(event.target).classed("selected", true);
-        d3.select("#chart svg").selectAll("g").remove();
-        loadData('data/energy_demand_pathway.csv');
+        if (state.result !== d) {
+          state.result = d;
+          secondaryItems.filter(item => item !== d).selectAll(".secondary-item").classed("selected", false);
+          d3.select(event.target).classed("selected", true);
+          d3.select("#chart svg").selectAll("g").remove();
+          loadData('data/'+state.result.folder+'/'+state.region+'.csv');
+        }
       })
-
 }
 
 function updateDropdownLabel(id, label) {
@@ -182,9 +173,11 @@ selectRegion.selectAll("a").on("click", (event, d) => {
     } else {
       showCountryDivs();
     }
-    updateResultsMenu();
-    filterData();
-    updatePlot();
+    d3.select("#chart svg").selectAll("g").remove();
+    loadData('data/'+state.result.folder+'/'+state.region+'.csv');
+    // updateResultsMenu();
+    // filterData();
+    // updatePlot();
   }
 });
 
@@ -393,7 +386,7 @@ function loadData(path, type='csv') {
         let filtered = secondaryMenus.map(s => {
           return state[s] === 'All' ? true : d[s] === state[s];
         });
-        return ((d.Region === state.region) && (d.Scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
+        return ((d.Scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
       })
       state.dataToPlot = {};
       state.dataToPlot.lines = [];
