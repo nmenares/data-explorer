@@ -3,7 +3,8 @@ let state = {
   scenario: null,
   vector: null,
   result: null,
-  filteredData: null
+  filteredData: null,
+  chart: 'stacked-area'
 }
 
 let regions = ['albania', 'algeria', 'angola', 'argentina', 'armenia', 'australi', 'austria', 'azerbaijan', 'bahrain', 'bangladesh', 'belarus', 'belgium', 'benin', 'bolivia', 'bosniaherz', 'botswana', 'brazil', 'brunei', 'bulgaria', 'cambodia', 'cameroon', 'canada', 'chile', 'china', 'colombia', 'congo', 'congorep', 'costarica', 'coteivoire', 'croatia', 'cuba', 'curacao', 'cyprus', 'czech', 'denmark', 'dominicanr', 'ecuador', 'egypt', 'elsalvador', 'eqguinea', 'eritrea', 'estonia', 'ethiopia', 'finland', 'france', 'gabon', 'georgia', 'germany', 'ghana', 'gibraltar', 'greece', 'guatemala', 'guyana', 'haiti', 'honduras', 'hongkong', 'hungary', 'iceland', 'india', 'indonesia', 'iran', 'iraq', 'ireland', 'israel', 'italy', 'jamaica', 'japan', 'jordan', 'kazakhstan', 'kenya', 'korea', 'koreadpr', 'kosovo', 'kuwait', 'kyrgyzstan', 'lao', 'latvia', 'lebanon', 'libya', 'lithuania', 'luxembou', 'malaysia', 'malta', 'mauritius', 'mburkinafa', 'mchad', 'mexico', 'mgreenland', 'mmadagasca', 'mmali', 'mmauritani', 'moldova', 'mongolia', 'montenegro', 'morocco', 'mozambique', 'mrwanda', 'muganda', 'myanmar', 'namibia'];
@@ -391,6 +392,8 @@ function loadData(path, type='csv') {
       state.dataToPlot = {};
       state.dataToPlot.lines = [];
       let uniqueGroupBy = getUniquesMenu(state.filteredData, state.groupBy);
+
+      // LINE PLOT
       uniqueGroupBy.forEach(d => {
         let obj = {};
         obj.name = d;
@@ -403,7 +406,31 @@ function loadData(path, type='csv') {
         })
         state.dataToPlot.lines.push(obj)
       })
+
+      // STACKED AREA
+      if (state.chart == 'stacked-area') {
+        const series = d3.stack()
+           .keys(uniqueGroupBy)
+           .value((year, key) => state.dataToPlot.lines.filter(l => l.name === key)[0].values.filter(v => v.x - year === 0)[0].y)
+           .order(d3.stackOrderNone)
+           .offset(null) // d3.stackOffsetExpand for normalized
+           (years.map(y => dateParse(y)));
+
+        state.dataToPlot.lines = uniqueGroupBy.map((d,i) => {
+          let obj = {}
+          obj.name = d;
+          obj.values = series[i].map(s => {
+            let val = {};
+            val.y0 = s[0];
+            val.y1 = s[1];
+            val.x = s.data;
+            return val;
+          })
+          return obj;
+        })
+      }
     }
+
 
     function updateGroupByMenu() {
 
@@ -499,7 +526,7 @@ function loadData(path, type='csv') {
     updateGroupByMenu();
     filterData();
 
-    chart = new LineChart(state.dataToPlot, svg, width, height, margin, 'linear', tooltipDiv);
+    chart = new Chart(state.dataToPlot, svg, width, height, margin, 'linear', tooltipDiv, type=state.chart);
     chart.updatePlot();
 
   })
