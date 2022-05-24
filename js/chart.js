@@ -238,7 +238,8 @@ class Chart {
       .attr("d", d => vis.type === 'line' ? vis.line(d.values) : vis.type === 'stacked-area' ? vis.area(d.values) : null);
 
     vis.path.exit().remove();
-    // vis.svg.call(hover, vis.path);
+    vis.rule.raise();
+    vis.svg.call(hover, vis.path);
 
     function curveOpacity(d) {
       return 1.0;
@@ -283,7 +284,13 @@ class Chart {
           let dataValues = vis.data.lines.map((d, i) => {
             let obj = {};
             obj.name = d.name;
-            obj.y = d.values.filter(v => v.x.getFullYear() === xYear)[0].y;
+            let filteredValue = d.values.filter(v => v.x.getFullYear() === xYear)[0];
+            if (vis.type === 'line') {
+              obj.y = filteredValue.y;
+            } else if (vis.type === 'stacked-area') {
+              obj.y = filteredValue.y1 - filteredValue.y0;
+              obj.y1 = filteredValue.y1;
+            }
             obj.color = curveColor(d, i);
             return obj;
           });
@@ -308,13 +315,13 @@ class Chart {
           dots.enter().append("circle")
             .attr("class", "circle-plot")
             .attr("cx", 0)
-            .attr("cy", d => vis.yScale(d.y))
+            .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
             .attr("r", circleRadius)
             .attr("fill", d => d.color)
 
           dots.attr("class", "circle-plot")
             .attr("cx", 0)
-            .attr("cy", d => vis.yScale(d.y))
+            .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
             .attr("r", circleRadius)
             .attr("fill", d => d.color)
 
