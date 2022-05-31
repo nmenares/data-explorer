@@ -1,55 +1,10 @@
 let state = {
-  region: null,
-  scenario: null,
-  vector: null,
+  region: regions[0],
+  scenario: scenarios[0],
+  vector: vectors[0],
   result: null,
   filteredData: null,
-  chart: 'stacked-area'
-}
-
-let regions = ['albania', 'algeria', 'angola', 'argentina', 'armenia', 'australi', 'austria', 'azerbaijan', 'bahrain', 'bangladesh', 'belarus', 'belgium', 'benin', 'bolivia', 'bosniaherz', 'botswana', 'brazil', 'brunei', 'bulgaria', 'cambodia', 'cameroon', 'canada', 'chile', 'china', 'colombia', 'congo', 'congorep', 'costarica', 'coteivoire', 'croatia', 'cuba', 'curacao', 'cyprus', 'czech', 'denmark', 'dominicanr', 'ecuador', 'egypt', 'elsalvador', 'eqguinea', 'eritrea', 'estonia', 'ethiopia', 'finland', 'france', 'gabon', 'georgia', 'germany', 'ghana', 'gibraltar', 'greece', 'guatemala', 'guyana', 'haiti', 'honduras', 'hongkong', 'hungary', 'iceland', 'india', 'indonesia', 'iran', 'iraq', 'ireland', 'israel', 'italy', 'jamaica', 'japan', 'jordan', 'kazakhstan', 'kenya', 'korea', 'koreadpr', 'kosovo', 'kuwait', 'kyrgyzstan', 'lao', 'latvia', 'lebanon', 'libya', 'lithuania', 'luxembou', 'malaysia', 'malta', 'mauritius', 'mburkinafa', 'mchad', 'mexico', 'mgreenland', 'mmadagasca', 'mmali', 'mmauritani', 'moldova', 'mongolia', 'montenegro', 'morocco', 'mozambique', 'mrwanda', 'muganda', 'myanmar', 'namibia'];
-// let scenarios = ["Default case", "Policy Led", "Carbon Pricing", "Max NCS", "Custom"];
-let scenarios = ["pathway"]
-let vectors = ["All", "Electricity", "Buildings", "Transportation", "Industry", "Agriculture",
-               "F&W", "CO2 Removal"];
-let results = {
-  "Global": [
-    {
-      "name": "Climate",
-      "children": ["Temperature", "PPM", "Rad Forcing", "Sea Level Rise"]
-    },
-    {
-      "name": "Emissions",
-      "children": ["Mitigated", "DAU21"]
-    },
-    {
-      "name": "Economy",
-      "children": ["PD Adoption"]
-    },
-    {
-      "name": "Energy",
-      "children": ["Energy Supply", "Energy Demand"]
-    }
-  ],
-  "Other": [
-    {
-      "name": "Macro-Econ Transition",
-      "children": [
-        {
-          "name": "Energy Demand",
-          "folder": "energy_demand"
-        }
-      ]
-    }
-  ]
-}
-
-state.region = regions[0];
-state.scenario = scenarios[0];
-state.vector = vectors[0];
-
-var nameNoSpaces = function(name) {
-  return name.toLowerCase().split(" ").join("");
+  chart: 'line'
 }
 
 function addOptions(id, values) {
@@ -96,8 +51,6 @@ function addButtons(id, values) {
 }
 
 function updateResultsMenu() {
-  let resultsElements = state.region === "Global" ? results["Global"] : results["Other"];
-
   let resultsColumn = d3.select("#results");
 
   resultsColumn.selectAll(".results-title")
@@ -106,7 +59,7 @@ function updateResultsMenu() {
       .attr("class", "results-title")
       .html(d => d)
 
-  let resultsItems = resultsColumn.selectAll(".results-item").data(resultsElements)
+  let resultsItems = resultsColumn.selectAll(".results-item").data(results)
     .join("div")
       .attr("class", "results-item")
 
