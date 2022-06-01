@@ -1,54 +1,10 @@
 let state = {
-  region: null,
-  scenario: null,
-  vector: null,
+  region: regions[0],
+  scenario: scenarios[0],
+  vector: vectors[0],
   result: null,
-  filteredData: null
-}
-
-let regions = ['albania', 'algeria', 'angola', 'argentina', 'armenia', 'australi', 'austria', 'azerbaijan', 'bahrain', 'bangladesh', 'belarus', 'belgium', 'benin', 'bolivia', 'bosniaherz', 'botswana', 'brazil', 'brunei', 'bulgaria', 'cambodia', 'cameroon', 'canada', 'chile', 'china', 'colombia', 'congo', 'congorep', 'costarica', 'coteivoire', 'croatia', 'cuba', 'curacao', 'cyprus', 'czech', 'denmark', 'dominicanr', 'ecuador', 'egypt', 'elsalvador', 'eqguinea', 'eritrea', 'estonia', 'ethiopia', 'finland', 'france', 'gabon', 'georgia', 'germany', 'ghana', 'gibraltar', 'greece', 'guatemala', 'guyana', 'haiti', 'honduras', 'hongkong', 'hungary', 'iceland', 'india', 'indonesia', 'iran', 'iraq', 'ireland', 'israel', 'italy', 'jamaica', 'japan', 'jordan', 'kazakhstan', 'kenya', 'korea', 'koreadpr', 'kosovo', 'kuwait', 'kyrgyzstan', 'lao', 'latvia', 'lebanon', 'libya', 'lithuania', 'luxembou', 'malaysia', 'malta', 'mauritius', 'mburkinafa', 'mchad', 'mexico', 'mgreenland', 'mmadagasca', 'mmali', 'mmauritani', 'moldova', 'mongolia', 'montenegro', 'morocco', 'mozambique', 'mrwanda', 'muganda', 'myanmar', 'namibia'];
-// let scenarios = ["Default case", "Policy Led", "Carbon Pricing", "Max NCS", "Custom"];
-let scenarios = ["pathway"]
-let vectors = ["All", "Electricity", "Buildings", "Transportation", "Industry", "Agriculture",
-               "F&W", "CO2 Removal"];
-let results = {
-  "Global": [
-    {
-      "name": "Climate",
-      "children": ["Temperature", "PPM", "Rad Forcing", "Sea Level Rise"]
-    },
-    {
-      "name": "Emissions",
-      "children": ["Mitigated", "DAU21"]
-    },
-    {
-      "name": "Economy",
-      "children": ["PD Adoption"]
-    },
-    {
-      "name": "Energy",
-      "children": ["Energy Supply", "Energy Demand"]
-    }
-  ],
-  "Other": [
-    {
-      "name": "Macro-Econ Transition",
-      "children": [
-        {
-          "name": "Energy Demand",
-          "folder": "energy_demand"
-        }
-      ]
-    }
-  ]
-}
-
-state.region = regions[0];
-state.scenario = scenarios[0];
-state.vector = vectors[0];
-
-var nameNoSpaces = function(name) {
-  return name.toLowerCase().split(" ").join("");
+  filteredData: null,
+  chart: 'line'
 }
 
 function addOptions(id, values) {
@@ -95,8 +51,6 @@ function addButtons(id, values) {
 }
 
 function updateResultsMenu() {
-  let resultsElements = state.region === "Global" ? results["Global"] : results["Other"];
-
   let resultsColumn = d3.select("#results");
 
   resultsColumn.selectAll(".results-title")
@@ -105,7 +59,7 @@ function updateResultsMenu() {
       .attr("class", "results-title")
       .html(d => d)
 
-  let resultsItems = resultsColumn.selectAll(".results-item").data(resultsElements)
+  let resultsItems = resultsColumn.selectAll(".results-item").data(results)
     .join("div")
       .attr("class", "results-item")
 
@@ -391,6 +345,8 @@ function loadData(path, type='csv') {
       state.dataToPlot = {};
       state.dataToPlot.lines = [];
       let uniqueGroupBy = getUniquesMenu(state.filteredData, state.groupBy);
+
+      // LINE PLOT
       uniqueGroupBy.forEach(d => {
         let obj = {};
         obj.name = d;
@@ -403,7 +359,31 @@ function loadData(path, type='csv') {
         })
         state.dataToPlot.lines.push(obj)
       })
+
+      // STACKED AREA
+      if (state.chart == 'stacked-area') {
+        const series = d3.stack()
+           .keys(uniqueGroupBy)
+           .value((year, key) => state.dataToPlot.lines.filter(l => l.name === key)[0].values.filter(v => v.x - year === 0)[0].y)
+           .order(d3.stackOrderNone)
+           .offset(null) // d3.stackOffsetExpand for normalized
+           (years.map(y => dateParse(y)));
+
+        state.dataToPlot.lines = uniqueGroupBy.map((d,i) => {
+          let obj = {}
+          obj.name = d;
+          obj.values = series[i].map(s => {
+            let val = {};
+            val.y0 = s[0];
+            val.y1 = s[1];
+            val.x = s.data;
+            return val;
+          })
+          return obj;
+        })
+      }
     }
+
 
     function updateGroupByMenu() {
 
@@ -499,7 +479,7 @@ function loadData(path, type='csv') {
     updateGroupByMenu();
     filterData();
 
-    chart = new LineChart(state.dataToPlot, svg, width, height, margin, 'linear', tooltipDiv);
+    chart = new Chart(state.dataToPlot, svg, width, height, margin, 'linear', tooltipDiv, type=state.chart);
     chart.updatePlot();
 
   })

@@ -1,5 +1,5 @@
-class LineChart {
-  constructor(data, svg, width, height, margin, scale, tooltipDiv) {
+class Chart {
+  constructor(data, svg, width, height, margin, scale, tooltipDiv, type='line') {
     const vis = this;
 
     vis.data = data;
@@ -9,6 +9,8 @@ class LineChart {
     vis.margin = margin;
     vis.scale = scale;
     vis.tooltip = new Tooltip(tooltipDiv);
+    vis.type = type;
+    console.log(vis.type)
 
     vis.colors = ["#00e3e6", "#6797fd", "#6bd384", "#954e9f",
                   "#a84857", "#cce982", "#eba562"]
@@ -19,8 +21,12 @@ class LineChart {
         .range([vis.margin.left, vis.width - vis.margin.right]);
     vis.yScale = d3.scaleLinear()
         .range([vis.height - vis.margin.bottom, 0]);
-    vis.line = d3.line()
-        .curve(d3.curveMonotoneX);
+    if (vis.type === 'line') {
+      vis.line = d3.line()
+          .curve(d3.curveMonotoneX);
+    } else if (vis.type === 'stacked-area') {
+      vis.area = d3.area();
+    }
 
     vis.xAxis = d3.axisBottom()
         .tickFormat(d => {
@@ -91,8 +97,15 @@ class LineChart {
     vis.xScale.domain([xmin, xmax]);
     vis.xAxis.scale(vis.xScale);
 
-    let ymin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.y));
-    let ymax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.y));
+    let ymin, ymax;
+    if (vis.type === 'line') {
+      ymin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.y));
+      ymax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.y));
+    } else if (vis.type === 'stacked-area') {
+      ymin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.y0));
+      ymax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.y1));
+    }
+
     vis.yScale.domain([ymin, ymax]);
     vis.yAxis.scale(vis.yScale)
 
@@ -114,8 +127,14 @@ class LineChart {
       })
       .tickValues(yNewValues);
 
-    vis.line.x((d, i) => vis.xScale(d.x))
-      .y((d, i) => vis.yScale(d.y));
+    if (vis.type === 'line') {
+      vis.line.x((d, i) => vis.xScale(d.x))
+        .y((d, i) => vis.yScale(d.y));
+    } else if (vis.type === 'stacked-area') {
+      vis.area.x(d => vis.xScale(d.x))
+        .y0(d => vis.yScale(d.y0))
+        .y1(d => vis.yScale(d.y1));
+    }
 
     // if (vis.scale === "log"){
     //   let yMax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.y)) + 1;
@@ -196,29 +215,30 @@ class LineChart {
     vis.path.enter().append("path")
       .transition()
       .duration(vis.transition)
-      .attr("fill", "none")
+      .attr("fill", vis.type === 'stacked-area' ? curveColor : "none")
       .attr("stroke-width", curveWidth)
       .attr("stroke-linejoin", "round")
       .attr("stroke-linecap", "round")
       // .style("mix-blend-mode", "multiply")
       .attr("opacity", curveOpacity)
       // .attr("class", d => "curve "+nameNoSpaces(d.Sector))
-      .attr("stroke",  curveColor)
-      .attr("d", d => vis.line(d.values));
+      .attr("stroke", vis.type === 'line' ? curveColor : "none")
+      .attr("d", d => vis.type === 'line' ? vis.line(d.values) : vis.type === 'stacked-area' ? vis.area(d.values) : null);
 
     vis.path.transition()
       .duration(vis.transition)
-      .attr("fill", "none")
+      .attr("fill", vis.type === 'stacked-area' ? curveColor : "none")
       .attr("stroke-width", curveWidth)
       .attr("stroke-linejoin", "round")
       .attr("stroke-linecap", "round")
       // .style("mix-blend-mode", "multiply")
       .attr("opacity", curveOpacity)
       // .attr("class", d => "curve "+nameNoSpaces(d.Sector))
-      .attr("stroke", curveColor)
-      .attr("d", d => vis.line(d.values));
+      .attr("stroke", vis.type === 'line' ? curveColor : "none")
+      .attr("d", d => vis.type === 'line' ? vis.line(d.values) : vis.type === 'stacked-area' ? vis.area(d.values) : null);
 
     vis.path.exit().remove();
+    vis.rule.raise();
     vis.svg.call(hover, vis.path);
 
     function curveOpacity(d) {
@@ -264,7 +284,13 @@ class LineChart {
           let dataValues = vis.data.lines.map((d, i) => {
             let obj = {};
             obj.name = d.name;
-            obj.y = d.values.filter(v => v.x.getFullYear() === xYear)[0].y;
+            let filteredValue = d.values.filter(v => v.x.getFullYear() === xYear)[0];
+            if (vis.type === 'line') {
+              obj.y = filteredValue.y;
+            } else if (vis.type === 'stacked-area') {
+              obj.y = filteredValue.y1 - filteredValue.y0;
+              obj.y1 = filteredValue.y1;
+            }
             obj.color = curveColor(d, i);
             return obj;
           });
@@ -289,13 +315,13 @@ class LineChart {
           dots.enter().append("circle")
             .attr("class", "circle-plot")
             .attr("cx", 0)
-            .attr("cy", d => vis.yScale(d.y))
+            .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
             .attr("r", circleRadius)
             .attr("fill", d => d.color)
 
           dots.attr("class", "circle-plot")
             .attr("cx", 0)
-            .attr("cy", d => vis.yScale(d.y))
+            .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
             .attr("r", circleRadius)
             .attr("fill", d => d.color)
 
@@ -312,7 +338,5 @@ class LineChart {
         }
       }
     }
-
   } // updateCurves
-
 }
