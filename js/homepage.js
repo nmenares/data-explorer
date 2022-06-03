@@ -480,7 +480,17 @@ function loadData(path, type='csv') {
     updateGroupByMenu();
     filterData();
 
-    chart = new Chart(state.dataToPlot, svg, width, height, margin, 'linear', tooltipDiv, type=state.chart);
+    let yAxisUnit = state.result.name + " (" + state.result.units[0].label + ")";
+
+    chart = new Chart(state.dataToPlot,
+                      svg,
+                      width,
+                      height,
+                      margin,
+                      'linear',
+                      tooltipDiv,
+                      yAxisUnit,
+                      type=state.chart);
     chart.updatePlot();
 
   })
