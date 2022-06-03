@@ -1,5 +1,5 @@
 class Chart {
-  constructor(data, svg, width, height, margin, scale, tooltipDiv, type='line') {
+  constructor(data, svg, width, height, margin, scale, tooltipDiv, yAxisTitle, type='line') {
     const vis = this;
 
     vis.data = data;
@@ -9,8 +9,8 @@ class Chart {
     vis.margin = margin;
     vis.scale = scale;
     vis.tooltip = new Tooltip(tooltipDiv);
+    vis.yAxisTitle = yAxisTitle;
     vis.type = type;
-    console.log(vis.type)
 
     vis.colors = ["#00e3e6", "#6797fd", "#6bd384", "#954e9f",
                   "#a84857", "#cce982", "#eba562"]
@@ -198,12 +198,12 @@ class Chart {
     vis.gYAxis.selectAll(".small-tick").select("line")
       .attr("x2", -4);
 
-    // vis.gYAxis.select(".y.axis-title")
-    //   .attr("text-anchor", "end")
-    //   .style("font-size", "12px")
-    //   .attr("fill", "white")
-    //   .attr("transform", "translate(18, 5) rotate(-90)")
-    //   .text("Adoption Curves");
+    vis.yLabel
+      .attr("text-anchor", "middle")
+      .style("font-size", "12px")
+      .attr("fill", "white")
+      .attr("transform", "translate(0, -5)")
+      .text(vis.yAxisTitle);
   };
 
   updateCurves() {

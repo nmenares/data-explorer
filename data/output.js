@@ -5,6 +5,28 @@ const results = [
       {
         "name": "Energy demand",
         "folder": "energy_demand",
+        "columns": [
+          {
+            "name": "Sector",
+            "longName": "Sector"
+          },
+          {
+            "name": "Product_category",
+            "longName": "Product category"
+          },
+          {
+            "name": "Product_long",
+            "longName": "Product"
+          },
+          {
+            "name": "Flow_category",
+            "longName": "Flow category"
+          },
+          {
+            "name": "Flow_long",
+            "longName": "Flow"
+          }
+        ],
         "units": [
           {
             "label": "MJ",
