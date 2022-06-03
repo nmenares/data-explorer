@@ -204,16 +204,7 @@ function loadData(path, type='csv') {
 
     state.filteredData = energyDemandPathway;
 
-    let primaryMenus = ['Region', 'Scenario'],
-        secondaryMenus = ['Sector', 'Product_category', 'Product_long', 'Flow_category', 'Flow_long'];
-
-    let menuIds = {
-      'Sector': 'sectors',
-      'Product_category': 'productCategories',
-      'Product_long': 'products',
-      'Flow_category': 'flowCategories',
-      'Flow_long': 'flows'
-    }
+    let secondaryMenus = state.result.columns;
 
     updatePlot = function() {
       chart.updateData(state.dataToPlot);
@@ -237,16 +228,16 @@ function loadData(path, type='csv') {
         .data(d => [d])
 
       graphMenuTitle.attr("class", "graph-menu-title")
-        .html(d => d);
+        .html(d => d.longName);
 
       graphMenuTitle.enter().append("span")
         .attr("class", "graph-menu-title")
-        .html(d => d);
+        .html(d => d.longName);
 
       graphMenuTitle.exit().remove();
 
       let graphMenuDropdown = graphFilters.selectAll(".graph-menu").selectAll(".dropdown")
-        .data(d => [d]);
+        .data(d => [d.name]);
 
       graphMenuDropdown.attr("class", "dropdown")
         .attr("id", d => d+'-dropdown');
@@ -281,7 +272,8 @@ function loadData(path, type='csv') {
 
       graphMenuDropcontent.exit().remove();
 
-      secondaryMenus.forEach(s => {
+      secondaryMenus.forEach(sm => {
+        let s = sm.name;
         if (state[s] === 'All') {
           let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
 
@@ -316,7 +308,7 @@ function loadData(path, type='csv') {
     }
 
     function resetOptions(){
-      secondaryMenus.forEach(d => state[d] = 'All');
+      secondaryMenus.forEach(d => state[d.name] = 'All');
       getMenuOptions()
     }
 
@@ -338,19 +330,19 @@ function loadData(path, type='csv') {
     filterData = function(){
       state.filteredData = energyDemandPathway.filter((d, i) => {
         let filtered = secondaryMenus.map(s => {
-          return state[s] === 'All' ? true : d[s] === state[s];
+          return state[s.name] === 'All' ? true : d[s.name] === state[s.name];
         });
         return ((d.Scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
       })
       state.dataToPlot = {};
       state.dataToPlot.lines = [];
-      let uniqueGroupBy = getUniquesMenu(state.filteredData, state.groupBy);
+      let uniqueGroupBy = getUniquesMenu(state.filteredData, state.groupBy.name);
 
       // LINE PLOT
       uniqueGroupBy.forEach(d => {
         let obj = {};
         obj.name = d;
-        let thisGroup = state.filteredData.filter(s => s[state.groupBy] === d);
+        let thisGroup = state.filteredData.filter(s => s[state.groupBy.name] === d);
         obj.values = years.map(y => {
           let values = {};
           values.x = dateParse(y);
@@ -449,7 +441,7 @@ function loadData(path, type='csv') {
 
       let groupByOptions = [];
       secondaryMenus.forEach(s => {
-        if (state[s] === 'All') groupByOptions.push(s)
+        if (state[s.name] === 'All') groupByOptions.push(s)
       })
 
       if (groupByOptions.length === 0) {
@@ -459,17 +451,26 @@ function loadData(path, type='csv') {
         d3.select(".groupby-menu")
           .style("display", "block");
 
-        let groupByOps = addOptions("groupby-menu", groupByOptions)
+        let groupByOps = d3.select("#groupby-menu");
+        let options = groupByOps.selectAll("a").data(groupByOptions);
+
+        options.html(d => d.longName);
+
+        options.enter().append("a")
+          .html(d => d.longName);
+
+        options.exit().remove();
+
         d3.select("#groupby-dropdown")
           .on("click", function(d){
             document.getElementById("groupby-menu").classList.toggle("show");
           });
         state.groupBy = groupByOptions[0];
-        updateDropdownLabel("#groupby-dropdown", state.groupBy);
+        updateDropdownLabel("#groupby-dropdown", state.groupBy.longName);
         groupByOps.selectAll("a").on("click", (event, d) => {
           if (d !== state.groupBy) {
             state.groupBy = d;
-            updateDropdownLabel("#groupby-dropdown", state.groupBy);
+            updateDropdownLabel("#groupby-dropdown", state.groupBy.longName);
             filterData();
             updatePlot();
           }
