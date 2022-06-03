@@ -1,178 +1,27 @@
-const tabs = ["Energy Demand", "Energy Supply", "Emissions", "GHG", "Analysis"];
-
-const indicators = {
-  "Energy Demand": ["Energy Demand", "Energy Demand Reductions"],
-  "Energy Supply": ["Energy Supply", "Installed Capacity", "Energy Cost", "Required Investment"],
-  "Emissions": ["GHG Emissions", "Emissions Mitigatin Wedges"],
-  "GHG": ["GHG Concentration", "GHG Radiative Forcing", "Temperature Change"],
-  "Analysis": ["Solution Adoption Rates", "Emissions Estimate Check", "NDC Estimates", "Co-benefits and Externalities"]
-}
-
-const dropdowns = {
-  "Energy Demand": ["Scenario", "Region", "Sector", "Energy Carrier", "Energy End-use"],
-  "Energy Demand Reductions": ["Scenario", "Region", "Sector", "Energy Carrier", "Energy End-use"],
-  "Energy Supply": ["Scenario", "Region", "Sector", "Energy Carrier", "Energy Technology"],
-  "Installed Capacity": ["Scenario", "Region", "Sector", "Energy Carrier", "Energy Technology"],
-  "Energy Cost": ["Scenario", "Region", "Sector", "Energy Carrier", "Energy Technology", "Cost Type"],
-  "Required Investment": ["Scenario", "Region", "Sector", "Energy Carrier", "Energy Technology"],
-  "GHG Emissions": ["Scenario", "Region", "Sector", "GHG", "Energy Carrier", "Energy Technology"],
-  "Emissions Mitigatin Wedges": ["Scenario", "Region", "Sector", "GHG", "Energy Carrier", "Energy Technology"],
-  "GHG Concentration": ["Scenario", "GHG"],
-  "GHG Radiative Forcing": ["Scenario", "GHG"],
-  "Temperature Change": ["Scenario"],
-  "Solution Adoption Rates": ["Scenario", "Region", "Sector", "Energy Carrier", "Energy Technology"],
-  "Emissions Estimate Check": ["Region", "Sector", "Energy Technology"],
-  "NDC Estimates": ["Region", "Sector", "Target Year"],
-  "Co-benefits and Externalities": ["Scenario", "Region"]
-}
-
-function updateDropdowns(indicator) {
-  let setFilter = g => {
-    g.attr("class", "col-2 dropdown")
-      .html(d => d)
-  }
-
-  let filters = d3.select("#filters").selectAll("div")
-    .data(dropdowns[indicator])
-
-  filters.enter().append("div")
-    .call(setFilter)
-
-  filters
-    .call(setFilter)
-
-  filters.exit().remove();
-}
-
-function updateButtons() {
-
-  let setTab = g => {
-    g.attr("type", "button")
-      .attr("class", "btn btn-primary filter")
-      .html(d => d)
-      .on("click", (event, d) => {
-        updateDropdowns(d);
-      });
-  }
-
-  let chosenTab = d3.select(".tab.chosen").data()[0];
-
-  let indicatorDivs = d3.select("#indicators").selectAll("button")
-    .data(indicators[chosenTab])
-
-  indicatorDivs.enter().append("button")
-    .call(setTab)
-
-  indicatorDivs
-    .call(setTab)
-
-  indicatorDivs.exit().remove();
-}
-
-const tabSpans = d3.select("#tabs").selectAll("span")
-  .data(tabs)
-  .join("span")
-    .attr("class", "tab")
-    .classed("chosen", (d,i) => i === 0)
-    .html(d => d)
-    .on("click", (event, d) => {
-      d3.selectAll(".tab")
-        .classed("chosen", e => e === d);
-      updateButtons();
-    })
-updateButtons();
-updateDropdowns(indicators[tabs[0]][0])
-
-state = {
-  region: null,
-  scenario: null,
-  scale: 'linear',
-  years: null,
-  yearsStr: null,
+let state = {
+  region: regions[0],
+  scenario: scenarios[0],
+  vector: vectors[0],
+  result: null,
   filteredData: null,
+  chart: 'line'
 }
 
-const plotWidth = d3.select("#right-col").node().getBoundingClientRect().width,
-    plotHeight = window.innerHeight * 0.8;
+function addOptions(id, values) {
+  var element = d3.select("#"+id);
+  var options = element.selectAll("a").data(values);
 
-let plot = d3.select("#plot")
-    .attr("width", plotWidth)
-    .attr("height", plotHeight);
+  options.html(d => d);
 
-const margin = {top: 20, right: 80, bottom: 20, left: 50},
-    width = plotWidth - margin.left - margin.right,
-    height = plotHeight - margin.top - margin.bottom;
+  options.enter().append("a")
+    .html(d => d);
 
-const dateParse = d3.timeParse("%Y");
+  options.exit().remove();
 
-const colors = ['#e41a1c','#377eb8','#4daf4a','#984ea3','#ff7f00', '#a65628','#f781bf','#999999']
-
-var lineOpacity = 0.5,
-    threshold = 50;
-
-var xScale = d3.scaleTime()
-    .range([margin.left, width - margin.right])
-var yScale;
-var line = d3.line()
-    .curve(d3.curveMonotoneX);
-
-var transition = 500;
-
-var svg = plot.append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-
-var g = svg.append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var gXAxis = svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(" + margin.left + "," + (margin.top + height - margin.bottom) + ")");
-var gYAxis = svg.append("g")
-    .attr("class", "y axis")
-    .attr("transform", "translate(" + (2 * margin.left) + "," + margin.top + ")")
-
-var yLabel = gYAxis.append("g")
-    .append("text")
-    .attr("class", "y axis-title")
-
-var dateFormat = d3.timeFormat("%d de %B");
-
-var xAxis = d3.axisBottom()
-            .tickFormat(d3.timeFormat("%Y"))
-            .ticks(d3.timeYear.every(5))
-            .tickSizeOuter(0);
-var yAxis;
-
-var label = svg.append("g")
-    .attr("display", "none")
-
-label.append("text")
-    .attr("font-family", "sans-serif")
-    .attr("font-size", 12)
-    .attr("class", "curve-label")
-    .attr("text-anchor", "middle")
-    .attr("text-anchor", "start")
-
-function getUniquesMenu(df, thisVariable) {
-
-  var thisList = df.map(function(o) {
-    return o[thisVariable]
-  })
-
-  // uniq() found here https://stackoverflow.com/questions/9229645/remove-duplicate-values-from-js-array
-  function uniq(a) {
-      return a.sort().filter(function(item, pos, ary) {
-          return !pos || item != ary[pos - 1];
-      });
-  }
-
-  var uniqueList = uniq(thisList);
-
-  return uniqueList;
+  return element;
 }
 
-function addOptions(id, values, attrs) {
+function addStandardOptions(id, values, attrs=values.map(d => null)) {
   var element = d3.select("#"+id);
   var options = element.selectAll("option").data(values);
 
@@ -188,348 +37,461 @@ function addOptions(id, values, attrs) {
   return element;
 }
 
-var nameNoSpaces = function(name) {
-  return name.toLowerCase().split(" ").join("");
+function addButtons(id, values) {
+  var element = d3.select("#"+id);
+  var options = element.selectAll("button").data(values);
+
+  options.enter().append("button")
+    .attr("class", "btn-ei")
+    .html(d => d);
+
+  options.exit().remove();
+
+  return element;
 }
 
-var capitalize = function(string) {
-  return string.charAt(0).toUpperCase() + string.slice(1);
+function updateResultsMenu() {
+  let resultsColumn = d3.select("#results");
+
+  resultsColumn.selectAll(".results-title")
+    .data(["Outputs"])
+    .join("div")
+      .attr("class", "results-title")
+      .html(d => d)
+
+  let resultsItems = resultsColumn.selectAll(".results-item").data(results)
+    .join("div")
+      .attr("class", "results-item")
+
+  resultsItems.selectAll(".results-item-main")
+    .data(d => [d])
+    .join("div")
+      .attr("class", "results-item-main")
+      .html((d, i) => d.name)
+      .on("click", (event, d) => {
+        secondaryItems.filter(item => item !== d).classed("show", false);
+        d3.select("#secondary-items-" + nameNoSpaces(d.name)).classed("show", !d3.select("#secondary-items-" + nameNoSpaces(d.name)).classed("show"));
+      })
+
+  let secondaryItems = resultsItems.selectAll(".results-item-secondary")
+    .data(d => [d])
+    .join("div")
+      .attr("id", d => "secondary-items-" + nameNoSpaces(d.name))
+      .attr("class", "results-item-secondary")
+
+  secondaryItems.selectAll(".secondary-item")
+    .data(d => d.children)
+    .join("div")
+      .attr("class", "secondary-item")
+      .html(d => d.name)
+      .on("click", (event, d) => {
+        if (state.result !== d) {
+          state.result = d;
+          secondaryItems.filter(item => item !== d).selectAll(".secondary-item").classed("selected", false);
+          d3.select(event.target).classed("selected", true);
+          d3.select("#chart svg").selectAll("g").remove();
+          loadData('data/'+state.result.folder+'/'+state.region+'.csv');
+        }
+      })
 }
 
-Promise.all([
-    d3.csv('data/adoptioncurves.csv'),
-]).then(function(data) {
-  let adoptionCurves = data[0];
-  console.log(adoptionCurves);
+function updateDropdownLabel(id, label) {
+  d3.select(id).select(".dropbtn").html(label);
+}
 
-  let regions = getUniquesMenu(adoptionCurves, 'Region'),
-      vectors = getUniquesMenu(adoptionCurves, 'Sector'),
-      scenarios = getUniquesMenu(adoptionCurves, 'Scenario'),
-      years = adoptionCurves.columns.filter(d => !isNaN(+d));
+function updateSelectedButton(element, stateVar) {
+  element.selectAll(".btn-ei").filter(d => d !== stateVar).classed("btn-ei-selected", false);
+  element.selectAll(".btn-ei").filter(d => d === stateVar).classed("btn-ei-selected", true);
+}
 
-  adoptionCurves.forEach(d => {
-    d.values = years.map(y => {
-      let obj = {};
-      obj.date = dateParse(y);
-      obj.number = +d[y];
-      return obj;
+function hideCountryDivs() {
+  d3.select(".select-vector").style("display", "none");
+}
+
+function showCountryDivs() {
+  d3.select(".select-vector").style("display", "block");
+}
+
+let selectRegion = addOptions("regions-menu", regions)
+d3.select("#dropdown-region")
+  .on("click", function(d){
+    document.getElementById("regions-menu").classList.toggle("show");
+  });
+updateDropdownLabel("#dropdown-region", state.region);
+selectRegion.selectAll("a").on("click", (event, d) => {
+  if (d !== state.region) {
+    state.region = d;
+    updateDropdownLabel("#dropdown-region", state.region);
+    if (d === "Global") {
+      hideCountryDivs();
+    } else {
+      showCountryDivs();
+    }
+    d3.select("#chart svg").selectAll("g").remove();
+    loadData('data/'+state.result.folder+'/'+state.region+'.csv');
+    // updateResultsMenu();
+    // filterData();
+    // updatePlot();
+  }
+});
+
+let selectScenario = addButtons("buttons-scenario", scenarios)
+updateSelectedButton(selectScenario, state.scenario);
+selectScenario.selectAll(".btn-ei").on("click", (event, d) => {
+  if (d !== state.scenario) {
+    state.scenario = d;
+    updateSelectedButton(selectScenario, state.scenario);
+    updateResultsMenu();
+  }
+});
+
+let selectVector = addButtons("buttons-vector", vectors)
+updateSelectedButton(selectVector, state.vector);
+selectVector.selectAll(".btn-ei").on("click", (event, d) => {
+  if (d !== state.vector) {
+    state.vector = d;
+    updateSelectedButton(selectVector, state.vector);
+    updateResultsMenu();
+  }
+});
+
+updateResultsMenu();
+
+// Close the dropdown menu if the user clicks outside of it
+window.onclick = function(event) {
+  if (!event.target.matches('#dropbtn-region')) {
+    var dropdown = document.getElementById("regions-menu");
+    if (dropdown.classList.contains('show')) {
+      dropdown.classList.remove('show');
+    }
+  }
+}
+
+const plotWidth = d3.select("#chart").node().getBoundingClientRect().width - 40,
+    plotHeight = window.innerHeight - d3.select(".header").node().getBoundingClientRect().height
+                - d3.select(".filters").node().getBoundingClientRect().height
+                - 2 * d3.select(".ei-border-bottom").node().getBoundingClientRect().height
+                - 40;
+
+let plot = d3.select("#chart")
+    .attr("width", plotWidth)
+    .attr("height", plotHeight);
+
+let tooltipDiv = d3.select("body").append("div");
+
+const margin = {top: 20, right: 20, bottom: 20, left: 30},
+    width = plotWidth - margin.left - margin.right,
+    height = plotHeight - margin.top - margin.bottom;
+
+var svg = plot.append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom);
+
+const dateParse = d3.timeParse("%Y");
+
+let chart;
+
+function loadData(path, type='csv') {
+  let loaded;
+  if (type === 'csv') {
+    loaded = d3.csv(path)
+  } else {
+    loaded = de.json(path)
+  }
+  Promise.all([loaded]).then(function(data){
+    let energyDemandPathway = data[0];
+    console.log(energyDemandPathway);
+
+    state.filteredData = energyDemandPathway;
+
+    let secondaryMenus = state.result.columns;
+
+    updatePlot = function() {
+      chart.updateData(state.dataToPlot);
+      chart.updatePlot();
+    }
+
+    function getMenuOptions() {
+      let graphFilters = d3.select("#graph-filters");
+
+      let graphMenus = graphFilters.selectAll(".graph-menu")
+        .data(secondaryMenus);
+
+      graphMenus.attr("class", "graph-menu");
+
+      graphMenus.enter().append("div")
+        .attr("class", "graph-menu");
+
+      graphMenus.exit().remove();
+
+      let graphMenuTitle = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-title")
+        .data(d => [d])
+
+      graphMenuTitle.attr("class", "graph-menu-title")
+        .html(d => d.longName);
+
+      graphMenuTitle.enter().append("span")
+        .attr("class", "graph-menu-title")
+        .html(d => d.longName);
+
+      graphMenuTitle.exit().remove();
+
+      let graphMenuDropdown = graphFilters.selectAll(".graph-menu").selectAll(".dropdown")
+        .data(d => [d.name]);
+
+      graphMenuDropdown.attr("class", "dropdown")
+        .attr("id", d => d+'-dropdown');
+
+      graphMenuDropdown.enter().append("div")
+        .attr("class", "dropdown")
+        .attr("id", d => d+'-dropdown');
+
+      graphMenuDropdown.exit().remove();
+
+      let graphMenuDropbtn = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropbtn")
+        .data(d => [d]);
+
+      graphMenuDropbtn.attr("class", "dropbtn")
+        .attr("id", d => d+'-dropbtn');
+
+      graphMenuDropbtn.enter().append("div")
+        .attr("class", "dropbtn")
+        .attr("id", d => d+'-dropbtn');
+
+      graphMenuDropbtn.exit().remove();
+
+      let graphMenuDropcontent = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropdown-content")
+        .data(d => [d]);
+
+      graphMenuDropcontent.attr("class", "dropdown-content")
+        .attr("id", d => d+'-menu');
+
+      graphMenuDropcontent.enter().append("div")
+        .attr("class", "dropdown-content")
+        .attr("id", d => d+'-menu');
+
+      graphMenuDropcontent.exit().remove();
+
+      secondaryMenus.forEach(sm => {
+        let s = sm.name;
+        if (state[s] === 'All') {
+          let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
+
+          let selectRegion = addOptions(s+"-menu", uniqueItems)
+          d3.select("#"+s+"-dropdown")
+            .on("click", function(d){
+              document.getElementById(s+"-menu").classList.toggle("show");
+            });
+          updateDropdownLabel("#"+s+"-dropdown", state[s]);
+          selectRegion.selectAll("a").on("click", (event, d) => {
+            if (d !== state[s]) {
+              state[s] = d;
+              updateDropdownLabel("#"+s+"-dropdown", state[s]);
+              updateGroupByMenu();
+              filterData();
+              getMenuOptions();
+              updatePlot();
+              document.getElementById(s+"-menu").classList.toggle("show");
+            }
+          });
+        }
+      });
+
+      d3.select("#show-filters")
+        .style("display", "block")
+        .on("click", (event, d) => {
+          let filter = d3.select(event.target);
+          filter.classed("checked", !filter.classed("checked"));
+
+          document.getElementById("graph-filters").classList.toggle("show");
+        });
+    }
+
+    function resetOptions(){
+      secondaryMenus.forEach(d => state[d.name] = 'All');
+      getMenuOptions()
+    }
+
+    resetOptions();
+
+    let regions = getUniquesMenu(energyDemandPathway, 'Region'),
+        scenarios = getUniquesMenu(energyDemandPathway, 'Scenario'),
+        years = energyDemandPathway.columns.filter(d => !isNaN(+d));
+
+    energyDemandPathway.forEach(d => {
+      years.forEach(y => {
+        d[y] = +d[y]
+      })
     })
+
+    state.yearsStr = years;
+    state.years = years.map(d => dateParse(d));
+
+    filterData = function(){
+      state.filteredData = energyDemandPathway.filter((d, i) => {
+        let filtered = secondaryMenus.map(s => {
+          return state[s.name] === 'All' ? true : d[s.name] === state[s.name];
+        });
+        return ((d.Scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
+      })
+      state.dataToPlot = {};
+      state.dataToPlot.lines = [];
+      let uniqueGroupBy = getUniquesMenu(state.filteredData, state.groupBy.name);
+
+      // LINE PLOT
+      uniqueGroupBy.forEach(d => {
+        let obj = {};
+        obj.name = d;
+        let thisGroup = state.filteredData.filter(s => s[state.groupBy.name] === d);
+        obj.values = years.map(y => {
+          let values = {};
+          values.x = dateParse(y);
+          values.y = thisGroup.reduce((a,b) => a + b[y], 0)
+          return values;
+        })
+        state.dataToPlot.lines.push(obj)
+      })
+
+      // STACKED AREA
+      if (state.chart == 'stacked-area') {
+        const series = d3.stack()
+           .keys(uniqueGroupBy)
+           .value((year, key) => state.dataToPlot.lines.filter(l => l.name === key)[0].values.filter(v => v.x - year === 0)[0].y)
+           .order(d3.stackOrderNone)
+           .offset(null) // d3.stackOffsetExpand for normalized
+           (years.map(y => dateParse(y)));
+
+        state.dataToPlot.lines = uniqueGroupBy.map((d,i) => {
+          let obj = {}
+          obj.name = d;
+          obj.values = series[i].map(s => {
+            let val = {};
+            val.y0 = s[0];
+            val.y1 = s[1];
+            val.x = s.data;
+            return val;
+          })
+          return obj;
+        })
+      }
+    }
+
+
+    function updateGroupByMenu() {
+
+      let graphFilters = d3.select("#graph-filters");
+
+      let groupByMenus = graphFilters.selectAll(".groupby-menu")
+        .data(['Group by']);
+
+      groupByMenus.attr("class", "groupby-menu");
+
+      groupByMenus.enter().append("div")
+        .attr("class", "groupby-menu");
+
+      groupByMenus.exit().remove();
+
+      let groupByMenuTitle = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-title")
+        .data(d => [d])
+
+      groupByMenuTitle.attr("class", "groupby-menu-title")
+        .html(d => d);
+
+      groupByMenuTitle.enter().append("span")
+        .attr("class", "groupby-menu-title")
+        .html(d => d);
+
+      groupByMenuTitle.exit().remove();
+
+      let groupByMenuDropdown = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown")
+        .data(d => [d]);
+
+      groupByMenuDropdown.attr("class", "dropdown")
+        .attr("id", d => 'groupby-dropdown');
+
+      groupByMenuDropdown.enter().append("div")
+        .attr("class", "dropdown")
+        .attr("id", d => 'groupby-dropdown');
+
+      groupByMenuDropdown.exit().remove();
+
+      let groupByMenuDropbtn = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropbtn")
+        .data(d => [d]);
+
+      groupByMenuDropbtn.attr("class", "dropbtn")
+        .attr("id", d => 'groupby-dropbtn');
+
+      groupByMenuDropbtn.enter().append("div")
+        .attr("class", "dropbtn")
+        .attr("id", d => 'groupby-dropbtn');
+
+      groupByMenuDropbtn.exit().remove();
+
+      let groupByMenuDropcontent = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropdown-content")
+        .data(d => [d]);
+
+      groupByMenuDropcontent.attr("class", "dropdown-content")
+        .attr("id", d => 'groupby-menu');
+
+      groupByMenuDropcontent.enter().append("div")
+        .attr("class", "dropdown-content")
+        .attr("id", d => 'groupby-menu');
+
+      groupByMenuDropcontent.exit().remove();
+
+      let groupByOptions = [];
+      secondaryMenus.forEach(s => {
+        if (state[s.name] === 'All') groupByOptions.push(s)
+      })
+
+      if (groupByOptions.length === 0) {
+        d3.select(".groupby-menu")
+          .style("display", "none");
+      } else {
+        d3.select(".groupby-menu")
+          .style("display", "block");
+
+        let groupByOps = d3.select("#groupby-menu");
+        let options = groupByOps.selectAll("a").data(groupByOptions);
+
+        options.html(d => d.longName);
+
+        options.enter().append("a")
+          .html(d => d.longName);
+
+        options.exit().remove();
+
+        d3.select("#groupby-dropdown")
+          .on("click", function(d){
+            document.getElementById("groupby-menu").classList.toggle("show");
+          });
+        state.groupBy = groupByOptions[0];
+        updateDropdownLabel("#groupby-dropdown", state.groupBy.longName);
+        groupByOps.selectAll("a").on("click", (event, d) => {
+          if (d !== state.groupBy) {
+            state.groupBy = d;
+            updateDropdownLabel("#groupby-dropdown", state.groupBy.longName);
+            filterData();
+            updatePlot();
+          }
+        });
+      }
+    }
+    updateGroupByMenu();
+    filterData();
+
+    let yAxisUnit = state.result.name + " (" + state.result.units[0].label + ")";
+
+    chart = new Chart(state.dataToPlot,
+                      svg,
+                      width,
+                      height,
+                      margin,
+                      'linear',
+                      tooltipDiv,
+                      yAxisUnit,
+                      type=state.chart);
+    chart.updatePlot();
+
   })
-  console.log(regions, vectors, scenarios, years)
-
-  state.yearsStr = years;
-  state.years = years.map(d => dateParse(d));
-  xScale.domain(d3.extent(state.years, d => +d));
-  xAxis.scale(xScale);
-
-  function filterData(){
-    state.filteredData = adoptionCurves.filter(d => {
-      return ((d.Region === state.region) && (d.Scenario === state.scenario))
-    })
-  }
-
-  let regionsOp = addOptions("regions", regions, regions);
-  state.region = regionsOp.node().value;
-  regionsOp.on("change", function(d){
-    state.region = d3.select(this).node().value;
-    filterData();
-    updatePlot();
-  });
-
-  let scenariosOp = addOptions("scenarios", scenarios, scenarios);
-  state.scenario = scenariosOp.node().value;
-  scenariosOp.on("change", function(d){
-    state.scenario = d3.select(this).node().value;
-    filterData();
-    updatePlot();
-  });
-
-  function updateAxes() {
-
-    if (state.scale === "log"){
-      let yMax = d3.max(state.filteredData, d => d3.max(state.years.map(y => d[y]))) + 1;
-      yScale = d3.scaleLog()
-          .range([height - margin.bottom, 0])
-          .domain([1, yMax])
-      let tickValues = d3.range(yMax.toString().length)
-        .map(d => [1 * 10**d, 2 * 10**d, 5 * 10**d])
-      tickValues = tickValues.flat().filter(d => d <= yMax);
-      yAxis = d3.axisLeft()
-          .scale(yScale)
-          .tickValues(tickValues)
-          .tickFormat(d3.format('i'))
-      line.x((d, i) => xScale(state.years[i]))
-        .y(d => yScale(d[state.years[i]] + 1));
-    } else if (state.scale === "linear") {
-      // let yMax = d3.max(state.filteredData, d => d3.max(d.values, v => v.number));
-      let yMax = 1.0;
-      yScale = d3.scaleLinear()
-          .range([height - margin.bottom, 0])
-          .domain([0, yMax]).nice()
-      yAxis = d3.axisLeft()
-          .scale(yScale)
-      line.x((d, i) => xScale(d.date))
-        .y((d, i) => yScale(d.number));
-    }
-
-    gXAxis.call(xAxis);
-    gYAxis.call(yAxis);
-
-    gYAxis.select(".y.axis-title")
-      .attr("text-anchor", "end")
-      // .style("font-size", (mobileScreen ? 8 : 12) + "px")
-      .style("font-size", "12px")
-      .attr("fill", "black")
-      .attr("transform", "translate(18, 5) rotate(-90)")
-      .text("Adoption Curves");
-  };
-
-  function updateCurves() {
-
-    var path = g.selectAll("path").data(state.filteredData);
-
-    path.enter().append("path")
-      .transition()
-      .duration(transition)
-      .attr("fill", "none")
-      .attr("stroke-width", curveWidth)
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .style("mix-blend-mode", "multiply")
-      .attr("opacity", curveOpacity)
-      .attr("class", d => "curve "+nameNoSpaces(d.Sector))
-      .attr("stroke",  curveColor)
-      .attr("d", d => line(d.values));
-
-    path.transition()
-      .duration(transition)
-      .attr("fill", "none")
-      .attr("stroke-width", curveWidth)
-      .attr("stroke-linejoin", "round")
-      .attr("stroke-linecap", "round")
-      .style("mix-blend-mode", "multiply")
-      .attr("opacity", curveOpacity)
-      .attr("class", d => "curve "+nameNoSpaces(d.Sector))
-      .attr("stroke", curveColor)
-      .attr("d", d => line(d.values));
-
-    path.exit().remove();
-
-    svg.call(hover, g.selectAll("curve"));
-
-    function curveOpacity(d) {
-      return 1.0;
-      // let idx = state.selected.indexOf(d[state.microzona]);
-      // return idx < 0 ? lineOpacity : 1.0;
-    }
-
-    function curveColor(d) {
-      // return colors[i];
-      let idx = vectors.indexOf(d.Sector);
-      return idx < 0 ? "lightgray" : colors[idx];
-    }
-
-    function curveWidth(d) {
-      return 1.0;
-      // let idx = state.selected.indexOf(d[state.microzona]);
-      // return idx < 0 ? 1.5 : 2.5;
-    }
-
-    function hover(svg, path) {
-
-      if ("ontouchstart" in document) svg
-          .style("-webkit-tap-highlight-color", "transparent")
-          .on("touchmove", moved)
-          .on("touchstart", entered)
-          .on("touchend", left)
-          // .on("touch", click);
-      else svg
-          .on("mousemove", moved)
-          .on("mouseenter", entered)
-          .on("mouseleave", left)
-          // .on("click", click);
-
-      function moved(event) {
-        const xm = xScale.invert(event.offsetX - margin.left); // TODO: CONSTRAIN WITHIN RIGHT MARGIN
-        const ym = yScale.invert(event.offsetY - margin.top);
-        const i1 = d3.bisectLeft(state.years, xm, 1);
-        const i0 = i1 - 1;
-        const i = xm - state.years[i0] > state.years[i1] - xm ? i1 : i0;
-        var s;
-        if (state.scale === "log"){
-          s = d3.least(state.filteredData, d => Math.abs(d.values[i].number - ym + 1));
-        } else if (state.scale === "linear") {
-          s = d3.least(state.filteredData, d => Math.abs(d.values[i].number - ym));
-        }
-        // const sIdx = state.selected.indexOf(s[state.microzona]);
-        //
-        function hoverColor(){
-          return colors[i];
-          // return sIdx < 0 ? colors[state.selected.length] : colors[sIdx];
-        }
-
-        d3.selectAll(".curve")
-          .attr("opacity", curveOpacity)
-          .attr("stroke", curveColor)
-          .attr("stroke-width", curveWidth)
-
-        d3.select(".curve."+nameNoSpaces(s.Region))
-          .attr("opacity", 1.0)
-          .attr("stroke", hoverColor)
-          .attr("stroke-width", 2.5)
-
-        // dot.attr("opacity", 0.0)
-
-        // Circle showing value
-        // if (sIdx >= 0) {
-
-          // dot.attr("fill", hoverColor)
-          //   .attr("opacity", 1.0)
-          //   .attr("transform", function(d){
-          //     if (state.escala == "escala-logaritmica"){
-          //       return `translate(${xScale(state.dates[i])+margin.left},${yScale(s.values[i]+1)+margin.top})`;
-          //     } else if (state.escala == "escala-lineal") {
-          //       return `translate(${xScale(state.dates[i])+margin.left},${yScale(s.values[i])+margin.top})`;
-          //     }
-          //   });
-          // dot.select("text").text(s.values[i]);
-
-        // } else {
-
-          //
-          label.attr("fill", curveColor(s))
-            .attr("opacity", 1.0)
-            .attr("transform", function(d){
-              if (state.scale === "log"){
-                return `translate(${xScale(state.years[state.years.length-1])+margin.left+5},${yScale(s.values[s.values.length-1].number + 1)+margin.top+2})`;
-              } else if (state.scale === "linear") {
-                return `translate(${xScale(state.years[state.years.length-1])+margin.left+5},${yScale(s.values[s.values.length-1].number)+margin.top+2})`;
-              }
-            })
-          label.select("text").text(s.Sector)
-
-        // }
-      }
-
-      function entered() {
-        path.style("mix-blend-mode", null).attr("stroke", "#ddd");
-        // dot.attr("display", null);
-        label.attr("display", null);
-      }
-
-      function left() {
-        d3.selectAll(".curve")
-            .attr("opacity", curveOpacity)
-            .attr("stroke", curveColor)
-            .attr("stroke-width", curveWidth)
-        path.style("mix-blend-mode", "multiply").attr("stroke", null);
-        // dot.attr("display", "none");
-        label.attr("display", "none");
-      }
-
-      function click() {
-        d3.event.preventDefault();
-        const mouse = d3.mouse(this);
-        const xm = xScale.invert(mouse[0]-margin.left); // TODO: CONSTRAIN WITHIN RIGHT MARGIN
-        const ym = yScale.invert(mouse[1]-margin.top);
-        const i1 = d3.bisectLeft(state.dates, xm, 1);
-        const i0 = i1 - 1;
-        const i = xm - state.dates[i0] > state.dates[i1] - xm ? i1 : i0;
-        var s;
-        if (state.escala == "escala-logaritmica"){
-          s = d3.least(state.filteredData, d => Math.abs(d.values[i] - ym + 1));
-        } else if (state.escala == "escala-lineal") {
-          s = d3.least(state.filteredData, d => Math.abs(d.values[i] - ym));
-        }
-        const sIdx = state.selected.indexOf(s[state.microzona]);
-        let nSelected = state.selected.length;
-        if (sIdx < 0 && nSelected < colors.length - 1) {
-          state.selected.push(s[state.microzona])
-          updateLabels();
-          updateSearchBox();
-        }
-      }
-    }
-  } // updateCurves
-
-  function updateLabels() {
-
-    var selectedBoxes = searched.selectAll(".searched-term").data(state.selected);
-
-    selectedBoxes.enter().append("div")
-      .attr("class", d => "searched-term "+nameNoSpaces(d))
-      .style("color", (d, i) => colors[i])
-      .style("background-color", function(d, i){
-        let rgb = d3.rgb(colors[i])
-        return `rgba(${rgb.r},${rgb.g},${rgb.b},0.05)`
-      })
-      .on("click", removeLabel)
-      .html(d => d + '<span class="delete-term"><i class="fas fa-times-circle"></i></span>')
-
-    selectedBoxes
-      .attr("class", d => "searched-term "+nameNoSpaces(d))
-      .style("color", (d, i) => colors[i])
-      .style("background-color", function(d, i){
-        let rgb = d3.rgb(colors[i])
-        return `rgba(${rgb.r},${rgb.g},${rgb.b},0.05)`
-      })
-      .on("click", removeLabel)
-      .html(d => d + '<span class="delete-term"><i class="fas fa-times-circle"></i></span>')
-
-    selectedBoxes.exit().remove()
-
-    var selectedText = g.selectAll(".selected-text").data(state.selected);
-
-    selectedText.enter().append("text")
-      .attr("class", "selected-text")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", 12)
-      .attr("text-anchor", "start")
-      .attr("stroke", (d, i) => colors[i])
-      .attr("transform", function(d){
-        let curveData = d3.selectAll(".curve."+nameNoSpaces(d)).data()[0];
-        let idxDate = state.dates.length - 1,
-            idxData = curveData.values.length - 1;
-        if (state.escala == "escala-logaritmica"){
-          return `translate(${xScale(state.dates[idxDate])+5},${yScale(curveData.values[idxData] + 1)+2})`;
-        } else if (state.escala == "escala-lineal") {
-          return `translate(${xScale(state.dates[idxDate])+5},${yScale(curveData.values[idxData])+2})`;
-        }
-      })
-      .text(d => d)
-
-    selectedText.attr("stroke", (d, i) => colors[i])
-      .attr("transform", function(d){
-        let curveData = d3.selectAll(".curve."+nameNoSpaces(d)).data()[0];
-        let idxDate = state.dates.length - 1,
-            idxData = curveData.values.length - 1;
-        if (state.escala == "escala-logaritmica"){
-          return `translate(${xScale(state.dates[idxDate])+5},${yScale(curveData.values[idxData] + 1)+2})`;
-        } else if (state.escala == "escala-lineal") {
-          return `translate(${xScale(state.dates[idxDate])+5},${yScale(curveData.values[idxData])+2})`;
-        }
-      })
-      .text(d => d)
-
-    selectedText.exit().remove();
-
-    function removeLabel(d) {
-      state.selected = state.selected.filter(e => d != e);
-      label.attr("opacity", 0.0);
-      updateCurves();
-      updateLabels();
-      updateSearchBox();
-    }
-  } //updateLabels
-
-  function updatePlot() {
-    updateAxes();
-    // updateSearchBox();
-    updateCurves();
-    // updateLabels();
-  }
-
-  filterData();
-  updatePlot();
-
-})
+}

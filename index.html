@@ -6,52 +6,99 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>Data Explorer</title>
 
-	<!-- <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&family=Oswald&display=swap" rel="stylesheet"> -->
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&family=Josefin+Sans:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
-	<link rel="stylesheet" href="css/main.css">
+	<link rel="stylesheet" href="css/homepage.css">
 </head>
 <body>
   <div class="row">
-    <div class="col-1">
-    </div>
-    <div class="col-10">
-      <div class="row title">
-    			<h2>Data Explorer</h2>
-    	</div>
-      <div id="tabs" class="row">
-      </div>
-      <div id="indicators" class="row">
-      </div>
-      <div id="filters" class="row">
-      </div>
-    	<div class="row content">
-    		<div class="col-10" id="right-col">
-    			<div class="row" id="plot">
-    			</div>
-    		</div>
-        <div class="col-2" id="left-col">
-    			<div class="row" id="text-description">
-            Region:
-    				<form class="form-inline">
-    					<div class="form-group">
-    						<select class="form-control" id="regions"></select>
-    					</div>
-    				</form>
-            Scenario:
-            <form class="form-inline">
-    					<div class="form-group">
-    						<select class="form-control" id="scenarios"></select>
-    					</div>
-    				</form>
-    		</div>
-    	</div>
-    </div>
-    <div class="col-1">
-    </div>
+		<!-- HEADER -->
+    <div class="row header">
+			<div class="col-2 icon-col">
+				<img src='img/epic-logo.png' />
+			</div>
+			<div class="col-8 title">
+				<span>Data Explorer</span>
+			</div>
+			<div class="col-1">
+				<span class="header-item">
+					<a href="https://github.com/Epic-Institute/" target="_blank">github</a>
+				</span>
+			</div>
+			<div class="col-1">
+				<span class="header-item">
+					about
+				</span>
+			</div>
+		</div>
+		<div class="row ei-border-bottom">
+		</div>
+
+		<!-- FILTERS -->
+		<div class="row filters">
+			<div class="col-1">
+			</div>
+			<div class="col-10">
+				<div class="row select">
+					<div class="col-4 select-country">
+						<span class="select-label">Region</span>
+						<div class="dropdown" id="dropdown-region">
+		          <div class="dropbtn" id="dropbtn-region"></div>
+		          <div id="regions-menu" class="dropdown-content"></div>
+		        </div>
+					</div>
+					<div class="col-4 select-scenario">
+						<span class="select-label">Scenario</span>
+						<div class="buttons" id="buttons-scenario">
+		        </div>
+					</div>
+					<div class="col-4 select-vector">
+						<span class="select-label">Vector</span>
+						<div class="buttons" id="buttons-vector">
+		        </div>
+					</div>
+				</div>
+			</div>
+			<div class="col-1">
+			</div>
+		</div>
+
+		<div class="row ei-border-bottom">
+		</div>
+
+		<!-- REGION OVERVIEW -->
+		<div class="row region-overview">
+			<div class="col-4 region-name">
+			</div>
+			<div class="col-8 region-indicators">
+			</div>
+		</div>
+
+		<!-- RESULTS -->
+		<div class="row outputs">
+			<div class="col-2" id="results">
+			</div>
+			<div class="col-7 ei-border-bracket" id="chart">
+			</div>
+			<div class="col-2" id="filters-col">
+				<div id="show-filters">
+					Graph options
+				</div>
+				<div id="graph-filters">
+				</div>
+			</div>
+		</div>
   </div>
 
   <script src="js/bootstrap.bundle.min.js"></script>
 	<script src="js/d3.min.js"></script>
+	<script src="data/output.js"></script>
+	<script src="js/utils.js"></script>
+	<script src="js/data.js"></script>
+	<script src="js/tooltip.js"></script>
+	<script src="js/chart.js"></script>
 	<script src="js/main.js"></script>
 </body>
 </html>
