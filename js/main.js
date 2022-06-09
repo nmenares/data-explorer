@@ -314,9 +314,8 @@ function loadData(path, type='csv') {
 
     resetOptions();
 
-    let regions = getUniquesMenu(energyDemandPathway, 'Region'),
-        scenarios = getUniquesMenu(energyDemandPathway, 'Scenario'),
-        years = energyDemandPathway.columns.filter(d => !isNaN(+d));
+    let years = energyDemandPathway.columns.filter(d => !isNaN(+d));
+    console.log(years)
 
     energyDemandPathway.forEach(d => {
       years.forEach(y => {
@@ -332,7 +331,7 @@ function loadData(path, type='csv') {
         let filtered = secondaryMenus.map(s => {
           return state[s.name] === 'All' ? true : d[s.name] === state[s.name];
         });
-        return ((d.Scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
+        return ((d.scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
       })
       state.dataToPlot = {};
       state.dataToPlot.lines = [];
@@ -351,6 +350,7 @@ function loadData(path, type='csv') {
         })
         state.dataToPlot.lines.push(obj)
       })
+      console.log(state.dataToPlot)
 
       // STACKED AREA
       if (state.chart == 'stacked-area') {

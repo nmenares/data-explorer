@@ -40,6 +40,40 @@ const results = [
         "plotTypes": ["line", "stacked-area"]
       }
     ]
+  },
+  {
+    "name": "Emissions",
+    "children": [
+      {
+        "name": "AFOLU",
+        "folder": "afolu",
+        "columns": [
+          {
+            "name": "sector",
+            "longName": "Sector"
+          },
+          {
+            "name": "product_long",
+            "longName": "Product"
+          },
+          {
+            "name": "flow_category",
+            "longName": "Flow category"
+          },
+          {
+            "name": "flow_long",
+            "longName": "Flow"
+          }
+        ],
+        "units": [
+          {
+            "label": "?",
+            "factor": 1.0
+          }
+        ],
+        "plotTypes": ["line", "stacked-area"]
+      }
+    ]
   }
 ];
 
