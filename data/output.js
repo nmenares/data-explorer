@@ -7,23 +7,23 @@ const results = [
         "folder": "energy_demand",
         "columns": [
           {
-            "name": "Sector",
+            "name": "sector",
             "longName": "Sector"
           },
           {
-            "name": "Product_category",
+            "name": "product_category",
             "longName": "Product category"
           },
           {
-            "name": "Product_long",
+            "name": "product_long",
             "longName": "Product"
           },
           {
-            "name": "Flow_category",
+            "name": "flow_category",
             "longName": "Flow category"
           },
           {
-            "name": "Flow_long",
+            "name": "flow_long",
             "longName": "Flow"
           }
         ],

@@ -90,7 +90,7 @@ function updateResultsMenu() {
           secondaryItems.filter(item => item !== d).selectAll(".secondary-item").classed("selected", false);
           d3.select(event.target).classed("selected", true);
           d3.select("#chart svg").selectAll("g").remove();
-          loadData('data/'+state.result.folder+'/'+state.region+'.csv');
+          loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
         }
       })
 }
@@ -128,7 +128,7 @@ selectRegion.selectAll("a").on("click", (event, d) => {
       showCountryDivs();
     }
     d3.select("#chart svg").selectAll("g").remove();
-    loadData('data/'+state.result.folder+'/'+state.region+'.csv');
+    loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
     // updateResultsMenu();
     // filterData();
     // updatePlot();
@@ -194,9 +194,9 @@ let chart;
 function loadData(path, type='csv') {
   let loaded;
   if (type === 'csv') {
-    loaded = d3.csv(path)
+    loaded = d3.csv(path);
   } else {
-    loaded = de.json(path)
+    loaded = d3.json(path);
   }
   Promise.all([loaded]).then(function(data){
     let energyDemandPathway = data[0];
