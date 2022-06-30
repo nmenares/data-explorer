@@ -1,6 +1,6 @@
 let state = {
   region: regions[0],
-  scenario: scenarios[0],
+  scenario: null,
   vector: vectors[0],
   result: null,
   filteredData: null,
@@ -135,16 +135,6 @@ selectRegion.selectAll("a").on("click", (event, d) => {
   }
 });
 
-let selectScenario = addButtons("buttons-scenario", scenarios)
-updateSelectedButton(selectScenario, state.scenario);
-selectScenario.selectAll(".btn-ei").on("click", (event, d) => {
-  if (d !== state.scenario) {
-    state.scenario = d;
-    updateSelectedButton(selectScenario, state.scenario);
-    updateResultsMenu();
-  }
-});
-
 let selectVector = addButtons("buttons-vector", vectors)
 updateSelectedButton(selectVector, state.vector);
 selectVector.selectAll(".btn-ei").on("click", (event, d) => {
@@ -200,7 +190,23 @@ function loadData(path, type='csv') {
   }
   Promise.all([loaded]).then(function(data){
     let energyDemandPathway = data[0];
-    console.log(energyDemandPathway);
+    // console.log(energyDemandPathway);
+
+    let scenarios = getUniquesMenu(energyDemandPathway, 'scenario');
+    state.scenario = scenarios[0];
+
+    let selectScenario = addButtons("buttons-scenario", scenarios)
+    updateSelectedButton(selectScenario, state.scenario);
+    selectScenario.selectAll(".btn-ei").on("click", (event, d) => {
+      if (d !== state.scenario) {
+        state.scenario = d;
+        updateSelectedButton(selectScenario, state.scenario);
+        updateResultsMenu();
+        filterData();
+        getMenuOptions();
+        updatePlot();
+      }
+    });
 
     state.filteredData = energyDemandPathway;
 
@@ -315,7 +321,6 @@ function loadData(path, type='csv') {
     resetOptions();
 
     let years = energyDemandPathway.columns.filter(d => !isNaN(+d));
-    console.log(years)
 
     energyDemandPathway.forEach(d => {
       years.forEach(y => {
@@ -350,7 +355,6 @@ function loadData(path, type='csv') {
         })
         state.dataToPlot.lines.push(obj)
       })
-      console.log(state.dataToPlot)
 
       // STACKED AREA
       if (state.chart == 'stacked-area') {
