@@ -4,7 +4,7 @@ const results = [
     "children": [
       {
         "name": "Energy demand",
-        "folder": "energy_demand",
+        "folder": "energy",
         "columns": [
           {
             "name": "sector",
