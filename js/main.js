@@ -2,7 +2,7 @@ let state = {
   region: regions[0],
   scenario: null,
   vector: vectors[0],
-  result: null,
+  result: vectors[0],
   filteredData: null,
   chart: 'line'
 }
@@ -135,15 +135,26 @@ selectRegion.selectAll("a").on("click", (event, d) => {
   }
 });
 
-let selectVector = addButtons("buttons-vector", vectors)
-updateSelectedButton(selectVector, state.vector);
+
+let selectVector = d3.select("#buttons-vector");
+
+let options = selectVector.selectAll("button").data(vectors);
+
+options.enter().append("button")
+  .attr("class", "btn-ei")
+  .html(d => d.name);
+
+options.exit().remove();
+
+updateSelectedButton(selectVector, state.result);
 selectVector.selectAll(".btn-ei").on("click", (event, d) => {
-  if (d !== state.vector) {
-    state.vector = d;
-    updateSelectedButton(selectVector, state.vector);
-    updateResultsMenu();
+  if (state.result !== d) {
+    state.result = d;
+    updateSelectedButton(selectVector, state.result);
+    d3.select("#chart svg").selectAll("g").remove();
+    loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
   }
-});
+})
 
 updateResultsMenu();
 
