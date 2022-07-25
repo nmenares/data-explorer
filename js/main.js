@@ -50,51 +50,6 @@ function addButtons(id, values) {
   return element;
 }
 
-function updateResultsMenu() {
-  let resultsColumn = d3.select("#results");
-
-  resultsColumn.selectAll(".results-title")
-    .data(["Outputs"])
-    .join("div")
-      .attr("class", "results-title")
-      .html(d => d)
-
-  let resultsItems = resultsColumn.selectAll(".results-item").data(results)
-    .join("div")
-      .attr("class", "results-item")
-
-  resultsItems.selectAll(".results-item-main")
-    .data(d => [d])
-    .join("div")
-      .attr("class", "results-item-main")
-      .html((d, i) => d.name)
-      .on("click", (event, d) => {
-        secondaryItems.filter(item => item !== d).classed("show", false);
-        d3.select("#secondary-items-" + nameNoSpaces(d.name)).classed("show", !d3.select("#secondary-items-" + nameNoSpaces(d.name)).classed("show"));
-      })
-
-  let secondaryItems = resultsItems.selectAll(".results-item-secondary")
-    .data(d => [d])
-    .join("div")
-      .attr("id", d => "secondary-items-" + nameNoSpaces(d.name))
-      .attr("class", "results-item-secondary")
-
-  secondaryItems.selectAll(".secondary-item")
-    .data(d => d.children)
-    .join("div")
-      .attr("class", "secondary-item")
-      .html(d => d.name)
-      .on("click", (event, d) => {
-        if (state.result !== d) {
-          state.result = d;
-          secondaryItems.filter(item => item !== d).selectAll(".secondary-item").classed("selected", false);
-          d3.select(event.target).classed("selected", true);
-          d3.select("#chart svg").selectAll("g").remove();
-          loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
-        }
-      })
-}
-
 function updateDropdownLabel(id, label) {
   d3.select(id).select(".dropbtn").html(label);
 }
@@ -129,9 +84,6 @@ selectRegion.selectAll("a").on("click", (event, d) => {
     }
     d3.select("#chart svg").selectAll("g").remove();
     loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
-    // updateResultsMenu();
-    // filterData();
-    // updatePlot();
   }
 });
 
@@ -155,8 +107,6 @@ selectVector.selectAll(".btn-ei").on("click", (event, d) => {
     loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
   }
 })
-
-updateResultsMenu();
 
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = function(event) {
@@ -212,7 +162,6 @@ function loadData(path, type='csv') {
       if (d !== state.scenario) {
         state.scenario = d;
         updateSelectedButton(selectScenario, state.scenario);
-        updateResultsMenu();
         filterData();
         getMenuOptions();
         updatePlot();
