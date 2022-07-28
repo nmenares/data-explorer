@@ -38,29 +38,32 @@
 
 		<!-- FILTERS -->
 		<div class="row filters">
-			<div class="col-1">
-			</div>
-			<div class="col-10">
+			<div class="col-12">
 				<div class="row select">
 					<div class="col-4 select-output">
-						<span class="select-label">Model Output</span>
+						<span class="select-label">Select a PD22 model output</span>
 						<div class="buttons" id="buttons-vector"></div>
 					</div>
-					<div class="col-4 select-country">
-						<span class="select-label">Region</span>
+					<div class="col-3 select-country">
+						<span class="select-label">Choose a region</span>
 						<div class="dropdown" id="dropdown-region">
 							<div class="dropbtn" id="dropbtn-region"></div>
 							<div id="regions-menu" class="dropdown-content"></div>
 						</div>
 					</div>
-					<div class="col-4 select-scenario">
-						<span class="select-label">Scenario</span>
+					<div class="col-2 select-scenario">
+						<span class="select-label">Explore a scenario</span>
 						<div class="buttons" id="buttons-scenario"></div>
+					</div>
+					<div class="col-3" id="filters-col">
+						<div id="show-filters">
+							Graph options
+						</div>
+						<div id="graph-filters">
+						</div>
 					</div>
 					
 				</div>
-			</div>
-			<div class="col-1">
 			</div>
 		</div>
 
@@ -77,17 +80,17 @@
 
 		<!-- RESULTS -->
 		<div class="row outputs">
-			<div class="col-2" id="results">
+			<div class="col-3" id="results">
 			</div>
-			<div class="col-7 ei-border-bracket" id="chart">
+			<div class="col-8" id="chart">
 			</div>
-			<div class="col-2" id="filters-col">
+			<!-- <div class="col-2" id="filters-col">
 				<div id="show-filters">
 					Graph options
 				</div>
 				<div id="graph-filters">
 				</div>
-			</div>
+			</div> -->
 		</div>
   </div>
 
