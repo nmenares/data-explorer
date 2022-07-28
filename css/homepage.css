@@ -81,8 +81,9 @@ body {
 .select-label {
   color: var(--ei-title);
   font-family: 'Josefin Sans', sans-serif;
-  font-weight: 500;
+  font-weight: 600;
   text-transform: uppercase;
+  font-size: 16px;
 }
 
 .select-vector {
@@ -151,13 +152,13 @@ body {
   border-radius: 20px;
   color: var(--bs-light);
   font-size: 12px;
-  font-weight: 300;
+  font-weight: 400;
   margin-right: 10px;
   margin-top: 5px;
   text-transform: uppercase;
 
   display: inline-block;
-  line-height: 1.5;
+  line-height: 20px;
   text-align: center;
   text-decoration: none;
   vertical-align: middle;
@@ -165,8 +166,8 @@ body {
   -webkit-user-select: none;
   -moz-user-select: none;
   user-select: none;
-  padding: 4px 8px;
-  transition: color .15s
+  padding: 2px 8px;
+  transition: color .3s
 }
 
 .btn-ei:hover {
@@ -178,7 +179,7 @@ body {
 .btn-ei-selected {
   background-color: transparent;
   color: var(--ei-400);
-  border: 1.5px solid var(--ei-400);
+  border: 2.5px solid var(--ei-400);
   font-weight: 600;
 }
 
@@ -235,11 +236,11 @@ body {
 /* CHART */
 
 #chart {
-  margin: 0 10px;
+  padding: 0 10px;
 }
 
 #chart svg {
-  background-color: var(--ei-100);
+  /* background-color: var(--ei-100); */
 }
 
 .axis line {
@@ -260,7 +261,7 @@ body {
 }
 
 .ei-tooltip {
-  background-color: var(--ei-background);
+  background-color: var(--ei-100);
   padding: 10px 15px;
   position: absolute;
   pointer-events: none;

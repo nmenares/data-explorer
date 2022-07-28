@@ -1,6 +1,6 @@
 let state = {
   region: regions[0],
-  scenario: null,
+  scenario: 'baseline',
   vector: vectors[0],
   result: vectors[0],
   filteredData: null,
@@ -141,6 +141,8 @@ var svg = plot.append("svg")
 const dateParse = d3.timeParse("%Y");
 
 let chart;
+
+loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
 
 function loadData(path, type='csv') {
   let loaded;
