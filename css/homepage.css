@@ -11,7 +11,7 @@ body {
 .header {
   font-family: 'Josefin Sans', sans-serif;
   color: #FFF;
-  height: 80px;
+  height: 64px;
 }
 .header-item a {
   text-decoration: none;
@@ -23,7 +23,7 @@ body {
   font-weight: 400;
   text-transform: uppercase;
   text-align: center;
-  line-height: 80px;
+  line-height: 64px;
   letter-spacing: 0.2rem;
 }
 
@@ -56,7 +56,7 @@ body {
 }
 
 .title {
-  line-height: 80px;
+  line-height: 64px;
 }
 
 .icon-col {
@@ -64,7 +64,7 @@ body {
 }
 
 .icon-col img {
-  max-height: 64px;
+  max-height: 52px;
   margin: 5px auto;
 }
 
@@ -184,7 +184,7 @@ body {
 }
 
 .outputs {
-  margin: 20px 20px;
+  padding: 10px 20px;
 }
 
 .results-title {
