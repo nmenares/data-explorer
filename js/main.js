@@ -1,10 +1,45 @@
 let state = {
   region: regions[0].name,
+  region_info: null,
   scenario: 'baseline',
   vector: vectors[0],
   result: vectors[0],
   filteredData: null,
   chart: 'line'
+}
+
+function getCIA(url) {
+  Promise.all([d3.json(url)]).then(function(data){
+    state.region_info = data[0];
+    updateRegionInfo();
+  })
+}
+
+getCIA(regions[0].url)
+
+function getHtml(indicator) {
+
+  const text = indicator[Object.keys(indicator)[0]].text
+  const i = text.indexOf(' ');
+
+  const number = text.slice(0, i);
+  const est = text.slice(i + 1);
+
+  return `<span class="cia-number">${number}</span><span class="cia-est">${est}</span>`
+
+  return [number, est]
+
+}
+
+function updateRegionInfo() {
+  d3.select("#region-name").html(state.region);
+
+  let economy = state.region_info["Economy"];
+  
+  d3.select("#gdp-per-capita").html(getHtml(economy["Real GDP per capita"]));
+  d3.select("#gdp-growth-rate").html(getHtml(economy["Real GDP growth rate"]));
+  d3.select("#inflation-rate").html(getHtml(economy["Inflation rate (consumer prices)"]));
+  d3.select("#unemployment-rate").html(getHtml(economy["Unemployment rate"]));
 }
 
 function addOptions(id, values) {
@@ -67,15 +102,26 @@ function showCountryDivs() {
   d3.select(".select-vector").style("display", "block");
 }
 
-let selectRegion = addOptions("regions-menu", regions.map(d => d.name))
+let selectRegion = d3.select("#regions-menu");
+
+let optionsRegion = selectRegion.selectAll("a").data(regions);
+
+optionsRegion.html(d => d.name);
+
+optionsRegion.enter().append("a")
+  .html(d => d.name);
+
+optionsRegion.exit().remove();
+
 d3.select("#dropdown-region")
   .on("click", function(d){
     document.getElementById("regions-menu").classList.toggle("show");
   });
 updateDropdownLabel("#dropdown-region", state.region);
 selectRegion.selectAll("a").on("click", (event, d) => {
-  if (d !== state.region) {
-    state.region = d;
+  if (d.name !== state.region) {
+    state.region = d.name;
+    getCIA(d.url);
     updateDropdownLabel("#dropdown-region", state.region);
     if (d === "Global") {
       hideCountryDivs();
