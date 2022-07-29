@@ -1,5 +1,5 @@
 let state = {
-  region: regions[0],
+  region: regions[0].name,
   scenario: 'baseline',
   vector: vectors[0],
   result: vectors[0],
@@ -67,7 +67,7 @@ function showCountryDivs() {
   d3.select(".select-vector").style("display", "block");
 }
 
-let selectRegion = addOptions("regions-menu", regions)
+let selectRegion = addOptions("regions-menu", regions.map(d => d.name))
 d3.select("#dropdown-region")
   .on("click", function(d){
     document.getElementById("regions-menu").classList.toggle("show");
