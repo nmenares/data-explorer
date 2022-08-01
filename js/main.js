@@ -166,6 +166,13 @@ window.onclick = function(event) {
       dropdown.classList.remove('show');
     }
   }
+
+  if (!event.path.includes(document.getElementById("filters-col"))) {
+    let filter = d3.select("#show-filters");
+    filter.classed("checked", !filter.classed("checked"));
+
+    document.getElementById("graph-filters").classList.toggle("show");
+  }
 }
 
 const plotWidth = d3.select("#chart").node().getBoundingClientRect().width - 40,
