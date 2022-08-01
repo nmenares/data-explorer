@@ -320,6 +320,9 @@ function loadData(path, type='csv') {
       d3.select("#show-filters")
         .style("display", "block")
         .on("click", (event, d) => {
+          chart.hideRule();
+          chart.tooltip.hide();
+
           let filter = d3.select(event.target);
           filter.classed("checked", !filter.classed("checked"));
 
