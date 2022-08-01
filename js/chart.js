@@ -199,10 +199,10 @@ class Chart {
       .attr("x2", -4);
 
     vis.yLabel
-      .attr("text-anchor", "middle")
+      .attr("text-anchor", "start")
       .style("font-size", "12px")
       .attr("fill", "white")
-      .attr("transform", "translate(0, -5)")
+      .attr("transform", "translate(-20, -5)")
       .text(vis.yAxisTitle);
   };
 
@@ -299,7 +299,7 @@ class Chart {
             .map((d,i) => {
               let spanCircle = `<span class="legend-circle">${getCircleHtml(d.color)}</span>`,
                   spanName = `<span class="legend-name">${d.name}</span>`,
-                  spanNumber = `<span class="legend-value">${d.y.toFixed(0)}</span>`;
+                  spanNumber = `<span class="legend-value">${d3.format(".2s")(d.y)}</span>`;
 
               return `<div class="legend-item">${spanCircle}${spanName}${spanNumber}</div>`;
             })
