@@ -339,4 +339,9 @@ class Chart {
       }
     }
   } // updateCurves
+
+  hideRule () {
+    d3.selectAll(".rule")
+      .style("opacity", 0);
+  }
 }

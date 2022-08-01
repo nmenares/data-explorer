@@ -121,6 +121,8 @@ optionsRegion.exit().remove();
 d3.select("#dropdown-region")
   .on("click", function(d){
     document.getElementById("regions-menu").classList.toggle("show");
+    chart.hideRule();
+    chart.tooltip.hide();
   });
 updateDropdownLabel("#dropdown-region", state.region);
 selectRegion.selectAll("a").on("click", (event, d) => {
@@ -149,6 +151,8 @@ selectVector.selectAll(".btn-ei").on("click", (event, d) => {
   if (state.result !== d) {
     state.result = d;
     updateSelectedButton(selectVector, state.result);
+    chart.hideRule();
+    chart.tooltip.hide();
     d3.select("#chart svg").selectAll("g").remove();
     loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
   }
@@ -209,6 +213,8 @@ function loadData(path, type='csv') {
     selectScenario.selectAll(".btn-ei").on("click", (event, d) => {
       if (d !== state.scenario) {
         state.scenario = d;
+        chart.hideRule();
+        chart.tooltip.hide();
         updateSelectedButton(selectScenario, state.scenario);
         filterData();
         getMenuOptions();
