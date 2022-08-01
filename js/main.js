@@ -167,7 +167,7 @@ window.onclick = function(event) {
     }
   }
 
-  if (!event.path.includes(document.getElementById("filters-col"))) {
+  if (!event.path.includes(document.getElementById("filters-col")) && document.getElementById("show-filters").classList.contains("checked")) {
     let filter = d3.select("#show-filters");
     filter.classed("checked", !filter.classed("checked"));
 
