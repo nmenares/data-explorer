@@ -313,6 +313,8 @@ function loadData(path, type='csv') {
           selectRegion.selectAll("a").on("click", (event, d) => {
             if (d !== state[s]) {
               state[s] = d;
+              chart.hideRule();
+              chart.tooltip.hide();
               updateDropdownLabel("#"+s+"-dropdown", state[s]);
               updateGroupByMenu();
               filterData();
