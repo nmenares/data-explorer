@@ -366,6 +366,7 @@ body {
 
 .cia-indicator {
   position: relative;
+  line-height: 42px;
 }
 
 .cia-number, .cia-est {
