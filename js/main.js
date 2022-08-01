@@ -26,17 +26,25 @@ function getHtml(indicator) {
   const est = text.slice(i + 1);
 
   return `<span class="cia-number">${number}</span><span class="cia-est">${est}</span>`
+
+}
+
+function updateIndicator(id, field) {
+  let economy = state.region_info["Economy"];
+
+  d3.select(id).html(getHtml(economy[field]));
+  let width = d3.select(id).select(".cia-number").node().getBoundingClientRect().width;
+  d3.select(id).select(".cia-est")
+    .style("left", width + 'px');
 }
 
 function updateRegionInfo() {
   d3.select("#region-name").html(state.region);
-
-  let economy = state.region_info["Economy"];
-  
-  d3.select("#gdp-per-capita").html(getHtml(economy["Real GDP per capita"]));
-  d3.select("#gdp-growth-rate").html(getHtml(economy["Real GDP growth rate"]));
-  d3.select("#inflation-rate").html(getHtml(economy["Inflation rate (consumer prices)"]));
-  d3.select("#unemployment-rate").html(getHtml(economy["Unemployment rate"]));
+    
+  updateIndicator("#gdp-per-capita", "Real GDP per capita");
+  updateIndicator("#gdp-growth-rate", "Real GDP growth rate");
+  updateIndicator("#inflation-rate", "Inflation rate (consumer prices)");
+  updateIndicator("#unemployment-rate", "Unemployment rate");
 }
 
 function addOptions(id, values) {
