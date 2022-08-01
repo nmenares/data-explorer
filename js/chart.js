@@ -120,7 +120,7 @@ class Chart {
     vis.yAxis.scale(vis.yScale)
       .tickFormat(d => {
         if (yValues.includes(d)) {
-          return d;
+          return d3.format(".2s")(d);
         } else {
           return '';
         }
