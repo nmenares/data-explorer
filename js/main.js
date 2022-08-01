@@ -26,9 +26,6 @@ function getHtml(indicator) {
   const est = text.slice(i + 1);
 
   return `<span class="cia-number">${number}</span><span class="cia-est">${est}</span>`
-
-  return [number, est]
-
 }
 
 function updateRegionInfo() {
