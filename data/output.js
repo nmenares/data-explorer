@@ -166,6 +166,10 @@ const results = [
 
 const regions = [
   {
+    "name": "world",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/world/xx.json"
+  },
+  {
     "name": "albania",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/al.json"
   },
@@ -768,10 +772,6 @@ const regions = [
   {
     "name": "vietnam",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/east-n-southeast-asia/vm.json"
-  },
-  {
-    "name": "world",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/world/xx.json"
   },
   {
     "name": "yemen",
