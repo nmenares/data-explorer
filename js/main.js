@@ -128,11 +128,6 @@ selectRegion.selectAll("a").on("click", (event, d) => {
     state.region = d.name;
     getCIA(d.url);
     updateDropdownLabel("#dropdown-region", state.region);
-    if (d === "Global") {
-      hideCountryDivs();
-    } else {
-      showCountryDivs();
-    }
     d3.select("#chart svg").selectAll("g").remove();
     loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
   }
