@@ -64,27 +64,37 @@ function updateRegionInfo() {
     .attr("class", "indicator-name")
     .html(d => d)
     .on("click", (event, d) => {
-      console.log(event)
-      let filter = d3.select(event.target);
-      filter.classed("checked", !filter.classed("checked"));
+      let target = d3.select(event.target);
+      let sibling = d3.select(event.target.parentNode).select(".indicator-details");
+      let thisChecked = target.classed("checked");
 
-      // let details = d3.select("#" + nameNoSpaces(d.name) + " .details");
-      // details.classed("show", !details.classed("show"));
-
-      // document.getElementById("graph-filters").classList.toggle("show");
+      if (thisChecked === true) {
+        target.classed("checked", false);
+        sibling.classed("show", false);
+      } else {
+        d3.selectAll(".indicator-name")
+          .classed("checked", c => c === d);
+        d3.selectAll(".indicator-details")
+          .classed("show", c => c === d); 
+      }
     });
 
   indicatorName.attr("class", "indicator-name")
     .html(d => d)
     .on("click", (event, d) => {
-      console.log(event)
-      let filter = d3.select(event.target);
-      filter.classed("checked", !filter.classed("checked"));
+      let target = d3.select(event.target);
+      let sibling = d3.select(event.target.parentNode).select(".indicator-details");
+      let thisChecked = target.classed("checked");
 
-      // let details = d3.select("#" + nameNoSpaces(d.name) + " .details");
-      // details.classed("show", !details.classed("show"));
-
-      // document.getElementById("graph-filters").classList.toggle("show");
+      if (thisChecked === true) {
+        target.classed("checked", false);
+        sibling.classed("show", false);
+      } else {
+        d3.selectAll(".indicator-name")
+          .classed("checked", c => c === d);
+        d3.selectAll(".indicator-details")
+          .classed("show", c => c === d); 
+      }
     });
 
   indicatorName.exit().remove();
@@ -126,7 +136,13 @@ function updateRegionInfo() {
 
   indicatorValues
     .attr("class", 'indicator-value row')
-    .html(d => getHtml(state.region_info[d[0]][d[1]]));
+    .html(d => getHtml(state.region_info[d[0]][d[1]]))
+    .each((d,i,node) => {
+      let thisNode = d3.select(node[0]);
+      let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
+      thisNode.select(".cia-est")
+        .style("left", width + "px")
+    });
 
   indicatorValues.exit().remove();
 
