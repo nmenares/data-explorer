@@ -301,7 +301,7 @@ body {
   border-bottom: 1px solid rgba(28, 87, 104, 0.5);
 }
 
-#show-filters::after {
+#show-filters::after, .indicator-name::after {
   content: "";
   position: absolute;
   width: 100%;
@@ -316,7 +316,7 @@ body {
   background-size: 16px;
 }
 
-#show-filters.checked::after {
+#show-filters.checked::after, .indicator-name.checked::after {
   content: "";
   position: absolute;
   width: 100%;
@@ -337,7 +337,6 @@ body {
   transform: rotate(180deg);
 }
 
-#text-filters {}
 
 #graph-filters {
   position: absolute;
@@ -365,6 +364,28 @@ body {
 }
 
 .cia-indicator {
+  pointer-events: none;
+  border-bottom: 1px solid rgba(28, 87, 104, 0.5);
+  padding: 0;
+  margin: 0;
+}
+
+.indicator-name {
+  position: relative;
+  pointer-events: all;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 0;
+  margin: 0;
+}
+
+.indicator-details {
+  margin: 0;
+  padding: 0 0 0 15px;
+}
+
+.indicator-value {
   position: relative;
   line-height: 42px;
 }

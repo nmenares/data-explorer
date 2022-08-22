@@ -8,6 +8,12 @@ let state = {
   chart: 'line'
 }
 
+const CIAFields = {
+  'Economy': ["Real GDP per capita", "Real GDP growth rate", "Real GDP growth rate", "Unemployment rate"],
+  'Energy': [],
+  'Environment': []
+};
+
 function getCIA(url) {
   Promise.all([d3.json(url)]).then(function(data){
     state.region_info = data[0];
@@ -40,11 +46,102 @@ function updateIndicator(id, field) {
 
 function updateRegionInfo() {
   d3.select("#region-name").html(state.region);
-    
-  updateIndicator("#gdp-per-capita", "Real GDP per capita");
-  updateIndicator("#gdp-growth-rate", "Real GDP growth rate");
-  updateIndicator("#inflation-rate", "Inflation rate (consumer prices)");
-  updateIndicator("#unemployment-rate", "Unemployment rate");
+
+  let ciaDivs = d3.select(".cia-indicators").selectAll(".cia-indicator")
+    .data(Object.keys(CIAFields));
+
+  ciaDivs.enter().append("div")
+    .attr("class", "cia-indicator");
+
+  ciaDivs.attr("class", "cia-indicator");
+
+  ciaDivs.exit().remove();
+
+  let indicatorName = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-name")
+    .data(d => [d]);
+
+  indicatorName.enter().append("div")
+    .attr("class", "indicator-name")
+    .html(d => d)
+    .on("click", (event, d) => {
+      console.log(event)
+      let filter = d3.select(event.target);
+      filter.classed("checked", !filter.classed("checked"));
+
+      // let details = d3.select("#" + nameNoSpaces(d.name) + " .details");
+      // details.classed("show", !details.classed("show"));
+
+      // document.getElementById("graph-filters").classList.toggle("show");
+    });
+
+  indicatorName.attr("class", "indicator-name")
+    .html(d => d)
+    .on("click", (event, d) => {
+      console.log(event)
+      let filter = d3.select(event.target);
+      filter.classed("checked", !filter.classed("checked"));
+
+      // let details = d3.select("#" + nameNoSpaces(d.name) + " .details");
+      // details.classed("show", !details.classed("show"));
+
+      // document.getElementById("graph-filters").classList.toggle("show");
+    });
+
+  indicatorName.exit().remove();
+
+
+  let indicatorDetails = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details")
+    .data(d => [d]);
+
+  indicatorDetails.enter().append("div")
+    .attr("class", "indicator-details row");
+
+  indicatorDetails.attr("class", "indicator-details row");
+
+  indicatorDetails.exit().remove();
+
+  let indicatorCol = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col")
+    .data(d => CIAFields[d].map(f => [d, f]));
+
+  indicatorCol.enter().append("div")
+    .attr("class", 'indicator-col col-6');
+
+  indicatorCol
+    .attr("class", 'indicator-col col-6');
+
+  indicatorCol.exit().remove();
+
+  let indicatorValues = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col").selectAll(".indicator-value")
+    .data(d => [d]);
+
+  indicatorValues.enter().append("div")
+    .attr("class", 'indicator-value row')
+    .html(d => getHtml(state.region_info[d[0]][d[1]]))
+    .each((d,i,node) => {
+      let thisNode = d3.select(node[0]);
+      let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
+      thisNode.select(".cia-est")
+        .style("left", width + "px")
+    });
+
+  indicatorValues
+    .attr("class", 'indicator-value row')
+    .html(d => getHtml(state.region_info[d[0]][d[1]]));
+
+  indicatorValues.exit().remove();
+
+  let indicatorValuesNames = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col").selectAll(".indicator-value-name")
+    .data(d => [d]);
+
+  indicatorValuesNames.enter().append("div")
+    .attr("class", 'indicator-value-name row')
+    .html(d => `<span class="cia-indicator-name">${d[1]}</span>`)
+
+  indicatorValuesNames
+    .attr("class", 'indicator-value-name row')
+    .html(d => `<span class="cia-indicator-name">${d[1]}</span>`);
+
+  indicatorValuesNames.exit().remove();
 }
 
 function addOptions(id, values) {
