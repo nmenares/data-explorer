@@ -9,7 +9,7 @@ let state = {
 }
 
 const CIAFields = {
-  'Economy': ["Real GDP per capita", "Real GDP growth rate", "Real GDP growth rate", "Unemployment rate"],
+  'Economy': ["Real GDP per capita", "Real GDP growth rate", "Inflation rate (consumer prices)", "Unemployment rate"],
   'Energy': [],
   'Environment': []
 };
