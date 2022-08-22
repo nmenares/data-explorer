@@ -166,6 +166,13 @@ window.onclick = function(event) {
       dropdown.classList.remove('show');
     }
   }
+
+  if (!event.path.includes(document.getElementById("filters-col")) && document.getElementById("show-filters").classList.contains("checked")) {
+    let filter = d3.select("#show-filters");
+    filter.classed("checked", !filter.classed("checked"));
+
+    document.getElementById("graph-filters").classList.toggle("show");
+  }
 }
 
 const plotWidth = d3.select("#chart").node().getBoundingClientRect().width - 40,
@@ -306,6 +313,8 @@ function loadData(path, type='csv') {
           selectRegion.selectAll("a").on("click", (event, d) => {
             if (d !== state[s]) {
               state[s] = d;
+              chart.hideRule();
+              chart.tooltip.hide();
               updateDropdownLabel("#"+s+"-dropdown", state[s]);
               updateGroupByMenu();
               filterData();
