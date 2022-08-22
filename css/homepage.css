@@ -301,7 +301,7 @@ body {
   border-bottom: 1px solid rgba(28, 87, 104, 0.5);
 }
 
-#show-filters::after, .indicator-name::after {
+#show-filters::after {
   content: "";
   position: absolute;
   width: 100%;
@@ -316,7 +316,7 @@ body {
   background-size: 16px;
 }
 
-#show-filters.checked::after, .indicator-name.checked::after {
+#show-filters.checked::after {
   content: "";
   position: absolute;
   width: 100%;
@@ -376,12 +376,48 @@ body {
   cursor: pointer;
   font-size: 16px;
   line-height: 24px;
-  padding: 0;
+  padding: 10px 4px;
   margin: 0;
 }
 
+.indicator-name::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0%;
+  right: 20px;
+  /* z-index: -1; */
+  background-image: url("../img/icon-chevron-down.svg");
+  background-repeat: no-repeat;
+  background-position-x: 100%;
+  background-position-y: 50%;
+  background-size: 16px;
+}
+
+.indicator-name.checked::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0%;
+  left: calc(100% - 36px);
+  /* z-index: -1; */
+  background-image: url("../img/icon-chevron-down.svg");
+  background-repeat: no-repeat;
+  background-position-x: 100%;
+  background-position-y: 50%;
+  background-size: 16px;
+
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
 .indicator-details {
-  margin: 0;
+  margin: 0 0 20px 0;
   padding: 0 0 0 15px;
   display: none;
 }

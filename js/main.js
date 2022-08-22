@@ -76,6 +76,18 @@ function updateRegionInfo() {
           .classed("checked", c => c === d);
         d3.selectAll(".indicator-details")
           .classed("show", c => c === d); 
+
+        d3.select(".cia-indicators")
+          .selectAll(".cia-indicator")
+          .selectAll(".indicator-details")
+          .selectAll(".indicator-col")
+          .selectAll(".indicator-value")
+          .each((d,i,node) => {
+            let thisNode = d3.select(node[0]);
+            let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
+            thisNode.select(".cia-est")
+              .style("left", width + "px")
+          });
       }
     });
 
@@ -94,6 +106,18 @@ function updateRegionInfo() {
           .classed("checked", c => c === d);
         d3.selectAll(".indicator-details")
           .classed("show", c => c === d); 
+
+        d3.select(".cia-indicators")
+          .selectAll(".cia-indicator")
+          .selectAll(".indicator-details")
+          .selectAll(".indicator-col")
+          .selectAll(".indicator-value")
+          .each((d,i,node) => {
+            let thisNode = d3.select(node[0]);
+            let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
+            thisNode.select(".cia-est")
+              .style("left", width + "px")
+          });
       }
     });
 
