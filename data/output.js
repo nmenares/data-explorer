@@ -3,7 +3,7 @@ const results = [
     "name": "Macro-Econ Transition",
     "children": [
       {
-        "name": "Energy demand",
+        "name": "Energy",
         "folder": "energy",
         "columns": [
           {
@@ -788,157 +788,157 @@ const regions = [
 ]
 
 const vectors = [
-{
-  "name": "Energy demand",
-  "folder": "energy",
-  "columns": [
-    {
-      "name": "sector",
-      "longName": "Sector"
-    },
-    {
-      "name": "product_category",
-      "longName": "Product category"
-    },
-    {
-      "name": "product_long",
-      "longName": "Product"
-    },
-    {
-      "name": "flow_category",
-      "longName": "Flow category"
-    },
-    {
-      "name": "flow_long",
-      "longName": "Flow"
-    }
-  ],
-  "units": [
-    {
-      "label": "MJ",
-      "factor": 1.0
-    },
-    {
-      "label": "J",
-      "factor": 100000
-    }
-  ],
-  "plotTypes": ["line", "stacked-area"]
-},
-{
-  "name": "AFOLU",
-  "folder": "afolu",
-  "columns": [
-    {
-      "name": "sector",
-      "longName": "Sector"
-    },
-    {
-      "name": "product_long",
-      "longName": "Product"
-    },
-    {
-      "name": "flow_category",
-      "longName": "Flow category"
-    },
-    {
-      "name": "flow_long",
-      "longName": "Flow"
-    }
-  ],
-  "units": [
-    {
-      "label": "?",
-      "factor": 1.0
-    }
-  ],
-  "plotTypes": ["line", "stacked-area"]
-},
-{
-  "name": "Emissions",
-  "folder": "emissions",
-  "columns": [
-    {
-      "name": "sector",
-      "longName": "Sector"
-    },
-    {
-      "name": "product_long",
-      "longName": "Product"
-    },
-    {
-      "name": "flow_category",
-      "longName": "Flow category"
-    },
-    {
-      "name": "flow_long",
-      "longName": "Flow"
-    }
-  ],
-  "units": [
-    {
-      "label": "MT",
-      "factor": 1.0
-    }
-  ],
-  "plotTypes": ["line", "stacked-area"]
-},
-// {
-//   "name": "Emissions in CO<sub>2</sub>e",
-//   "folder": "emissions_co2e",
-//   "columns": [
-//     {
-//       "name": "sector",
-//       "longName": "Sector"
-//     },
-//     {
-//       "name": "product_long",
-//       "longName": "Product"
-//     },
-//     {
-//       "name": "flow_category",
-//       "longName": "Flow category"
-//     },
-//     {
-//       "name": "flow_long",
-//       "longName": "Flow"
-//     }
-//   ],
-//   "units": [
-//     {
-//       "label": "CO2e",
-//       "factor": 1.0
-//     }
-//   ],
-//   "plotTypes": ["line", "stacked-area"]
-// },
-{
-  "name": "Emissions wedges",
-  "folder": "emissions_wedges",
-  "columns": [
-    {
-      "name": "sector",
-      "longName": "Sector"
-    },
-    {
-      "name": "product_long",
-      "longName": "Product"
-    },
-    {
-      "name": "flow_category",
-      "longName": "Flow category"
-    },
-    {
-      "name": "flow_long",
-      "longName": "Flow"
-    }
-  ],
-  "units": [
-    {
-      "label": "CO2e",
-      "factor": 1.0
-    }
-  ],
-  "plotTypes": ["line", "stacked-area"]
-}
+  {
+    "name": "Energy",
+    "folder": "energy",
+    "columns": [
+      {
+        "name": "sector",
+        "longName": "Sector"
+      },
+      {
+        "name": "product_category",
+        "longName": "Product category"
+      },
+      {
+        "name": "product_long",
+        "longName": "Product"
+      },
+      {
+        "name": "flow_category",
+        "longName": "Flow category"
+      },
+      {
+        "name": "flow_long",
+        "longName": "Flow"
+      }
+    ],
+    "units": [
+      {
+        "label": "MJ",
+        "factor": 1.0
+      },
+      {
+        "label": "J",
+        "factor": 100000
+      }
+    ],
+    "plotTypes": ["line", "stacked-area"]
+  },
+  {
+    "name": "AFOLU",
+    "folder": "afolu",
+    "columns": [
+      {
+        "name": "sector",
+        "longName": "Sector"
+      },
+      {
+        "name": "product_long",
+        "longName": "Product"
+      },
+      {
+        "name": "flow_category",
+        "longName": "Flow category"
+      },
+      {
+        "name": "flow_long",
+        "longName": "Flow"
+      }
+    ],
+    "units": [
+      {
+        "label": "?",
+        "factor": 1.0
+      }
+    ],
+    "plotTypes": ["line", "stacked-area"]
+  },
+  {
+    "name": "Emissions",
+    "folder": "emissions",
+    "columns": [
+      {
+        "name": "sector",
+        "longName": "Sector"
+      },
+      {
+        "name": "product_long",
+        "longName": "Product"
+      },
+      {
+        "name": "flow_category",
+        "longName": "Flow category"
+      },
+      {
+        "name": "flow_long",
+        "longName": "Flow"
+      }
+    ],
+    "units": [
+      {
+        "label": "MT",
+        "factor": 1.0
+      }
+    ],
+    "plotTypes": ["line", "stacked-area"]
+  },
+  // {
+  //   "name": "Emissions in CO<sub>2</sub>e",
+  //   "folder": "emissions_co2e",
+  //   "columns": [
+  //     {
+  //       "name": "sector",
+  //       "longName": "Sector"
+  //     },
+  //     {
+  //       "name": "product_long",
+  //       "longName": "Product"
+  //     },
+  //     {
+  //       "name": "flow_category",
+  //       "longName": "Flow category"
+  //     },
+  //     {
+  //       "name": "flow_long",
+  //       "longName": "Flow"
+  //     }
+  //   ],
+  //   "units": [
+  //     {
+  //       "label": "CO2e",
+  //       "factor": 1.0
+  //     }
+  //   ],
+  //   "plotTypes": ["line", "stacked-area"]
+  // },
+  {
+    "name": "Emissions wedges",
+    "folder": "emissions_wedges",
+    "columns": [
+      {
+        "name": "sector",
+        "longName": "Sector"
+      },
+      {
+        "name": "product_long",
+        "longName": "Product"
+      },
+      {
+        "name": "flow_category",
+        "longName": "Flow category"
+      },
+      {
+        "name": "flow_long",
+        "longName": "Flow"
+      }
+    ],
+    "units": [
+      {
+        "label": "CO2e",
+        "factor": 1.0
+      }
+    ],
+    "plotTypes": ["line", "stacked-area"]
+  }
 ];
