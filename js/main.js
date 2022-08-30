@@ -10,8 +10,8 @@ let state = {
 
 const CIAFields = {
   'Economy': ["Real GDP per capita", "Real GDP growth rate", "Inflation rate (consumer prices)", "Unemployment rate"],
-  'Energy': [],
-  'Environment': []
+  'Energy': ["Electricity access", "Carbon dioxide emissions", "Energy consumption per capita"],
+  'Environment': ["Revenue from forest resources", "Revenue from coal"]
 };
 
 function getCIA(url) {
