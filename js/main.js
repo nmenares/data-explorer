@@ -14,6 +14,27 @@ const CIAFields = {
   'Environment': ["Revenue from forest resources", "Revenue from coal"]
 };
 
+const graphTypes = ['line_graph', 'area_graph'];
+
+let graphs = d3.select('#chart-types').selectAll("div")
+  .data(graphTypes);
+
+graphs.enter().append("div")
+  .attr("class", "chart-icon col-1")
+  .html(d => `<div class="row"><img src="img/chart-icons/${d}.svg" /></div><div class="row icon-name">${d.split("_").join(' ')}</div>`)
+  .on("click", () => {
+    console.log('here');
+  });
+
+graphs.html(d => `<img src="img/chart-icons/${d}.svg" /><span>${d.split("_").join(' ')}</span>`)
+  .attr("class", "chart-icon col-1")
+  .on("click", () => {
+    console.log('here');
+  });
+
+graphs.exit().remove();
+
+
 function getCIA(url) {
   Promise.all([d3.json(url)]).then(function(data){
     state.region_info = data[0];
@@ -25,7 +46,7 @@ getCIA(regions[0].url)
 
 function getHtml(indicator) {
 
-  const text = indicator[Object.keys(indicator)[0]].text
+  const text = indicator[Object.keys(indicator)[0]].text;
   const i = text.indexOf(' ');
 
   const number = text.slice(0, i);
