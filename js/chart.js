@@ -26,9 +26,18 @@ class Chart {
           .curve(d3.curveMonotoneX);
     } else if (vis.type === 'stacked-area') {
       vis.area = d3.area();
+    } else if (vis.type === 'treemap') {
+      vis.treemap = d3.treemap()
+        .size([vis.width, vis.height])
+        .round(true)
+        .padding(1);
+
+      vis.treemap(vis.data)
     }
 
-    vis.xAxis = d3.axisBottom()
+
+    if (vis.type !== 'treemap') {
+      vis.xAxis = d3.axisBottom()
         .tickFormat(d => {
           if (d.getFullYear() % 10 === 0) {
             return d3.timeFormat("%Y")(d);
@@ -38,10 +47,11 @@ class Chart {
         })
         .ticks(d3.timeYear.every(1))
         .tickSize(6);
-    vis.yAxis = d3.axisLeft()
+      vis.yAxis = d3.axisLeft()
         .scale(vis.yScale)
         // .tickSize(6);
         // .tickFormat(d => d * 100 + '%')
+    }
 
     vis.initPlot();
   }
@@ -83,8 +93,12 @@ class Chart {
   updatePlot() {
     const vis = this;
 
-    vis.updateAxes();
-    vis.updateCurves();
+    if (vis.type === 'treemap') {
+      vis.updateRects();
+    } else {
+      vis.updateAxes();
+      vis.updateCurves();
+    }
   }
 
   updateAxes() {
@@ -204,9 +218,11 @@ class Chart {
       .attr("fill", "white")
       .attr("transform", "translate(-20, -5)")
       .text(vis.yAxisTitle);
-  };
+
+  }; // updateAxes
 
   updateCurves() {
+    console.log(vis.data)
 
     const vis = this;
 
@@ -339,6 +355,67 @@ class Chart {
       }
     }
   } // updateCurves
+
+  updateRects() {
+    const vis = this;
+
+    function rectColor(d, i) {
+      return vis.colors[i % vis.colors.length]
+    }
+
+    var cell = svg.selectAll("rect")
+      .data(vis.data.leaves());
+
+    cell.enter().append("rect")
+      .attr("id", function(d) { return d.id; })
+      .attr("width", function(d) { return d.x1 - d.x0; })
+      .attr("height", function(d) { return d.y1 - d.y0; })
+      .attr("x", d => d.x0)
+      .attr("y", d => d.y0)
+      .attr("fill", rectColor);
+
+    cell
+      .attr("id", function(d) { return d.id; })
+      .attr("width", function(d) { return d.x1 - d.x0; })
+      .attr("height", function(d) { return d.y1 - d.y0; })
+      .attr("x", d => d.x0)
+      .attr("y", d => d.y0)
+      .attr("fill", rectColor);
+
+    cell.exit().remove();
+
+    cell.append("clipPath")
+        .attr("id", function(d) { return "clip-" + d.id; })
+      .append("use")
+        .attr("xlink:href", function(d) { return "#" + d.id; });
+
+    var label = svg.selectAll(".rect-label")
+      .data(vis.data.leaves());
+
+    label.enter().append("text")
+      .attr("class", "rect-label");
+
+    label
+      .attr("class", "rect-label");
+
+    label.exit().remove();
+
+    var rectLabels = svg.selectAll(".rect-label").selectAll("tspan")
+      .data(d => [[d.data.name, d.x0, d.y0], [d.value, d.x0, d.y0]])
+
+    rectLabels.enter().append("tspan")
+      .attr("x", d => d[1])
+      .attr("y", (d, i) => d[2] + 14 * (i + 1))
+      .text(d => d[0]);
+
+    rectLabels
+      .attr("x", d => d[1])
+      .attr("y", (d, i) => d[2] + 14 * (i + 1))
+      .text(d => d[0]);
+
+    rectLabels.exit().remove();
+
+  } // updateRects
 
   hideRule () {
     d3.selectAll(".rule")
