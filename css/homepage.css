@@ -337,7 +337,6 @@ body {
   transform: rotate(180deg);
 }
 
-#text-filters {}
 
 #graph-filters {
   position: absolute;
@@ -365,6 +364,69 @@ body {
 }
 
 .cia-indicator {
+  pointer-events: none;
+  border-bottom: 1px solid rgba(28, 87, 104, 0.5);
+  padding: 0;
+  margin: 0;
+}
+
+.indicator-name {
+  position: relative;
+  pointer-events: all;
+  cursor: pointer;
+  font-size: 16px;
+  line-height: 24px;
+  padding: 10px 4px;
+  margin: 0;
+}
+
+.indicator-name::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0%;
+  right: 20px;
+  /* z-index: -1; */
+  background-image: url("../img/icon-chevron-down.svg");
+  background-repeat: no-repeat;
+  background-position-x: 100%;
+  background-position-y: 50%;
+  background-size: 16px;
+}
+
+.indicator-name.checked::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0%;
+  left: calc(100% - 36px);
+  /* z-index: -1; */
+  background-image: url("../img/icon-chevron-down.svg");
+  background-repeat: no-repeat;
+  background-position-x: 100%;
+  background-position-y: 50%;
+  background-size: 16px;
+
+  -webkit-transform: rotate(180deg);
+  -moz-transform: rotate(180deg);
+  -ms-transform: rotate(180deg);
+  -o-transform: rotate(180deg);
+  transform: rotate(180deg);
+}
+
+.indicator-details {
+  margin: 0 0 20px 0;
+  padding: 0 0 0 15px;
+  display: none;
+}
+
+.indicator-col {
+  display: inline-block;
+}
+
+.indicator-value {
   position: relative;
   line-height: 42px;
 }
