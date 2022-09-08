@@ -5,7 +5,7 @@ let state = {
   vector: vectors[0],
   result: vectors[0],
   filteredData: null,
-  chart: 'treemap'
+  chart: 'line'
 }
 
 const CIAFields = {
@@ -14,7 +14,7 @@ const CIAFields = {
   'Environment': ["Revenue from forest resources", "Revenue from coal"]
 };
 
-const graphTypes = ['line', 'stacked-area'];
+const graphTypes = ['line', 'stacked-area', 'treemap'];
 
 let graphs = d3.select('#chart-types').selectAll("div")
   .data(graphTypes);
