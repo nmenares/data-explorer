@@ -14,7 +14,7 @@ const CIAFields = {
   'Environment': ["Revenue from forest resources", "Revenue from coal"]
 };
 
-const graphTypes = ['line_graph', 'area_graph'];
+const graphTypes = ['line', 'stacked-area'];
 
 let graphs = d3.select('#chart-types').selectAll("div")
   .data(graphTypes);
@@ -22,14 +22,22 @@ let graphs = d3.select('#chart-types').selectAll("div")
 graphs.enter().append("div")
   .attr("class", "chart-icon col-1")
   .html(d => `<div class="row"><img src="img/chart-icons/${d}.svg" /></div><div class="row icon-name">${d.split("_").join(' ')}</div>`)
-  .on("click", () => {
-    console.log('here');
+  .on("click", (event, d) => {
+    if (state.chart !== d) {
+      state.chart = d;
+      d3.select("#chart svg").selectAll("g").remove();
+      loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
+    }
   });
 
 graphs.html(d => `<img src="img/chart-icons/${d}.svg" /><span>${d.split("_").join(' ')}</span>`)
   .attr("class", "chart-icon col-1")
-  .on("click", () => {
-    console.log('here');
+  .on("click", (event, d) => {
+    if (state.chart !== d) {
+      state.chart = d;
+      d3.select("#chart svg").selectAll("g").remove();
+      loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
+    }
   });
 
 graphs.exit().remove();

@@ -242,7 +242,7 @@ class Chart {
     vis.svg.call(hover, vis.path);
 
     function curveOpacity(d) {
-      return 1.0;
+      return vis.type === 'stacked-area' ? 0.8 : 1.0;
     }
 
     function curveColor(d, i) {
