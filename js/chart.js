@@ -53,6 +53,9 @@ class Chart {
         // .tickFormat(d => d * 100 + '%')
     }
 
+    vis.g = vis.svg.append("g")
+      .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
+
     vis.initPlot();
   }
 
@@ -65,9 +68,6 @@ class Chart {
   initPlot() {
 
     const vis = this;
-
-    vis.g = vis.svg.append("g")
-        .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
     vis.gXAxis = vis.svg.append("g")
         .attr("class", "x axis")
@@ -222,8 +222,6 @@ class Chart {
   }; // updateAxes
 
   updateCurves() {
-    console.log(vis.data)
-
     const vis = this;
 
     vis.path = vis.g.selectAll("path").data(vis.data.lines);
@@ -363,7 +361,7 @@ class Chart {
       return vis.colors[i % vis.colors.length]
     }
 
-    var cell = svg.selectAll("rect")
+    var cell = vis.g.selectAll("rect")
       .data(vis.data.leaves());
 
     cell.enter().append("rect")
@@ -389,7 +387,7 @@ class Chart {
       .append("use")
         .attr("xlink:href", function(d) { return "#" + d.id; });
 
-    var label = svg.selectAll(".rect-label")
+    var label = vis.g.selectAll(".rect-label")
       .data(vis.data.leaves());
 
     label.enter().append("text")
@@ -400,7 +398,7 @@ class Chart {
 
     label.exit().remove();
 
-    var rectLabels = svg.selectAll(".rect-label").selectAll("tspan")
+    var rectLabels = vis.g.selectAll(".rect-label").selectAll("tspan")
       .data(d => [[d.data.name, d.x0, d.y0], [d.value, d.x0, d.y0]])
 
     rectLabels.enter().append("tspan")
