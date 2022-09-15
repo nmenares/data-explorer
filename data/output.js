@@ -940,5 +940,26 @@ const vectors = [
       }
     ],
     "plotTypes": ["line", "stacked-area"]
+  },
+  {
+    "name": "Adoption",
+    "folder": "pdindex_output",
+    "columns": [
+      {
+        "name": "sector",
+        "longName": "Sector"
+      },
+      {
+        "name": "product_long",
+        "longName": "Product"
+      },
+    ],
+    "units": [
+      {
+        "label": "% Adoption",
+        "factor": 1.0
+      }
+    ],
+    "plotTypes": ["line", "stacked-area"]
   }
 ];
