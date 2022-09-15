@@ -252,7 +252,7 @@ class Chart {
 
     vis.path.exit().remove();
     vis.rule.raise();
-    vis.svg.call(hover, vis.path);
+    if (vis.type !== 'treemap') vis.svg.call(hover, vis.path);
 
     function curveOpacity(d) {
       return vis.type === 'stacked-area' ? 0.8 : 1.0;
@@ -341,9 +341,10 @@ class Chart {
           dots.exit().remove();
 
           let offset = vis.svg.node().getBoundingClientRect();
-          vis.tooltip.update(`<div class="legend"><div class="legend-header">${xYear}</div><div class="legend-body">${legendHtml}</div></div>`,
-                             offset.left + vis.margin.left + vis.xScale(xPoint),
-                             document.documentElement.scrollTop + vis.margin.top + offset.top);
+          vis.tooltip.updateText(`<div class="legend"><div class="legend-header">${xYear}</div><div class="legend-body">${legendHtml}</div></div>`)
+          vis.tooltip.updatePosition(offset.left + vis.xScale(xPoint),
+                             document.documentElement.scrollTop + vis.margin.top + offset.top,
+                             'right');
         } else {
           d3.selectAll(".rule")
             .style("opacity", 0);
@@ -360,6 +361,16 @@ class Chart {
       return vis.colors[i % vis.colors.length]
     }
 
+    function handleMouseOver(event, d) {
+      let thisX = d3.pointer(event, this)[0],
+          thisY = d3.pointer(event, this)[1];
+      let offset = vis.svg.node().getBoundingClientRect();
+      vis.tooltip.updateText(`<div class="legend"><div class="legend-header">${d.data.name}</div><div class="legend-body">${d.value}</div></div>`);
+      vis.tooltip.updatePosition(offset.left + thisX,
+                          document.documentElement.scrollTop + offset.top + thisY,
+                          'top');
+    }
+
     var cell = vis.g.selectAll("rect")
       .data(vis.data.leaves());
 
@@ -369,7 +380,8 @@ class Chart {
       .attr("height", function(d) { return d.y1 - d.y0; })
       .attr("x", d => d.x0)
       .attr("y", d => d.y0)
-      .attr("fill", rectColor);
+      .attr("fill", rectColor)
+      .on("mousemove", handleMouseOver);
 
     cell
       .attr("id", function(d) { return d.id; })
@@ -377,7 +389,8 @@ class Chart {
       .attr("height", function(d) { return d.y1 - d.y0; })
       .attr("x", d => d.x0)
       .attr("y", d => d.y0)
-      .attr("fill", rectColor);
+      .attr("fill", rectColor)
+      .on("mousemove", handleMouseOver);
 
     cell.exit().remove();
 
