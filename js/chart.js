@@ -31,8 +31,6 @@ class Chart {
         .size([vis.width, vis.height])
         .round(true)
         .padding(1);
-
-      vis.treemap(vis.data)
     }
 
 
@@ -94,6 +92,7 @@ class Chart {
     const vis = this;
 
     if (vis.type === 'treemap') {
+      vis.treemap(vis.data);
       vis.updateRects();
     } else {
       vis.updateAxes();
