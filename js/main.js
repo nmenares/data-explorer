@@ -352,6 +352,7 @@ let plot = d3.select("#chart")
     .attr("height", plotHeight);
 
 let tooltipDiv = d3.select("body").append("div");
+let timeSliderDiv = d3.select("#time-slider");
 
 const margin = {top: 20, right: 20, bottom: 20, left: 30},
     width = plotWidth - margin.left - margin.right,
@@ -700,6 +701,7 @@ function loadData(path, type='csv') {
                       margin,
                       'linear',
                       tooltipDiv,
+                      timeSliderDiv,
                       yAxisUnit,
                       type=state.chart);
     chart.updatePlot();
