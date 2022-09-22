@@ -1,5 +1,5 @@
 class Chart {
-  constructor(data, svg, width, height, margin, scale, tooltipDiv, yAxisTitle, type='line') {
+  constructor(data, svg, width, height, margin, scale, tooltipDiv, timeSliderDiv, yAxisTitle, type='line') {
     const vis = this;
 
     vis.data = data;
@@ -16,6 +16,38 @@ class Chart {
                   "#a84857", "#cce982", "#eba562"]
 
     vis.transition = 500;
+
+    vis.year = vis.type === 'treemap' ? new Date().getFullYear() : [2010, 2050];
+    const fill = vis.type === 'treemap' ? null : '#2196f3';
+
+    let xmin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.x));
+    let xmax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.x));
+
+    const timesliderDim = timeSliderDiv.node().getBoundingClientRect();
+    timeSliderDiv.selectAll('svg').remove();
+
+    vis.timeslider = timeSliderDiv.append('svg')
+      .attr('width', timesliderDim.width)
+      .attr('height', 60)
+      .append('g')
+      .attr("transform", 'translate(20,10)');
+
+    vis.slider = d3.sliderHorizontal()
+      .min(xmin.getFullYear())
+      .max(xmax.getFullYear())
+      .step(1)
+      .width(timesliderDim.width - 60)
+      .ticks(5)
+      .tickFormat(d => String(d))
+      .default(vis.year)
+      .fill(fill)
+      .on('onchange', val => {
+        vis.year = val;
+        vis.filterData();
+        vis.updatePlot();
+      })
+
+    vis.timeslider.call(vis.slider);
 
     vis.xScale = d3.scaleTime()
         .range([vis.margin.left, vis.width - vis.margin.right]);
@@ -54,13 +86,43 @@ class Chart {
     vis.g = vis.svg.append("g")
       .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
+    vis.filterData();
     vis.initPlot();
+  }
+
+  filterData() {
+    const vis = this;
+
+    if (vis.type === 'treemap') {
+      const obj = {}
+      obj['name'] = 'all';
+      obj['children'] = vis.data.lines.map(d => {
+        let obj2 = {};
+        obj2['name'] = d.name;
+        obj2['value'] = d.values.filter(val => val.x - d3.timeParse("%Y")(vis.year) === 0)[0].y;
+        return obj2;
+      })
+      vis.filteredData = d3.hierarchy(obj)
+        .sum(function(d) { return  d.value})
+        .sort(function(a, b){ return b.height - a.height || b.value - a.value});
+
+    } else {
+      const [minYear, maxYear] = vis.year.map(d => d3.timeParse("%Y")(d));
+      vis.filteredData = {}
+      vis.filteredData.lines = vis.data.lines.map(line => {
+        const obj = {};
+        obj.name = line.name;
+        obj.values = line.values.filter(value => ((minYear <= value.x) & (value.x <= maxYear)));
+        return obj;
+      });
+    };
   }
 
   updateData(newData) {
     const vis = this;
 
     vis.data = newData;
+    vis.filteredData = vis.data;
   }
 
   initPlot() {
@@ -92,7 +154,7 @@ class Chart {
     const vis = this;
 
     if (vis.type === 'treemap') {
-      vis.treemap(vis.data);
+      vis.treemap(vis.filteredData);
       vis.updateRects();
     } else {
       vis.updateAxes();
@@ -105,18 +167,20 @@ class Chart {
     const vis = this;
 
     // x-axis
-    let xmin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.x));
-    let xmax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.x));
+    // let xmin = d3.min(vis.filteredData.lines, l => d3.min(l.values, d => d.x));
+    // let xmax = d3.max(vis.filteredData.lines, l => d3.max(l.values, d => d.x));
+    const [xmin, xmax] = vis.year.map(d => d3.timeParse("%Y")(d));
     vis.xScale.domain([xmin, xmax]);
     vis.xAxis.scale(vis.xScale);
 
+
     let ymin, ymax;
     if (vis.type === 'line') {
-      ymin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.y));
-      ymax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.y));
+      ymin = d3.min(vis.filteredData.lines, l => d3.min(l.values, d => d.y));
+      ymax = d3.max(vis.filteredData.lines, l => d3.max(l.values, d => d.y));
     } else if (vis.type === 'stacked-area') {
-      ymin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.y0));
-      ymax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.y1));
+      ymin = d3.min(vis.filteredData.lines, l => d3.min(l.values, d => d.y0));
+      ymax = d3.max(vis.filteredData.lines, l => d3.max(l.values, d => d.y1));
     }
 
     vis.yScale.domain([ymin, ymax]);
@@ -223,7 +287,7 @@ class Chart {
   updateCurves() {
     const vis = this;
 
-    vis.path = vis.g.selectAll("path").data(vis.data.lines);
+    vis.path = vis.g.selectAll("path").data(vis.filteredData.lines);
 
     vis.path.enter().append("path")
       .transition()
@@ -373,7 +437,7 @@ class Chart {
     }
 
     var cell = vis.g.selectAll("rect")
-      .data(vis.data.leaves());
+      .data(vis.filteredData.leaves());
 
     cell.enter().append("rect")
       .attr("id", function(d) { return d.id; })
@@ -401,7 +465,7 @@ class Chart {
         .attr("xlink:href", function(d) { return "#" + d.id; });
 
     var label = vis.g.selectAll(".rect-label")
-      .data(vis.data.leaves());
+      .data(vis.filteredData.leaves());
 
     label.enter().append("text")
       .attr("class", "rect-label");
