@@ -20,8 +20,8 @@ class Chart {
     vis.year = vis.type === 'treemap' ? new Date().getFullYear() : [2010, 2050];
     const fill = vis.type === 'treemap' ? null : '#2196f3';
 
-    let xmin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.x));
-    let xmax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.x));
+    const xmin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.x));
+    const xmax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.x));
 
     const timesliderDim = timeSliderDiv.node().getBoundingClientRect();
     timeSliderDiv.selectAll('svg').remove();
@@ -169,10 +169,9 @@ class Chart {
     // x-axis
     // let xmin = d3.min(vis.filteredData.lines, l => d3.min(l.values, d => d.x));
     // let xmax = d3.max(vis.filteredData.lines, l => d3.max(l.values, d => d.x));
-    const [xmin, xmax] = vis.year.map(d => d3.timeParse("%Y")(d));
-    vis.xScale.domain([xmin, xmax]);
+    [vis.xmin, vis.xmax] = vis.year.map(d => d3.timeParse("%Y")(d));
+    vis.xScale.domain([vis.xmin, vis.xmax]);
     vis.xAxis.scale(vis.xScale);
-
 
     let ymin, ymax;
     if (vis.type === 'line') {
@@ -289,14 +288,19 @@ class Chart {
 
     const historicalDate = 2020;
 
-    vis.rect = vis.g.selectAll("rect").data([0]);
+    console.log(vis.xScale.domain()[0], vis.xmin)
+
+    const firstDate = d3.max([vis.xScale.domain()[0], d3.timeParse("%Y")(historicalDate)]);
+    const lastDate = d3.min([vis.xScale.domain()[1], vis.xmax]);
+
+    vis.rect = vis.g.selectAll("rect").data([[firstDate, lastDate]]);
     
     vis.rect.enter().append('rect')
       .transition()
       .duration(vis.transition)
-      .attr('x', vis.xScale(d3.timeParse("%Y")(historicalDate)))
+      .attr('x', d => vis.xScale(d[0]))
       .attr('y', 0)
-      .attr('width', vis.xScale(vis.xScale.domain()[1]) - vis.xScale(d3.timeParse("%Y")(historicalDate)))
+      .attr('width', d => vis.xScale(d[1]) - vis.xScale(d[0]))
       .attr('height', vis.height - vis.margin.bottom)
       .attr("fill", '#165163')
       .attr("opacity", 0.2);
@@ -304,22 +308,22 @@ class Chart {
     vis.rect
       .transition()
       .duration(vis.transition)
-      .attr('x', vis.xScale(d3.timeParse("%Y")(historicalDate)))
+      .attr('x', d => vis.xScale(d[0]))
       .attr('y', 0)
-      .attr('width', vis.xScale(vis.xScale.domain()[1]) - vis.xScale(d3.timeParse("%Y")(historicalDate)))
+      .attr('width', d => vis.xScale(d[1]) - vis.xScale(d[0]))
       .attr('height', vis.height - vis.margin.bottom)
       .attr("fill", '#165163')
       .attr("opacity", 0.2);
 
     vis.rect.exit().remove();
 
-    vis.label = vis.g.selectAll(".projection-label").data([0]);
+    vis.label = vis.g.selectAll(".projection-label").data([firstDate]);
     
     vis.label.enter().append('text')
       .transition()
       .duration(vis.transition)
       .attr("class", "projection-label")
-      .attr('x', vis.xScale(d3.timeParse("%Y")(historicalDate)) + 14)
+      .attr('x', d => vis.xScale(d) + 14)
       .attr('y', 20)      
       .attr("fill", 'lightgray')
       .text("Projection");
@@ -328,7 +332,7 @@ class Chart {
       .transition()
       .duration(vis.transition)
       .attr("class", "projection-label")
-      .attr('x', vis.xScale(d3.timeParse("%Y")(historicalDate)) + 14)
+      .attr('x', d => vis.xScale(d) + 14)
       .attr('y', 20)      
       .attr("fill", 'lightgray')
       .text("Projection");
@@ -364,33 +368,33 @@ class Chart {
 
     vis.path.exit().remove();
 
-    vis.line = vis.g.selectAll(".projection-line").data([vis.xScale(d3.timeParse("%Y")(historicalDate))]);
+    vis.guideline = vis.g.selectAll(".projection-line").data([firstDate]);
     
-    vis.line.enter().append('line')
+    vis.guideline.enter().append('line')
       .transition()
       .duration(vis.transition)
       .attr("class", "projection-label")
-      .attr('x1', d => d)
+      .attr('x1', d => vis.xScale(d))
       .attr('y1', 0)
-      .attr('x2', d => d)
+      .attr('x2', d => vis.xScale(d))
       .attr('y2', vis.height - vis.margin.bottom)     
       .attr("stroke", 'lightgray')
       .attr("stroke-dasharray", "4,4")
       .attr("stroke-width", 0.5);
 
-    vis.line
+    vis.guideline
       .transition()
       .duration(vis.transition)
       .attr("class", "projection-label")
-      .attr('x1', d => d)
+      .attr('x1', d => vis.xScale(d))
       .attr('y1', 0)
-      .attr('x2', d => d)
+      .attr('x2', d => vis.xScale(d))
       .attr('y2', vis.height - vis.margin.bottom)     
       .attr("stroke", 'lightgray')
       .attr("stroke-dasharray", "4,4")
       .attr("stroke-width", 0.5);
 
-    vis.line.exit().remove();
+    vis.guideline.exit().remove();
 
     vis.rule.raise();
     if (vis.type !== 'treemap') vis.svg.call(hover, vis.path);
