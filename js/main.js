@@ -9,10 +9,39 @@ let state = {
 }
 
 const CIAFields = {
-  'Economy': ["Real GDP per capita", "Real GDP growth rate", "Real GDP growth rate", "Unemployment rate"],
-  'Energy': [],
-  'Environment': []
+  'Economy': ["Real GDP per capita", "Real GDP growth rate", "Inflation rate (consumer prices)", "Unemployment rate"],
+  'Energy': ["Electricity access", "Carbon dioxide emissions", "Energy consumption per capita"],
+  'Environment': ["Revenue from forest resources", "Revenue from coal"]
 };
+
+const graphTypes = ['line', 'stacked-area', 'treemap'];
+
+let graphs = d3.select('#chart-types').selectAll("div")
+  .data(graphTypes);
+
+graphs.enter().append("div")
+  .attr("class", "chart-icon col-2")
+  .html(d => `<div class="row"><img src="img/chart-icons/${d}.svg" /></div><div class="row icon-name">${d.split("_").join(' ')}</div>`)
+  .on("click", (event, d) => {
+    if (state.chart !== d) {
+      state.chart = d;
+      d3.select("#chart svg").selectAll("g").remove();
+      loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
+    }
+  });
+
+graphs.html(d => `<img src="img/chart-icons/${d}.svg" /><span>${d.split("_").join(' ')}</span>`)
+  .attr("class", "chart-icon col-1")
+  .on("click", (event, d) => {
+    if (state.chart !== d) {
+      state.chart = d;
+      d3.select("#chart svg").selectAll("g").remove();
+      loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
+    }
+  });
+
+graphs.exit().remove();
+
 
 function getCIA(url) {
   Promise.all([d3.json(url)]).then(function(data){
@@ -25,7 +54,7 @@ getCIA(regions[0].url)
 
 function getHtml(indicator) {
 
-  const text = indicator[Object.keys(indicator)[0]].text
+  const text = indicator[Object.keys(indicator)[0]].text;
   const i = text.indexOf(' ');
 
   const number = text.slice(0, i);
@@ -520,7 +549,7 @@ function loadData(path, type='csv') {
       })
 
       // STACKED AREA
-      if (state.chart == 'stacked-area') {
+      if (state.chart === 'stacked-area') {
         const series = d3.stack()
            .keys(uniqueGroupBy)
            .value((year, key) => state.dataToPlot.lines.filter(l => l.name === key)[0].values.filter(v => v.x - year === 0)[0].y)
@@ -540,6 +569,21 @@ function loadData(path, type='csv') {
           })
           return obj;
         })
+      }
+
+      if (state.chart === 'treemap') {
+        let idx = 0;
+        let obj = {}
+        obj['name'] = 'all';
+        obj['children'] = state.dataToPlot.lines.map(d => {
+          let obj2 = {};
+          obj2['name'] = d.name;
+          obj2['value'] = d.values[idx].y;
+          return obj2;
+        })
+        state.dataToPlot = d3.hierarchy(obj)
+          .sum(function(d) { return  d.value})
+          .sort(function(a, b){ return b.height - a.height || b.value - a.value});
       }
     }
 

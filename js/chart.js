@@ -26,9 +26,16 @@ class Chart {
           .curve(d3.curveMonotoneX);
     } else if (vis.type === 'stacked-area') {
       vis.area = d3.area();
+    } else if (vis.type === 'treemap') {
+      vis.treemap = d3.treemap()
+        .size([vis.width, vis.height])
+        .round(true)
+        .padding(1);
     }
 
-    vis.xAxis = d3.axisBottom()
+
+    if (vis.type !== 'treemap') {
+      vis.xAxis = d3.axisBottom()
         .tickFormat(d => {
           if (d.getFullYear() % 10 === 0) {
             return d3.timeFormat("%Y")(d);
@@ -38,10 +45,14 @@ class Chart {
         })
         .ticks(d3.timeYear.every(1))
         .tickSize(6);
-    vis.yAxis = d3.axisLeft()
+      vis.yAxis = d3.axisLeft()
         .scale(vis.yScale)
         // .tickSize(6);
         // .tickFormat(d => d * 100 + '%')
+    }
+
+    vis.g = vis.svg.append("g")
+      .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
     vis.initPlot();
   }
@@ -55,9 +66,6 @@ class Chart {
   initPlot() {
 
     const vis = this;
-
-    vis.g = vis.svg.append("g")
-        .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
     vis.gXAxis = vis.svg.append("g")
         .attr("class", "x axis")
@@ -83,8 +91,13 @@ class Chart {
   updatePlot() {
     const vis = this;
 
-    vis.updateAxes();
-    vis.updateCurves();
+    if (vis.type === 'treemap') {
+      vis.treemap(vis.data);
+      vis.updateRects();
+    } else {
+      vis.updateAxes();
+      vis.updateCurves();
+    }
   }
 
   updateAxes() {
@@ -204,10 +217,10 @@ class Chart {
       .attr("fill", "white")
       .attr("transform", "translate(-20, -5)")
       .text(vis.yAxisTitle);
-  };
+
+  }; // updateAxes
 
   updateCurves() {
-
     const vis = this;
 
     vis.path = vis.g.selectAll("path").data(vis.data.lines);
@@ -239,10 +252,10 @@ class Chart {
 
     vis.path.exit().remove();
     vis.rule.raise();
-    vis.svg.call(hover, vis.path);
+    if (vis.type !== 'treemap') vis.svg.call(hover, vis.path);
 
     function curveOpacity(d) {
-      return 1.0;
+      return vis.type === 'stacked-area' ? 0.8 : 1.0;
     }
 
     function curveColor(d, i) {
@@ -254,7 +267,8 @@ class Chart {
     }
 
     function circleRadius(d) {
-      return 3.0;
+      const radius = 3.0;
+      return vis.type === 'line' ? radius : d.y === d.y1 ? 0 : radius;
     }
 
     function getCircleHtml(color) {
@@ -328,9 +342,10 @@ class Chart {
           dots.exit().remove();
 
           let offset = vis.svg.node().getBoundingClientRect();
-          vis.tooltip.update(`<div class="legend"><div class="legend-header">${xYear}</div><div class="legend-body">${legendHtml}</div></div>`,
-                             offset.left + vis.margin.left + vis.xScale(xPoint),
-                             document.documentElement.scrollTop + vis.margin.top + offset.top);
+          vis.tooltip.updateText(`<div class="legend"><div class="legend-header">${xYear}</div><div class="legend-body">${legendHtml}</div></div>`)
+          vis.tooltip.updatePosition(offset.left + vis.xScale(xPoint),
+                             document.documentElement.scrollTop + vis.margin.top + offset.top,
+                             'right');
         } else {
           d3.selectAll(".rule")
             .style("opacity", 0);
@@ -339,6 +354,79 @@ class Chart {
       }
     }
   } // updateCurves
+
+  updateRects() {
+    const vis = this;
+
+    function rectColor(d, i) {
+      return vis.colors[i % vis.colors.length]
+    }
+
+    function handleMouseOver(event, d) {
+      let thisX = d3.pointer(event, this)[0],
+          thisY = d3.pointer(event, this)[1];
+      let offset = vis.svg.node().getBoundingClientRect();
+      vis.tooltip.updateText(`<div class="legend"><div class="legend-header">${d.data.name}</div><div class="legend-body">${d.value}</div></div>`);
+      vis.tooltip.updatePosition(offset.left + thisX,
+                          document.documentElement.scrollTop + offset.top + thisY,
+                          'top');
+    }
+
+    var cell = vis.g.selectAll("rect")
+      .data(vis.data.leaves());
+
+    cell.enter().append("rect")
+      .attr("id", function(d) { return d.id; })
+      .attr("width", function(d) { return d.x1 - d.x0; })
+      .attr("height", function(d) { return d.y1 - d.y0; })
+      .attr("x", d => d.x0)
+      .attr("y", d => d.y0)
+      .attr("fill", rectColor)
+      .on("mousemove", handleMouseOver);
+
+    cell
+      .attr("id", function(d) { return d.id; })
+      .attr("width", function(d) { return d.x1 - d.x0; })
+      .attr("height", function(d) { return d.y1 - d.y0; })
+      .attr("x", d => d.x0)
+      .attr("y", d => d.y0)
+      .attr("fill", rectColor)
+      .on("mousemove", handleMouseOver);
+
+    cell.exit().remove();
+
+    cell.append("clipPath")
+        .attr("id", function(d) { return "clip-" + d.id; })
+      .append("use")
+        .attr("xlink:href", function(d) { return "#" + d.id; });
+
+    var label = vis.g.selectAll(".rect-label")
+      .data(vis.data.leaves());
+
+    label.enter().append("text")
+      .attr("class", "rect-label");
+
+    label
+      .attr("class", "rect-label");
+
+    label.exit().remove();
+
+    var rectLabels = vis.g.selectAll(".rect-label").selectAll("tspan")
+      .data(d => [[d.data.name, d.x0, d.y0], [d.value, d.x0, d.y0]])
+
+    rectLabels.enter().append("tspan")
+      .attr("x", d => d[1])
+      .attr("y", (d, i) => d[2] + 14 * (i + 1))
+      .text(d => d[0]);
+
+    rectLabels
+      .attr("x", d => d[1])
+      .attr("y", (d, i) => d[2] + 14 * (i + 1))
+      .text(d => d[0]);
+
+    rectLabels.exit().remove();
+
+  } // updateRects
 
   hideRule () {
     d3.selectAll(".rule")

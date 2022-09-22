@@ -9,13 +9,23 @@ class Tooltip {
         .style("display", "none");
   }
 
-  update(text, left, top) {
+  updateText(text) {
     const vis = this;
 
     vis.div.html(text);
+  }
 
-    vis.div.style("top", `${top}px`)
-      .style("left", `${left + vis.padding}px`)
+  updatePosition(left, top, orient = 'top') {
+    const vis = this;
+
+    vis.div.style("display", "block");
+
+    const tooltipRect = vis.div.node().getBoundingClientRect();
+    const leftOffset = orient === 'top' ? 0 : tooltipRect.width/2;
+    const topOffset = orient === 'top' ? -tooltipRect.height/2 - vis.padding : 0;
+
+    vis.div.style("top", `${top + topOffset}px`)
+      .style("left", `${left + leftOffset}px`)
       .style("display", "block");
   }
 

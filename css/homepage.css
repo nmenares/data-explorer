@@ -232,6 +232,24 @@ body {
   border-left: 3px solid var(--ei-200);
   font-weight: 600;
 }
+/* CHART ICONS */
+
+.chart-icon {
+  margin-right: 12px;
+}
+
+.chart-icon img {
+  width: 75%;
+  padding: 0;
+}
+
+.icon-name {
+  font-size: 12px;
+  text-transform: uppercase;
+  display: inline-block;
+  text-align: center;
+  width: 100%;
+}
 
 /* CHART */
 
