@@ -239,15 +239,17 @@ body {
 }
 
 .chart-icon img {
-  width: 80px;
+  width: 75%;
+  padding: 0;
 }
 
 .icon-name {
   font-size: 12px;
   text-transform: uppercase;
+  display: inline-block;
+  text-align: center;
+  width: 100%;
 }
-
-.chart-icon
 
 /* CHART */
 
