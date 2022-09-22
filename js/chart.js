@@ -18,6 +18,7 @@ class Chart {
     vis.transition = 500;
 
     vis.year = vis.type === 'treemap' ? new Date().getFullYear() : [2010, 2050];
+    const fill = vis.type === 'treemap' ? null : '#2196f3';
 
     let xmin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.x));
     let xmax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.x));
@@ -39,7 +40,7 @@ class Chart {
       .ticks(5)
       .tickFormat(d => String(d))
       .default(vis.year)
-      .fill('#2196f3')
+      .fill(fill)
       .on('onchange', val => {
         vis.year = val;
         vis.filterData();
