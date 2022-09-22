@@ -3,7 +3,6 @@ class Chart {
     const vis = this;
 
     vis.data = data;
-    vis.filteredData = data;
     vis.svg = svg;
     vis.width = width;
     vis.height = height;
@@ -86,13 +85,27 @@ class Chart {
     vis.g = vis.svg.append("g")
       .attr("transform", "translate(" + vis.margin.left + "," + vis.margin.top + ")");
 
+    vis.filterData();
     vis.initPlot();
   }
 
   filterData() {
     const vis = this;
 
-    if (Array.isArray(vis.year)) {
+    if (vis.type === 'treemap') {
+      const obj = {}
+      obj['name'] = 'all';
+      obj['children'] = vis.data.lines.map(d => {
+        let obj2 = {};
+        obj2['name'] = d.name;
+        obj2['value'] = d.values.filter(val => val.x - d3.timeParse("%Y")(vis.year) === 0)[0].y;
+        return obj2;
+      })
+      vis.filteredData = d3.hierarchy(obj)
+        .sum(function(d) { return  d.value})
+        .sort(function(a, b){ return b.height - a.height || b.value - a.value});
+
+    } else {
       const [minYear, maxYear] = vis.year.map(d => d3.timeParse("%Y")(d));
       vis.filteredData = {}
       vis.filteredData.lines = vis.data.lines.map(line => {
@@ -101,9 +114,7 @@ class Chart {
         obj.values = line.values.filter(value => ((minYear <= value.x) & (value.x <= maxYear)));
         return obj;
       });
-    } else {
-
-    }
+    };
   }
 
   updateData(newData) {
