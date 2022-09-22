@@ -547,10 +547,9 @@ function loadData(path, type='csv') {
         })
         state.dataToPlot.lines.push(obj)
       })
-      console.log(state.dataToPlot)
 
       // STACKED AREA
-      if (state.chart == 'stacked-area') {
+      if (state.chart === 'stacked-area') {
         const series = d3.stack()
            .keys(uniqueGroupBy)
            .value((year, key) => state.dataToPlot.lines.filter(l => l.name === key)[0].values.filter(v => v.x - year === 0)[0].y)
@@ -572,7 +571,7 @@ function loadData(path, type='csv') {
         })
       }
 
-      if (state.chart == 'treemap') {
+      if (state.chart === 'treemap') {
         let idx = 0;
         let obj = {}
         obj['name'] = 'all';

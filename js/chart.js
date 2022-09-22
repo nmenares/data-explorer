@@ -267,7 +267,8 @@ class Chart {
     }
 
     function circleRadius(d) {
-      return 3.0;
+      const radius = 3.0;
+      return vis.type === 'line' ? radius : d.y === d.y1 ? 0 : radius;
     }
 
     function getCircleHtml(color) {
