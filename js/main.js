@@ -571,21 +571,6 @@ function loadData(path, type='csv') {
           return obj;
         })
       }
-
-      // if (state.chart === 'treemap') {
-      //   let idx = 0;
-      //   let obj = {}
-      //   obj['name'] = 'all';
-      //   obj['children'] = state.dataToPlot.lines.map(d => {
-      //     let obj2 = {};
-      //     obj2['name'] = d.name;
-      //     obj2['value'] = d.values[idx].y;
-      //     return obj2;
-      //   })
-      //   state.dataToPlot = d3.hierarchy(obj)
-      //     .sum(function(d) { return  d.value})
-      //     .sort(function(a, b){ return b.height - a.height || b.value - a.value});
-      // }
     }
 
 

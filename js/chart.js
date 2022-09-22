@@ -11,7 +11,6 @@ class Chart {
     vis.tooltip = new Tooltip(tooltipDiv);
     vis.yAxisTitle = yAxisTitle;
     vis.type = type;
-    console.log(vis.data);
 
     vis.colors = ["#00e3e6", "#6797fd", "#6bd384", "#954e9f",
                   "#a84857", "#cce982", "#eba562"]
@@ -24,6 +23,7 @@ class Chart {
     let xmax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.x));
 
     const timesliderDim = timeSliderDiv.node().getBoundingClientRect();
+    timeSliderDiv.selectAll('svg').remove();
 
     vis.timeslider = timeSliderDiv.append('svg')
       .attr('width', timesliderDim.width)
