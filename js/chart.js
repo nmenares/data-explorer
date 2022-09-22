@@ -292,52 +292,59 @@ class Chart {
 
     const firstDate = d3.max([vis.xScale.domain()[0], d3.timeParse("%Y")(historicalDate)]);
     const lastDate = d3.min([vis.xScale.domain()[1], vis.xmax]);
+    const dataProjection = lastDate - firstDate > 0;
 
-    vis.rect = vis.g.selectAll("rect").data([[firstDate, lastDate]]);
+    if (dataProjection) {
+      vis.rect = vis.g.selectAll("rect").data([[firstDate, lastDate]]);
     
-    vis.rect.enter().append('rect')
-      .transition()
-      .duration(vis.transition)
-      .attr('x', d => vis.xScale(d[0]))
-      .attr('y', 0)
-      .attr('width', d => vis.xScale(d[1]) - vis.xScale(d[0]))
-      .attr('height', vis.height - vis.margin.bottom)
-      .attr("fill", '#165163')
-      .attr("opacity", 0.2);
-
-    vis.rect
-      .transition()
-      .duration(vis.transition)
-      .attr('x', d => vis.xScale(d[0]))
-      .attr('y', 0)
-      .attr('width', d => vis.xScale(d[1]) - vis.xScale(d[0]))
-      .attr('height', vis.height - vis.margin.bottom)
-      .attr("fill", '#165163')
-      .attr("opacity", 0.2);
-
-    vis.rect.exit().remove();
-
-    vis.label = vis.g.selectAll(".projection-label").data([firstDate]);
+      vis.rect.enter().append('rect')
+        .transition()
+        .duration(vis.transition)
+        .attr('x', d => vis.xScale(d[0]))
+        .attr('y', 0)
+        .attr('width', d => vis.xScale(d[1]) - vis.xScale(d[0]))
+        .attr('height', vis.height - vis.margin.bottom)
+        .attr("fill", '#165163')
+        .attr("opacity", 0.2);
+  
+      vis.rect
+        .transition()
+        .duration(vis.transition)
+        .attr('x', d => vis.xScale(d[0]))
+        .attr('y', 0)
+        .attr('width', d => vis.xScale(d[1]) - vis.xScale(d[0]))
+        .attr('height', vis.height - vis.margin.bottom)
+        .attr("fill", '#165163')
+        .attr("opacity", 0.2);
+  
+      vis.rect.exit().remove();
+  
+      vis.label = vis.g.selectAll(".projection-label").data([[firstDate, lastDate]]);
+      
+      vis.label.enter().append('text')
+        .transition()
+        .duration(vis.transition)
+        .attr("class", "projection-label")
+        .attr('x', d => vis.xScale(d[0]) + 14)
+        .attr('y', 20)      
+        .attr("fill", 'lightgray')
+        .text("Projection");
+  
+      vis.label
+        .transition()
+        .duration(vis.transition)
+        .attr("class", "projection-label")
+        .attr('x', d => vis.xScale(d[0]) + 14)
+        .attr('y', 20)      
+        .attr("fill", 'lightgray')
+        .text("Projection");
+  
+      vis.label.exit().remove();
+    } else {
+      vis.rect.remove();
+      vis.label.remove();
+    }
     
-    vis.label.enter().append('text')
-      .transition()
-      .duration(vis.transition)
-      .attr("class", "projection-label")
-      .attr('x', d => vis.xScale(d) + 14)
-      .attr('y', 20)      
-      .attr("fill", 'lightgray')
-      .text("Projection");
-
-    vis.label
-      .transition()
-      .duration(vis.transition)
-      .attr("class", "projection-label")
-      .attr('x', d => vis.xScale(d) + 14)
-      .attr('y', 20)      
-      .attr("fill", 'lightgray')
-      .text("Projection");
-
-    vis.label.exit().remove();
 
     vis.path = vis.g.selectAll("path").data(vis.filteredData.lines);
 
@@ -368,34 +375,38 @@ class Chart {
 
     vis.path.exit().remove();
 
-    vis.guideline = vis.g.selectAll(".projection-line").data([firstDate]);
+    if (dataProjection) {
+      vis.guideline = vis.g.selectAll(".projection-line").data([[firstDate, lastDate]]);
     
-    vis.guideline.enter().append('line')
-      .transition()
-      .duration(vis.transition)
-      .attr("class", "projection-label")
-      .attr('x1', d => vis.xScale(d))
-      .attr('y1', 0)
-      .attr('x2', d => vis.xScale(d))
-      .attr('y2', vis.height - vis.margin.bottom)     
-      .attr("stroke", 'lightgray')
-      .attr("stroke-dasharray", "4,4")
-      .attr("stroke-width", 0.5);
+      vis.guideline.enter().append('line')
+        .transition()
+        .duration(vis.transition)
+        .attr("class", "projection-line")
+        .attr('x1', d => vis.xScale(d[0]))
+        .attr('y1', 0)
+        .attr('x2', d => vis.xScale(d[0]))
+        .attr('y2', vis.height - vis.margin.bottom)     
+        .attr("stroke", 'lightgray')
+        .attr("stroke-dasharray", "4,4")
+        .attr("stroke-width", 0.5);
 
-    vis.guideline
-      .transition()
-      .duration(vis.transition)
-      .attr("class", "projection-label")
-      .attr('x1', d => vis.xScale(d))
-      .attr('y1', 0)
-      .attr('x2', d => vis.xScale(d))
-      .attr('y2', vis.height - vis.margin.bottom)     
-      .attr("stroke", 'lightgray')
-      .attr("stroke-dasharray", "4,4")
-      .attr("stroke-width", 0.5);
+      vis.guideline
+        .transition()
+        .duration(vis.transition)
+        .attr("class", "projection-line")
+        .attr('x1', d => vis.xScale(d[0]))
+        .attr('y1', 0)
+        .attr('x2', d => vis.xScale(d[0]))
+        .attr('y2', vis.height - vis.margin.bottom)     
+        .attr("stroke", 'lightgray')
+        .attr("stroke-dasharray", "4,4")
+        .attr("stroke-width", 0.5);
 
-    vis.guideline.exit().remove();
-
+      vis.guideline.exit().remove();
+    } else {
+      vis.guideline.remove();
+    }
+    
     vis.rule.raise();
     if (vis.type !== 'treemap') vis.svg.call(hover, vis.path);
 
