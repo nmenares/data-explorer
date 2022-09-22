@@ -287,6 +287,54 @@ class Chart {
   updateCurves() {
     const vis = this;
 
+    const historicalDate = 2020;
+
+    vis.rect = vis.g.selectAll("rect").data([0]);
+    
+    vis.rect.enter().append('rect')
+      .transition()
+      .duration(vis.transition)
+      .attr('x', vis.xScale(d3.timeParse("%Y")(historicalDate)))
+      .attr('y', 0)
+      .attr('width', vis.xScale(vis.xScale.domain()[1]) - vis.xScale(d3.timeParse("%Y")(historicalDate)))
+      .attr('height', vis.height - vis.margin.bottom)
+      .attr("fill", '#165163')
+      .attr("opacity", 0.2);
+
+    vis.rect
+      .transition()
+      .duration(vis.transition)
+      .attr('x', vis.xScale(d3.timeParse("%Y")(historicalDate)))
+      .attr('y', 0)
+      .attr('width', vis.xScale(vis.xScale.domain()[1]) - vis.xScale(d3.timeParse("%Y")(historicalDate)))
+      .attr('height', vis.height - vis.margin.bottom)
+      .attr("fill", '#165163')
+      .attr("opacity", 0.2);
+
+    vis.rect.exit().remove();
+
+    vis.label = vis.g.selectAll(".projection-label").data([0]);
+    
+    vis.label.enter().append('text')
+      .transition()
+      .duration(vis.transition)
+      .attr("class", "projection-label")
+      .attr('x', vis.xScale(d3.timeParse("%Y")(historicalDate)) + 14)
+      .attr('y', 20)      
+      .attr("fill", 'lightgray')
+      .text("Projection");
+
+    vis.label
+      .transition()
+      .duration(vis.transition)
+      .attr("class", "projection-label")
+      .attr('x', vis.xScale(d3.timeParse("%Y")(historicalDate)) + 14)
+      .attr('y', 20)      
+      .attr("fill", 'lightgray')
+      .text("Projection");
+
+    vis.label.exit().remove();
+
     vis.path = vis.g.selectAll("path").data(vis.filteredData.lines);
 
     vis.path.enter().append("path")
@@ -315,6 +363,35 @@ class Chart {
       .attr("d", d => vis.type === 'line' ? vis.line(d.values) : vis.type === 'stacked-area' ? vis.area(d.values) : null);
 
     vis.path.exit().remove();
+
+    vis.line = vis.g.selectAll(".projection-line").data([vis.xScale(d3.timeParse("%Y")(historicalDate))]);
+    
+    vis.line.enter().append('line')
+      .transition()
+      .duration(vis.transition)
+      .attr("class", "projection-label")
+      .attr('x1', d => d)
+      .attr('y1', 0)
+      .attr('x2', d => d)
+      .attr('y2', vis.height - vis.margin.bottom)     
+      .attr("stroke", 'lightgray')
+      .attr("stroke-dasharray", "4,4")
+      .attr("stroke-width", 0.5);
+
+    vis.line
+      .transition()
+      .duration(vis.transition)
+      .attr("class", "projection-label")
+      .attr('x1', d => d)
+      .attr('y1', 0)
+      .attr('x2', d => d)
+      .attr('y2', vis.height - vis.margin.bottom)     
+      .attr("stroke", 'lightgray')
+      .attr("stroke-dasharray", "4,4")
+      .attr("stroke-width", 0.5);
+
+    vis.line.exit().remove();
+
     vis.rule.raise();
     if (vis.type !== 'treemap') vis.svg.call(hover, vis.path);
 
