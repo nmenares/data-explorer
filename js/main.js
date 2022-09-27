@@ -113,9 +113,11 @@ function updateRegionInfo() {
           .selectAll(".indicator-value")
           .each((d,i,node) => {
             let thisNode = d3.select(node[0]);
-            let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
-            thisNode.select(".cia-est")
-              .style("left", width + "px")
+            if (thisNode.select(".cia-number").node() !== null) {
+              let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
+              thisNode.select(".cia-est")
+                .style("left", width + "px");
+            }
           });
       }
     });
@@ -179,22 +181,26 @@ function updateRegionInfo() {
 
   indicatorValues.enter().append("div")
     .attr("class", 'indicator-value row')
-    .html(d => getHtml(state.region_info[d[0]][d[1]]))
+    .html(d => state.region_info[d[0]][d[1]] ? getHtml(state.region_info[d[0]][d[1]]) : '')
     .each((d,i,node) => {
       let thisNode = d3.select(node[0]);
-      let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
-      thisNode.select(".cia-est")
-        .style("left", width + "px")
+      if (thisNode.select(".cia-number").node() !== null) {
+        let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
+        thisNode.select(".cia-est")
+          .style("left", width + "px");
+      }
     });
 
   indicatorValues
     .attr("class", 'indicator-value row')
-    .html(d => getHtml(state.region_info[d[0]][d[1]]))
+    .html(d => state.region_info[d[0]][d[1]] ? getHtml(state.region_info[d[0]][d[1]]) : '')
     .each((d,i,node) => {
       let thisNode = d3.select(node[0]);
-      let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
-      thisNode.select(".cia-est")
-        .style("left", width + "px")
+      if (thisNode.select(".cia-number").node() !== null) {
+        let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
+        thisNode.select(".cia-est")
+          .style("left", width + "px");
+      }
     });
 
   indicatorValues.exit().remove();
