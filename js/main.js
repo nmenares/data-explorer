@@ -556,7 +556,7 @@ function loadData(path, type='csv') {
       })
 
       // STACKED AREA
-      if (state.chart === 'stacked-area') {
+      if (state.chart === 'area') {
         const series = d3.stack()
            .keys(uniqueGroupBy)
            .value((year, key) => state.dataToPlot.lines.filter(l => l.name === key)[0].values.filter(v => v.x - year === 0)[0].y)
