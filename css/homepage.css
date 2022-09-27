@@ -256,12 +256,19 @@ body {
 
 .chart-icon {
   margin-right: 12px;
-  border: 1px solid var(--ei-100);
+  border: 1px solid var(--ei-350);
+  height: 60px;
+  cursor: pointer;
+}
+
+.chart-icon:hover {
+  background-color: var(--ei-100);
 }
 
 .chart-icon img {
   width: 100%;
   padding: 0;
+  margin-bottom: -12px;
 }
 
 .icon-name {
@@ -331,9 +338,11 @@ body {
   text-transform: uppercase;
   cursor: pointer;
   position: relative;
-  border: 2px solid #165163;
+  border: 1px solid var(--ei-350);
   padding: 10px 14px;
   width: 280px;
+  height: 60px;
+  line-height: 40px;
 }
 
 #show-filters.checked {
