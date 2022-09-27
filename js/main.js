@@ -1,5 +1,5 @@
 let state = {
-  region: regions[0].name,
+  region: regions[0],
   region_info: null,
   scenario: 'baseline',
   vector: vectors[0],
@@ -26,7 +26,7 @@ graphs.enter().append("div")
     if (state.chart !== d) {
       state.chart = d;
       d3.select("#chart svg").selectAll("g").remove();
-      loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
+      loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
     }
   });
 
@@ -36,7 +36,7 @@ graphs.html(d => `<img src="img/chart-icons/${d}.svg" /><span class="icon-name">
     if (state.chart !== d) {
       state.chart = d;
       d3.select("#chart svg").selectAll("g").remove();
-      loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
+      loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
     }
   });
 
@@ -50,7 +50,7 @@ function getCIA(url) {
   })
 }
 
-getCIA(regions[0].url)
+getCIA(state.region.url)
 
 function getHtml(indicator) {
 
@@ -74,7 +74,7 @@ function updateIndicator(id, field) {
 }
 
 function updateRegionInfo() {
-  d3.select("#region-name").html(state.region);
+  d3.select("#region-name").html(state.region.short_name);
 
   let ciaDivs = d3.select(".cia-indicators").selectAll(".cia-indicator")
     .data(Object.keys(CIAFields));
@@ -283,10 +283,10 @@ let selectRegion = d3.select("#regions-menu");
 
 let optionsRegion = selectRegion.selectAll("a").data(regions);
 
-optionsRegion.html(d => d.name);
+optionsRegion.html(d => d.short_name);
 
 optionsRegion.enter().append("a")
-  .html(d => d.name);
+  .html(d => d.short_name);
 
 optionsRegion.exit().remove();
 
@@ -296,14 +296,14 @@ d3.select("#dropdown-region")
     chart.hideRule();
     chart.tooltip.hide();
   });
-updateDropdownLabel("#dropdown-region", state.region);
+updateDropdownLabel("#dropdown-region", state.region.short_name);
 selectRegion.selectAll("a").on("click", (event, d) => {
-  if (d.name !== state.region) {
-    state.region = d.name;
+  if (d.name !== state.region.name) {
+    state.region = d;
     getCIA(d.url);
-    updateDropdownLabel("#dropdown-region", state.region);
+    updateDropdownLabel("#dropdown-region", state.region.short_name);
     d3.select("#chart svg").selectAll("g").remove();
-    loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
+    loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
   }
 });
 
@@ -326,7 +326,7 @@ selectVector.selectAll(".btn-ei").on("click", (event, d) => {
     chart.hideRule();
     chart.tooltip.hide();
     d3.select("#chart svg").selectAll("g").remove();
-    loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
+    loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
   }
 })
 
@@ -372,7 +372,7 @@ const dateParse = d3.timeParse("%Y");
 
 let chart;
 
-loadData('./data/'+state.result.folder+'/'+state.region+'.csv');
+loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
 
 function loadData(path, type='csv') {
   let loaded;
