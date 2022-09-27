@@ -54,6 +54,8 @@ class Chart {
       .attr("y", 12);
     vis.timeslider.selectAll(".parameter-value text")
       .attr("y", 18);
+    vis.timeslider.selectAll(".track")
+      .remove();
 
     vis.xScale = d3.scaleTime()
         .range([vis.margin.left, vis.width - vis.margin.right]);
