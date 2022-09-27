@@ -183,6 +183,17 @@ body {
   font-weight: 600;
 }
 
+/* TIME SLIDER */
+
+#time-slider .tick text {
+  font-size: 10px;
+}
+
+.parameter-value text {
+  fill: var(--ei-400);
+  font-size: 12px;;
+}
+
 .outputs {
   padding: 10px 20px;
 }

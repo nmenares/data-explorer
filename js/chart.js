@@ -18,7 +18,7 @@ class Chart {
     vis.transition = 500;
 
     vis.year = vis.type === 'treemap' ? new Date().getFullYear() : [2010, 2050];
-    const fill = vis.type === 'treemap' ? null : '#2196f3';
+    const fill = vis.type === 'treemap' ? null : '#0ed1d6';
 
     const xmin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.x));
     const xmax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.x));
@@ -41,6 +41,7 @@ class Chart {
       .tickFormat(d => String(d))
       .default(vis.year)
       .fill(fill)
+      .handle("M -8, 0 m 0, 0 a 8,8 0 1,0 16,0 a 8,8 0 1,0 -16,0")
       .on('onchange', val => {
         vis.year = val;
         vis.filterData();
@@ -48,6 +49,10 @@ class Chart {
       })
 
     vis.timeslider.call(vis.slider);
+    vis.timeslider.selectAll(".axis .tick text")
+      .attr("y", 12);
+    vis.timeslider.selectAll(".parameter-value text")
+      .attr("y", 18);
 
     vis.xScale = d3.scaleTime()
         .range([vis.margin.left, vis.width - vis.margin.right]);
@@ -287,10 +292,9 @@ class Chart {
     const vis = this;
 
     const historicalDate = 2020;
+    const histDate = d3.timeParse("%Y")(historicalDate);
 
-    console.log(vis.xScale.domain()[0], vis.xmin)
-
-    const firstDate = d3.max([vis.xScale.domain()[0], d3.timeParse("%Y")(historicalDate)]);
+    const firstDate = d3.max([vis.xScale.domain()[0], histDate]);
     const lastDate = d3.min([vis.xScale.domain()[1], vis.xmax]);
     const dataProjection = lastDate - firstDate > 0;
 
@@ -376,15 +380,16 @@ class Chart {
     vis.path.exit().remove();
 
     if (dataProjection) {
-      vis.guideline = vis.g.selectAll(".projection-line").data([[firstDate, lastDate]]);
+      const guideDate = histDate - firstDate === 0 ? firstDate : [];
+      vis.guideline = vis.g.selectAll(".projection-line").data([guideDate]);
     
       vis.guideline.enter().append('line')
         .transition()
         .duration(vis.transition)
         .attr("class", "projection-line")
-        .attr('x1', d => vis.xScale(d[0]))
+        .attr('x1', d => vis.xScale(d))
         .attr('y1', 0)
-        .attr('x2', d => vis.xScale(d[0]))
+        .attr('x2', d => vis.xScale(d))
         .attr('y2', vis.height - vis.margin.bottom)     
         .attr("stroke", 'lightgray')
         .attr("stroke-dasharray", "4,4")
@@ -394,9 +399,9 @@ class Chart {
         .transition()
         .duration(vis.transition)
         .attr("class", "projection-line")
-        .attr('x1', d => vis.xScale(d[0]))
+        .attr('x1', d => vis.xScale(d))
         .attr('y1', 0)
-        .attr('x2', d => vis.xScale(d[0]))
+        .attr('x2', d => vis.xScale(d))
         .attr('y2', vis.height - vis.margin.bottom)     
         .attr("stroke", 'lightgray')
         .attr("stroke-dasharray", "4,4")
@@ -437,13 +442,19 @@ class Chart {
           .style("-webkit-tap-highlight-color", "transparent")
           .on("touchmove", moved)
           // .on("touchstart", entered)
-          // .on("touchend", left)
+          .on("touchend", left)
           // .on("touch", click);
       else svg
           .on("mousemove", moved)
           // .on("mouseenter", entered)
-          // .on("mouseleave", left)
+          .on("mouseleave", left)
           // .on("click", click);
+
+      function left() {
+        d3.selectAll(".rule")
+            .style("opacity", 0);
+          vis.tooltip.hide();
+      }
 
       function moved(event) {
         let thisX = d3.pointer(event, this)[0] - vis.margin.left;
