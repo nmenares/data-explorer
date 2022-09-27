@@ -11,6 +11,7 @@ class Chart {
     vis.tooltip = new Tooltip(tooltipDiv);
     vis.yAxisTitle = yAxisTitle;
     vis.type = type;
+    vis.formatValue = d3.format(".2s");
 
     vis.colors = ["#00e3e6", "#6797fd", "#6bd384", "#954e9f",
                   "#a84857", "#cce982", "#eba562"]
@@ -201,7 +202,7 @@ class Chart {
     vis.yAxis.scale(vis.yScale)
       .tickFormat(d => {
         if (yValues.includes(d)) {
-          return d3.format(".2s")(d);
+          return vis.formatValue(d);
         } else {
           return '';
         }
@@ -480,7 +481,7 @@ class Chart {
             .map((d,i) => {
               let spanCircle = `<span class="legend-circle">${getCircleHtml(d.color)}</span>`,
                   spanName = `<span class="legend-name">${d.name}</span>`,
-                  spanNumber = `<span class="legend-value">${d3.format(".2s")(d.y)}</span>`;
+                  spanNumber = `<span class="legend-value">${vis.formatValue(d.y)}</span>`;
 
               return `<div class="legend-item">${spanCircle}${spanName}${spanNumber}</div>`;
             })
@@ -553,7 +554,7 @@ class Chart {
       let thisX = d3.pointer(event, this)[0],
           thisY = d3.pointer(event, this)[1];
       let offset = vis.svg.node().getBoundingClientRect();
-      vis.tooltip.updateText(`<div class="legend"><div class="legend-header">${d.data.name}</div><div class="legend-body">${d.value}</div></div>`);
+      vis.tooltip.updateText(`<div class="legend"><div class="legend-header">${d.data.name}</div><div class="legend-body">${vis.formatValue(d.value)}</div></div>`);
       vis.tooltip.updatePosition(offset.left + thisX,
                           document.documentElement.scrollTop + offset.top + thisY,
                           'top');
@@ -599,17 +600,17 @@ class Chart {
     label.exit().remove();
 
     var rectLabels = vis.g.selectAll(".rect-label").selectAll("tspan")
-      .data(d => [[d.data.name, d.x0, d.y0], [d.value, d.x0, d.y0]])
+      .data(d => [[d.data.name, d.x0, d.y0, 'name'], [d.value, d.x0, d.y0, 'value']])
 
     rectLabels.enter().append("tspan")
       .attr("x", d => d[1])
       .attr("y", (d, i) => d[2] + 14 * (i + 1))
-      .text(d => d[0]);
+      .text(d => d[3] === 'name' ? d[0] : vis.formatValue(d[0]));
 
     rectLabels
       .attr("x", d => d[1])
       .attr("y", (d, i) => d[2] + 14 * (i + 1))
-      .text(d => d[0]);
+      .text(d => d[3] === 'name' ? d[0] : vis.formatValue(d[0]));
 
     rectLabels.exit().remove();
 
