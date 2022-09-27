@@ -210,11 +210,11 @@ function updateRegionInfo() {
 
   indicatorValuesNames.enter().append("div")
     .attr("class", 'indicator-value-name row')
-    .html(d => `<span class="cia-indicator-name">${d[1]}</span>`)
+    .html(d => state.region_info[d[0]][d[1]] === undefined ? '' : `<span class="cia-indicator-name">${d[1]}</span>`)
 
   indicatorValuesNames
     .attr("class", 'indicator-value-name row')
-    .html(d => `<span class="cia-indicator-name">${d[1]}</span>`);
+    .html(d => state.region_info[d[0]][d[1]] === undefined ? '' : `<span class="cia-indicator-name">${d[1]}</span>`);
 
   indicatorValuesNames.exit().remove();
 }
