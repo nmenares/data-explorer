@@ -18,7 +18,7 @@ class Chart {
     vis.transition = 500;
 
     vis.year = vis.type === 'treemap' ? new Date().getFullYear() : [2010, 2050];
-    const fill = vis.type === 'treemap' ? null : '#2196f3';
+    const fill = vis.type === 'treemap' ? null : '#0ed1d6';
 
     const xmin = d3.min(vis.data.lines, l => d3.min(l.values, d => d.x));
     const xmax = d3.max(vis.data.lines, l => d3.max(l.values, d => d.x));
@@ -41,6 +41,7 @@ class Chart {
       .tickFormat(d => String(d))
       .default(vis.year)
       .fill(fill)
+      .handle("M -8, 0 m 0, 0 a 8,8 0 1,0 16,0 a 8,8 0 1,0 -16,0")
       .on('onchange', val => {
         vis.year = val;
         vis.filterData();
@@ -48,6 +49,10 @@ class Chart {
       })
 
     vis.timeslider.call(vis.slider);
+    vis.timeslider.selectAll(".axis .tick text")
+      .attr("y", 12);
+    vis.timeslider.selectAll(".parameter-value text")
+      .attr("y", 18);
 
     vis.xScale = d3.scaleTime()
         .range([vis.margin.left, vis.width - vis.margin.right]);
