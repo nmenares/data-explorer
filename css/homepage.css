@@ -443,6 +443,7 @@ body {
 }
 
 .indicator-name {
+  font-weight: 500;
   position: relative;
   pointer-events: all;
   cursor: pointer;
