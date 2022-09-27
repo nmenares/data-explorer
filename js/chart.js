@@ -437,13 +437,19 @@ class Chart {
           .style("-webkit-tap-highlight-color", "transparent")
           .on("touchmove", moved)
           // .on("touchstart", entered)
-          // .on("touchend", left)
+          .on("touchend", left)
           // .on("touch", click);
       else svg
           .on("mousemove", moved)
           // .on("mouseenter", entered)
-          // .on("mouseleave", left)
+          .on("mouseleave", left)
           // .on("click", click);
+
+      function left() {
+        d3.selectAll(".rule")
+            .style("opacity", 0);
+          vis.tooltip.hide();
+      }
 
       function moved(event) {
         let thisX = d3.pointer(event, this)[0] - vis.margin.left;
