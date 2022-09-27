@@ -251,10 +251,17 @@ body {
   margin-right: 12px;
 }
 
+#chart-options-container {
+  text-align: center;
+}
+
+#filters-col {
+  text-align: left;
+}
+
 #chart-options {
   height: 54px;
   margin-bottom: 20px;
-  padding-left: 60px;
 }
 
 .chart-icon {
