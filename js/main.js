@@ -21,7 +21,7 @@ let graphs = d3.select('#chart-types').selectAll("div")
 
 graphs.enter().append("div")
   .attr("class", "chart-icon col-2")
-  .html(d => `<div class="row"><img src="img/chart-icons/${d}.svg" /></div><div class="row icon-name">${d.split("_").join(' ')}</div>`)
+  .html(d => `<img src="img/chart-icons/${d}.svg" /><span class="icon-name">${d.split("_").join(' ')}</span>`)
   .on("click", (event, d) => {
     if (state.chart !== d) {
       state.chart = d;
@@ -30,8 +30,8 @@ graphs.enter().append("div")
     }
   });
 
-graphs.html(d => `<img src="img/chart-icons/${d}.svg" /><span>${d.split("_").join(' ')}</span>`)
-  .attr("class", "chart-icon col-1")
+graphs.html(d => `<img src="img/chart-icons/${d}.svg" /><span class="icon-name">${d.split("_").join(' ')}</span>`)
+  .attr("class", "chart-icon col-2")
   .on("click", (event, d) => {
     if (state.chart !== d) {
       state.chart = d;

@@ -1,6 +1,6 @@
 body {
   color: var(--bs-light);
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   font-size: 14px;
   font-weight: 300;
   background-color: var(--ei-background);
@@ -247,15 +247,16 @@ body {
 
 .chart-icon {
   margin-right: 12px;
+  border: 1px solid var(--ei-100);
 }
 
 .chart-icon img {
-  width: 75%;
+  width: 100%;
   padding: 0;
 }
 
 .icon-name {
-  font-size: 12px;
+  font-size: 10px;
   text-transform: uppercase;
   display: inline-block;
   text-align: center;
