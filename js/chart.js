@@ -490,23 +490,25 @@ class Chart {
             .attr("transform", `translate(${vis.xScale(xPoint)},0)`)
             .style("opacity", 1);
 
-          let dots = vis.rule.selectAll(".circle-plot")
-            .data(dataValues);
+          if (vis.type === 'line') {
+            let dots = vis.rule.selectAll(".circle-plot")
+              .data(dataValues);
 
-          dots.enter().append("circle")
-            .attr("class", "circle-plot")
-            .attr("cx", 0)
-            .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
-            .attr("r", circleRadius)
-            .attr("fill", d => d.color)
+            dots.enter().append("circle")
+              .attr("class", "circle-plot")
+              .attr("cx", 0)
+              .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
+              .attr("r", circleRadius)
+              .attr("fill", d => d.color)
 
-          dots.attr("class", "circle-plot")
-            .attr("cx", 0)
-            .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
-            .attr("r", circleRadius)
-            .attr("fill", d => d.color)
+            dots.attr("class", "circle-plot")
+              .attr("cx", 0)
+              .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
+              .attr("r", circleRadius)
+              .attr("fill", d => d.color)
 
-          dots.exit().remove();
+            dots.exit().remove();
+          }
 
           let offset = vis.svg.node().getBoundingClientRect();
           vis.tooltip.updateText(`<div class="legend"><div class="legend-header">${xYear}</div><div class="legend-body">${legendHtml}</div></div>`)
