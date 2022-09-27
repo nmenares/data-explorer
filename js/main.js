@@ -347,7 +347,7 @@ window.onclick = function(event) {
   }
 }
 
-const plotWidth = d3.select("#chart").node().getBoundingClientRect().width - 40,
+const plotWidth = d3.select("#chart").node().getBoundingClientRect().width,
     plotHeight = window.innerHeight - d3.select(".header").node().getBoundingClientRect().height
                 - d3.select(".filters").node().getBoundingClientRect().height
                 - 2 * d3.select(".ei-border-bottom").node().getBoundingClientRect().height
@@ -361,7 +361,7 @@ let plot = d3.select("#chart")
 let tooltipDiv = d3.select("body").append("div");
 let timeSliderDiv = d3.select("#time-slider");
 
-const margin = {top: 20, right: 20, bottom: 20, left: 30},
+const margin = {top: 20, right: 30, bottom: 20, left: 30},
     width = plotWidth - margin.left - margin.right,
     height = plotHeight - margin.top - margin.bottom;
 
