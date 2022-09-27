@@ -292,10 +292,9 @@ class Chart {
     const vis = this;
 
     const historicalDate = 2020;
+    const histDate = d3.timeParse("%Y")(historicalDate);
 
-    console.log(vis.xScale.domain()[0], vis.xmin)
-
-    const firstDate = d3.max([vis.xScale.domain()[0], d3.timeParse("%Y")(historicalDate)]);
+    const firstDate = d3.max([vis.xScale.domain()[0], histDate]);
     const lastDate = d3.min([vis.xScale.domain()[1], vis.xmax]);
     const dataProjection = lastDate - firstDate > 0;
 
@@ -381,15 +380,16 @@ class Chart {
     vis.path.exit().remove();
 
     if (dataProjection) {
-      vis.guideline = vis.g.selectAll(".projection-line").data([[firstDate, lastDate]]);
+      const guideDate = histDate - firstDate === 0 ? firstDate : [];
+      vis.guideline = vis.g.selectAll(".projection-line").data([guideDate]);
     
       vis.guideline.enter().append('line')
         .transition()
         .duration(vis.transition)
         .attr("class", "projection-line")
-        .attr('x1', d => vis.xScale(d[0]))
+        .attr('x1', d => vis.xScale(d))
         .attr('y1', 0)
-        .attr('x2', d => vis.xScale(d[0]))
+        .attr('x2', d => vis.xScale(d))
         .attr('y2', vis.height - vis.margin.bottom)     
         .attr("stroke", 'lightgray')
         .attr("stroke-dasharray", "4,4")
@@ -399,9 +399,9 @@ class Chart {
         .transition()
         .duration(vis.transition)
         .attr("class", "projection-line")
-        .attr('x1', d => vis.xScale(d[0]))
+        .attr('x1', d => vis.xScale(d))
         .attr('y1', 0)
-        .attr('x2', d => vis.xScale(d[0]))
+        .attr('x2', d => vis.xScale(d))
         .attr('y2', vis.height - vis.margin.bottom)     
         .attr("stroke", 'lightgray')
         .attr("stroke-dasharray", "4,4")
