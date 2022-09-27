@@ -1,6 +1,6 @@
 body {
   color: var(--bs-light);
-  font-family: 'Exo 2', sans-serif;
+  font-family: 'Source Sans Pro', sans-serif;
   font-size: 14px;
   font-weight: 300;
   background-color: var(--ei-background);
@@ -245,21 +245,51 @@ body {
 }
 /* CHART ICONS */
 
-.chart-icon {
+#select-chart, #chart-types, #filters-col {
+  line-height: 60px;
+  display: inline-block;
   margin-right: 12px;
 }
 
+#chart-options {
+  height: 60px;
+  margin-bottom: 30px;
+  padding-left: 40px;
+}
+
+.chart-icon {
+  position: relative;
+  display: inline-block;
+  margin-right: 12px;
+  border: 1px solid var(--ei-350);
+  height: 60px;
+  width: 60px;
+  cursor: pointer;
+}
+
+.chart-icon:hover {
+  background-color: var(--ei-100);
+}
+
 .chart-icon img {
-  width: 75%;
   padding: 0;
+  margin-top: -18px;
+  margin-left: 6px;
+  width: 46px;
 }
 
 .icon-name {
-  font-size: 12px;
+  position: absolute;
+  bottom: -18px;
+  left: 0;
+  font-size: 10px;
   text-transform: uppercase;
-  display: inline-block;
   text-align: center;
   width: 100%;
+}
+
+#chart-types {
+  display: inline-block;
 }
 
 /* CHART */
@@ -321,9 +351,11 @@ body {
   text-transform: uppercase;
   cursor: pointer;
   position: relative;
-  border: 2px solid #165163;
+  border: 1px solid var(--ei-350);
   padding: 10px 14px;
   width: 280px;
+  height: 60px;
+  line-height: 40px;
 }
 
 #show-filters.checked {
@@ -373,9 +405,9 @@ body {
   width: 280px;
   padding: 10px 14px;
   background-color: var(--ei-background);
-  border-left: 2px solid #165163;
-  border-right: 2px solid #165163;
-  border-bottom: 2px solid #165163;
+  border-left: 1px solid var(--ei-350);
+  border-right: 1px solid var(--ei-350);
+  border-bottom: 1px solid var(--ei-350);
   z-index: 2;
 }
 

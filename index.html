@@ -8,7 +8,7 @@
 
 	<link rel="preconnect" href="https://fonts.googleapis.com">
 	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	<link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&family=Josefin+Sans:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
+	<link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700;1,900&family=Josefin+Sans:wght@100;200;300;400;500;600;700&display=swap" rel="stylesheet">
 	<link rel="stylesheet" href="css/bootstrap.min.css">
 	<link rel="stylesheet" href="css/homepage.css">
 </head>
@@ -56,7 +56,7 @@
 						<div class="buttons" id="buttons-scenario"></div>
 					</div>
 					<div class="col-3 select-scenario">
-						<span class="select-label">Time range</span>
+						<span class="select-label">Date</span>
 						<div class="buttons" id="time-slider"></div>
 					</div>
 				</div>
@@ -76,12 +76,11 @@
 				<div class="row cia-indicators"></div>
 			</div>
 			<div class="col-8">
-				<div class="row">
-					<div class="col-8">
-						<div class="row" id="chart-types"></div>
-					</div>
-					<div class="col-3" id="filters-col">
-						<div id="show-filters">
+				<div id="chart-options">
+					<span class="select-label" id="select-chart">Chart type</span>
+					<div id="chart-types"></div>
+					<div id="filters-col">
+						<div id="show-filters" class="select-label">
 							Graph options
 						</div>
 						<div id="graph-filters">

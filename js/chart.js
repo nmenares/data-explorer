@@ -62,7 +62,7 @@ class Chart {
     if (vis.type === 'line') {
       vis.line = d3.line()
           .curve(d3.curveMonotoneX);
-    } else if (vis.type === 'stacked-area') {
+    } else if (vis.type === 'area') {
       vis.area = d3.area();
     } else if (vis.type === 'treemap') {
       vis.treemap = d3.treemap()
@@ -183,7 +183,7 @@ class Chart {
     if (vis.type === 'line') {
       ymin = d3.min(vis.filteredData.lines, l => d3.min(l.values, d => d.y));
       ymax = d3.max(vis.filteredData.lines, l => d3.max(l.values, d => d.y));
-    } else if (vis.type === 'stacked-area') {
+    } else if (vis.type === 'area') {
       ymin = d3.min(vis.filteredData.lines, l => d3.min(l.values, d => d.y0));
       ymax = d3.max(vis.filteredData.lines, l => d3.max(l.values, d => d.y1));
     }
@@ -212,7 +212,7 @@ class Chart {
     if (vis.type === 'line') {
       vis.line.x((d, i) => vis.xScale(d.x))
         .y((d, i) => vis.yScale(d.y));
-    } else if (vis.type === 'stacked-area') {
+    } else if (vis.type === 'area') {
       vis.area.x(d => vis.xScale(d.x))
         .y0(d => vis.yScale(d.y0))
         .y1(d => vis.yScale(d.y1));
@@ -356,7 +356,7 @@ class Chart {
     vis.path.enter().append("path")
       .transition()
       .duration(vis.transition)
-      .attr("fill", vis.type === 'stacked-area' ? curveColor : "none")
+      .attr("fill", vis.type === 'area' ? curveColor : "none")
       .attr("stroke-width", curveWidth)
       .attr("stroke-linejoin", "round")
       .attr("stroke-linecap", "round")
@@ -364,11 +364,11 @@ class Chart {
       .attr("opacity", curveOpacity)
       // .attr("class", d => "curve "+nameNoSpaces(d.Sector))
       .attr("stroke", vis.type === 'line' ? curveColor : "none")
-      .attr("d", d => vis.type === 'line' ? vis.line(d.values) : vis.type === 'stacked-area' ? vis.area(d.values) : null);
+      .attr("d", d => vis.type === 'line' ? vis.line(d.values) : vis.type === 'area' ? vis.area(d.values) : null);
 
     vis.path.transition()
       .duration(vis.transition)
-      .attr("fill", vis.type === 'stacked-area' ? curveColor : "none")
+      .attr("fill", vis.type === 'area' ? curveColor : "none")
       .attr("stroke-width", curveWidth)
       .attr("stroke-linejoin", "round")
       .attr("stroke-linecap", "round")
@@ -376,7 +376,7 @@ class Chart {
       .attr("opacity", curveOpacity)
       // .attr("class", d => "curve "+nameNoSpaces(d.Sector))
       .attr("stroke", vis.type === 'line' ? curveColor : "none")
-      .attr("d", d => vis.type === 'line' ? vis.line(d.values) : vis.type === 'stacked-area' ? vis.area(d.values) : null);
+      .attr("d", d => vis.type === 'line' ? vis.line(d.values) : vis.type === 'area' ? vis.area(d.values) : null);
 
     vis.path.exit().remove();
 
@@ -417,7 +417,7 @@ class Chart {
     if (vis.type !== 'treemap') vis.svg.call(hover, vis.path);
 
     function curveOpacity(d) {
-      return vis.type === 'stacked-area' ? 0.8 : 1.0;
+      return vis.type === 'area' ? 0.8 : 1.0;
     }
 
     function curveColor(d, i) {
@@ -469,7 +469,7 @@ class Chart {
             let filteredValue = d.values.filter(v => v.x.getFullYear() === xYear)[0];
             if (vis.type === 'line') {
               obj.y = filteredValue.y;
-            } else if (vis.type === 'stacked-area') {
+            } else if (vis.type === 'area') {
               obj.y = filteredValue.y1 - filteredValue.y0;
               obj.y1 = filteredValue.y1;
             }
