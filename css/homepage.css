@@ -331,6 +331,7 @@ body {
   padding: 10px 15px;
   position: absolute;
   pointer-events: none;
+  border: 1px solid var(--ei-200);
 }
 
 .legend-circle {
