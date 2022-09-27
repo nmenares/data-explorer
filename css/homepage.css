@@ -411,6 +411,10 @@ body {
   z-index: 2;
 }
 
+.graph-menu, .groupby-menu {
+  line-height: 26px;
+}
+
 /* CIA factbook */
 
 #region-name {
