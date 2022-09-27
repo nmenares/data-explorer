@@ -245,6 +245,15 @@ body {
 }
 /* CHART ICONS */
 
+#chart-options {
+  height: 60px;
+  margin-bottom: 30px;
+}
+
+.select-chart {
+  line-height: 60px;
+}
+
 .chart-icon {
   margin-right: 12px;
   border: 1px solid var(--ei-100);

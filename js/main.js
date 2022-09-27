@@ -14,7 +14,7 @@ const CIAFields = {
   'Environment': ["Revenue from forest resources", "Revenue from coal"]
 };
 
-const graphTypes = ['line', 'stacked-area', 'treemap'];
+const graphTypes = ['line', 'area', 'treemap'];
 
 let graphs = d3.select('#chart-types').selectAll("div")
   .data(graphTypes);
