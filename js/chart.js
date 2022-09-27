@@ -71,7 +71,6 @@ class Chart {
         .padding(1);
     }
 
-
     if (vis.type !== 'treemap') {
       vis.xAxis = d3.axisBottom()
         .tickFormat(d => {
@@ -158,6 +157,8 @@ class Chart {
 
   updatePlot() {
     const vis = this;
+
+    vis.filterData();
 
     if (vis.type === 'treemap') {
       vis.treemap(vis.filteredData);
