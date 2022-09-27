@@ -245,19 +245,25 @@ body {
 }
 /* CHART ICONS */
 
+#select-chart, #chart-types, #filters-col {
+  line-height: 60px;
+  display: inline-block;
+  margin-right: 12px;
+}
+
 #chart-options {
   height: 60px;
   margin-bottom: 30px;
-}
-
-.select-chart {
-  line-height: 60px;
+  padding-left: 40px;
 }
 
 .chart-icon {
+  position: relative;
+  display: inline-block;
   margin-right: 12px;
   border: 1px solid var(--ei-350);
   height: 60px;
+  width: 60px;
   cursor: pointer;
 }
 
@@ -266,17 +272,24 @@ body {
 }
 
 .chart-icon img {
-  width: 100%;
   padding: 0;
-  margin-bottom: -12px;
+  margin-top: -18px;
+  margin-left: 6px;
+  width: 46px;
 }
 
 .icon-name {
+  position: absolute;
+  bottom: -18px;
+  left: 0;
   font-size: 10px;
   text-transform: uppercase;
-  display: inline-block;
   text-align: center;
   width: 100%;
+}
+
+#chart-types {
+  display: inline-block;
 }
 
 /* CHART */
@@ -392,9 +405,9 @@ body {
   width: 280px;
   padding: 10px 14px;
   background-color: var(--ei-background);
-  border-left: 2px solid #165163;
-  border-right: 2px solid #165163;
-  border-bottom: 2px solid #165163;
+  border-left: 1px solid var(--ei-350);
+  border-right: 1px solid var(--ei-350);
+  border-bottom: 1px solid var(--ei-350);
   z-index: 2;
 }
 
