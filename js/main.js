@@ -351,7 +351,8 @@ const plotWidth = d3.select("#chart").node().getBoundingClientRect().width - 40,
     plotHeight = window.innerHeight - d3.select(".header").node().getBoundingClientRect().height
                 - d3.select(".filters").node().getBoundingClientRect().height
                 - 2 * d3.select(".ei-border-bottom").node().getBoundingClientRect().height
-                - 40;
+                - d3.select("#chart-options").node().getBoundingClientRect().height
+                - 60;
 
 let plot = d3.select("#chart")
     .attr("width", plotWidth)

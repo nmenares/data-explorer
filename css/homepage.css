@@ -50,9 +50,9 @@ body {
   background: url("../img/border.png") repeat-x;
   background-position-x: 0;
   background-position-y: 100%;
-  background-size: 30px;
+  background-size: 10px;
   display: block;
-  height: 8px;
+  height: 4px;
 }
 
 .title {
@@ -246,15 +246,15 @@ body {
 /* CHART ICONS */
 
 #select-chart, #chart-types, #filters-col {
-  line-height: 60px;
+  line-height: 54px;
   display: inline-block;
   margin-right: 12px;
 }
 
 #chart-options {
-  height: 60px;
-  margin-bottom: 30px;
-  padding-left: 40px;
+  height: 54px;
+  margin-bottom: 20px;
+  padding-left: 60px;
 }
 
 .chart-icon {
@@ -262,8 +262,8 @@ body {
   display: inline-block;
   margin-right: 12px;
   border: 1px solid var(--ei-350);
-  height: 60px;
-  width: 60px;
+  height: 54px;
+  width: 54px;
   cursor: pointer;
 }
 
@@ -274,7 +274,7 @@ body {
 .chart-icon img {
   padding: 0;
   margin-top: -18px;
-  margin-left: 6px;
+  margin-left: 2px;
   width: 46px;
 }
 
@@ -354,8 +354,8 @@ body {
   border: 1px solid var(--ei-350);
   padding: 10px 14px;
   width: 280px;
-  height: 60px;
-  line-height: 40px;
+  height: 54px;
+  line-height: 36px;
 }
 
 #show-filters.checked {
