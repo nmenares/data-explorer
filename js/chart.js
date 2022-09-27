@@ -527,6 +527,24 @@ class Chart {
   updateRects() {
     const vis = this;
 
+    function notHover(svg, path) {
+      const doNothing = () => null;
+
+      if ("ontouchstart" in document) svg
+          .style("-webkit-tap-highlight-color", "transparent")
+          .on("touchmove", doNothing)
+          // .on("touchstart", entered)
+          .on("touchend", doNothing)
+          // .on("touch", click);
+      else svg
+          .on("mousemove", doNothing)
+          // .on("mouseenter", entered)
+          .on("mouseleave", doNothing)
+          // .on("click", click);
+    }
+
+    vis.svg.call(notHover, vis.path);
+
     function rectColor(d, i) {
       return vis.colors[i % vis.colors.length]
     }
