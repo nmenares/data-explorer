@@ -559,7 +559,7 @@ class Chart {
       let offset = vis.svg.node().getBoundingClientRect();
       vis.tooltip.updateText(`<div class="legend"><div class="legend-header">${d.data.name}</div><div class="legend-body">${vis.formatValue(d.value)}</div></div>`);
       vis.tooltip.updatePosition(offset.left + thisX,
-                          document.documentElement.scrollTop + offset.top + thisY,
+                          document.documentElement.scrollTop + offset.top + thisY - 20,
                           'top');
     }
 
