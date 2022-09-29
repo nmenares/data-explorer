@@ -327,6 +327,7 @@ body {
 }
 
 .ei-tooltip {
+  width: 250px;
   background-color: var(--ei-100);
   padding: 10px 15px;
   position: absolute;
@@ -347,7 +348,7 @@ body {
 
 .legend-name {
   display: inline-block;
-  width: 100px;
+  width: 150px;
 }
 
 .legend-value {

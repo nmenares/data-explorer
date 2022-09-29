@@ -22,12 +22,22 @@ class Tooltip {
       .html(text);
 
     const tooltipRect = vis.div.node().getBoundingClientRect();
+    let leftShift;
+    if (left + tooltipRect.width + vis.padding > window.innerWidth) {
+      if (orient === 'top') {
+        leftShift = -(left + tooltipRect.width - window.innerWidth - vis.padding);
+      } else {
+        leftShift = -tooltipRect.width  - vis.padding;
+      }
+    } else {
+      leftShift = 0;
+    }
+    const topShift = top + tooltipRect.height > window.innerHeight ? -(top + tooltipRect.height - window.innerHeight) : 0;
     const leftOffset = orient === 'top' ? -tooltipRect.width/2  + vis.padding : vis.padding;
     const topOffset = orient === 'top' ? -tooltipRect.height - vis.padding : 0;
-    console.log(vis.padding);
 
-    vis.div.style("top", `${top + topOffset}px`)
-      .style("left", `${left + leftOffset}px`);
+    vis.div.style("top", `${top + topOffset + topShift}px`)
+      .style("left", `${left + leftOffset + leftShift}px`);
   }
 
   hide() {
