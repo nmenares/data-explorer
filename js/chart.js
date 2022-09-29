@@ -538,12 +538,12 @@ class Chart {
           .style("-webkit-tap-highlight-color", "transparent")
           .on("touchmove", doNothing)
           // .on("touchstart", entered)
-          .on("touchend", doNothing)
+          .on("touchend", () => vis.tooltip.hide())
           // .on("touch", click);
       else svg
           .on("mousemove", doNothing)
           // .on("mouseenter", entered)
-          .on("mouseleave", doNothing)
+          .on("mouseleave", () => vis.tooltip.hide())
           // .on("click", click);
     }
 
