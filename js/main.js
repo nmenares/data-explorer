@@ -57,7 +57,7 @@ function getHtml(indicator) {
   const text = indicator[Object.keys(indicator)[0]].text;
   const i = text.indexOf(' ');
 
-  const number = text.slice(0, i);
+  const number = Object.keys(indicator)[0] === 'total emissions' ? d3.format(".3s")(+text.slice(0, i).replace(/,/g, '')): text.slice(0, i);
   const est = text.slice(i + 1);
 
   return `<span class="cia-number">${number}</span><span class="cia-est">${est}</span>`
