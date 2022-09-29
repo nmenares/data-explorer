@@ -19,7 +19,7 @@ body {
 }
 
 .header-item, .header-item a {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 400;
   text-transform: uppercase;
   text-align: center;
@@ -332,6 +332,11 @@ body {
   position: absolute;
   pointer-events: none;
   border: 1px solid var(--ei-200);
+}
+
+.legend-header{
+  font-size: 16px;
+  font-weight: 500;
 }
 
 .legend-circle {
