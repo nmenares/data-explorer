@@ -515,10 +515,10 @@ class Chart {
           }
 
           let offset = vis.svg.node().getBoundingClientRect();
-          vis.tooltip.updateText(`<div class="legend"><div class="legend-header">${xYear}</div><div class="legend-body">${legendHtml}</div></div>`)
-          vis.tooltip.updatePosition(offset.left + vis.xScale(xPoint),
-                             document.documentElement.scrollTop + vis.margin.top + offset.top,
-                             'right');
+          vis.tooltip.update(`<div class="legend"><div class="legend-header">${xYear}</div><div class="legend-body">${legendHtml}</div></div>`,
+                              offset.left + vis.margin.left + vis.xScale(xPoint),
+                              document.documentElement.scrollTop + vis.margin.top + offset.top,
+                              'right');
         } else {
           d3.selectAll(".rule")
             .style("opacity", 0);
@@ -557,9 +557,9 @@ class Chart {
       let thisX = d3.pointer(event, this)[0],
           thisY = d3.pointer(event, this)[1];
       let offset = vis.svg.node().getBoundingClientRect();
-      vis.tooltip.updateText(`<div class="legend"><div class="legend-header">${d.data.name}</div><div class="legend-body">${vis.formatValue(d.value)}</div></div>`);
-      vis.tooltip.updatePosition(offset.left + thisX,
-                          document.documentElement.scrollTop + offset.top + thisY - 20,
+      vis.tooltip.update(`<div class="legend"><div class="legend-header">${d.data.name}</div><div class="legend-body">${vis.formatValue(d.value)}</div></div>`,
+                          offset.left + thisX,
+                          document.documentElement.scrollTop + offset.top + thisY,
                           'top');
     }
 
