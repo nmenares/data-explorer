@@ -361,11 +361,11 @@ let plot = d3.select("#chart")
 let tooltipDiv = d3.select("body").append("div");
 let timeSliderDiv = d3.select("#time-slider");
 
-const margin = {top: 20, right: 30, bottom: 20, left: 30},
+let margin = {top: 20, right: 30, bottom: 20, left: 30},
     width = plotWidth - margin.left - margin.right,
     height = plotHeight - margin.top - margin.bottom;
 
-var svg = plot.append("svg")
+let svg = plot.append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom);
 
@@ -685,6 +685,13 @@ function loadData(path, type='csv') {
     filterData();
 
     let yAxisUnit = state.result.name + " (" + state.result.units[0].label + ")";
+
+    let margin = state.chart == 'treemap' ? {top: 0, right: 0, bottom: 0, left: 0} : {top: 20, right: 30, bottom: 20, left: 30},
+        width = plotWidth - margin.left - margin.right,
+        height = plotHeight - margin.top - margin.bottom;
+
+    svg.attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom);
 
     chart = new Chart(state.dataToPlot,
                       svg,
