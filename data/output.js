@@ -100,6 +100,16 @@ const regions = [
     "short_name": "Bulgaria"
   },
   {
+    "name": "mburkinafa",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/uv.json",
+    "short_name": "Burkina Faso"
+  },
+  {
+    "name": "myanmar",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/east-n-southeast-asia/bm.json",
+    "short_name": "Burma"
+  },
+  {
     "name": "cambodia",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/east-n-southeast-asia/cb.json",
     "short_name": "Cambodia"
@@ -115,6 +125,11 @@ const regions = [
     "short_name": "Canada"
   },
   {
+    "name": "mchad",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/cd.json",
+    "short_name": "Chad"
+  },
+  {
     "name": "chile",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/south-america/ci.json",
     "short_name": "Chile"
@@ -128,16 +143,6 @@ const regions = [
     "name": "colombia",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/south-america/co.json",
     "short_name": "Colombia"
-  },
-  {
-    "name": "congo",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/cf.json",
-    "short_name": "Congo (Brazzaville)"
-  },
-  {
-    "name": "congorep",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/cg.json",
-    "short_name": "DRC"
   },
   {
     "name": "costarica",
@@ -172,7 +177,12 @@ const regions = [
   {
     "name": "czech",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/ez.json",
-    "short_name": "Czechia"
+    "short_name": "Czech Republic"
+  },
+  {
+    "name": "congorep",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/cg.json",
+    "short_name": "Democratic Republic of the Congo"
   },
   {
     "name": "denmark",
@@ -182,7 +192,7 @@ const regions = [
   {
     "name": "dominicanr",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/central-america-n-caribbean/dr.json",
-    "short_name": "The Dominican"
+    "short_name": "Dominican Republic"
   },
   {
     "name": "ecuador",
@@ -258,6 +268,11 @@ const regions = [
     "name": "greece",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/gr.json",
     "short_name": "Greece"
+  },
+  {
+    "name": "mgreenland",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/north-america/gl.json",
+    "short_name": "Greenland"
   },
   {
     "name": "guatemala",
@@ -355,16 +370,6 @@ const regions = [
     "short_name": "Kenya"
   },
   {
-    "name": "korea",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/east-n-southeast-asia/ks.json",
-    "short_name": "South Korea"
-  },
-  {
-    "name": "koreadpr",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/east-n-southeast-asia/kn.json",
-    "short_name": "North Korea"
-  },
-  {
     "name": "kosovo",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/kv.json",
     "short_name": "Kosovo"
@@ -410,44 +415,14 @@ const regions = [
     "short_name": "Luxembourg"
   },
   {
-    "name": "malaysia",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/east-n-southeast-asia/my.json",
-    "short_name": "Malaysia"
-  },
-  {
-    "name": "malta",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/mt.json",
-    "short_name": "Malta"
-  },
-  {
-    "name": "mauritius",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/mp.json",
-    "short_name": "Mauritius"
-  },
-  {
-    "name": "mburkinafa",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/uv.json",
-    "short_name": "Burkina Faso"
-  },
-  {
-    "name": "mchad",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/cd.json",
-    "short_name": "Chad"
-  },
-  {
-    "name": "mexico",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/north-america/mx.json",
-    "short_name": "Mexico"
-  },
-  {
-    "name": "mgreenland",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/north-america/gl.json",
-    "short_name": "Greenland"
-  },
-  {
     "name": "mmadagasca",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/ma.json",
     "short_name": "Madagascar"
+  },
+  {
+    "name": "malaysia",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/east-n-southeast-asia/my.json",
+    "short_name": "Malaysia"
   },
   {
     "name": "mmali",
@@ -455,9 +430,24 @@ const regions = [
     "short_name": "Mali"
   },
   {
+    "name": "malta",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/mt.json",
+    "short_name": "Malta"
+  },
+  {
     "name": "mmauritani",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/mr.json",
     "short_name": "Mauritania"
+  },
+  {
+    "name": "mauritius",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/mp.json",
+    "short_name": "Mauritius"
+  },
+  {
+    "name": "mexico",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/north-america/mx.json",
+    "short_name": "Mexico"
   },
   {
     "name": "moldova",
@@ -485,21 +475,6 @@ const regions = [
     "short_name": "Mozambique"
   },
   {
-    "name": "mrwanda",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/rw.json",
-    "short_name": "Rwanda"
-  },
-  {
-    "name": "muganda",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/ug.json",
-    "short_name": "Uganda"
-  },
-  {
-    "name": "myanmar",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/east-n-southeast-asia/bm.json",
-    "short_name": "Burma"
-  },
-  {
     "name": "namibia",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/wa.json",
     "short_name": "Namibia"
@@ -513,6 +488,11 @@ const regions = [
     "name": "nethland",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/nl.json",
     "short_name": "Netherlands"
+  },
+  {
+    "name": "nz",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/australia-oceania/nz.json",
+    "short_name": "New Zealand"
   },
   {
     "name": "nicaragua",
@@ -530,6 +510,11 @@ const regions = [
     "short_name": "Nigeria"
   },
   {
+    "name": "koreadpr",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/east-n-southeast-asia/kn.json",
+    "short_name": "North Korea"
+  },
+  {
     "name": "northmaced",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/mk.json",
     "short_name": "North Macedonia"
@@ -538,11 +523,6 @@ const regions = [
     "name": "norway",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/no.json",
     "short_name": "Norway"
-  },
-  {
-    "name": "nz",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/australia-oceania/nz.json",
-    "short_name": "New Zealand"
   },
   {
     "name": "oman",
@@ -590,6 +570,11 @@ const regions = [
     "short_name": "Qatar"
   },
   {
+    "name": "congo",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/cf.json",
+    "short_name": "Republic of the Congo"
+  },
+  {
     "name": "romania",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/ro.json",
     "short_name": "Romania"
@@ -598,6 +583,11 @@ const regions = [
     "name": "russia",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/central-asia/rs.json",
     "short_name": "Russia"
+  },
+  {
+    "name": "mrwanda",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/rw.json",
+    "short_name": "Rwanda"
   },
   {
     "name": "saudiarabi",
@@ -635,6 +625,16 @@ const regions = [
     "short_name": "South Africa"
   },
   {
+    "name": "korea",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/east-n-southeast-asia/ks.json",
+    "short_name": "South Korea"
+  },
+  {
+    "name": "ssudan",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/od.json",
+    "short_name": "South Sudan"
+  },
+  {
     "name": "spain",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/sp.json",
     "short_name": "Spain"
@@ -643,11 +643,6 @@ const regions = [
     "name": "srilanka",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/south-asia/ce.json",
     "short_name": "Sri Lanka"
-  },
-  {
-    "name": "ssudan",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/od.json",
-    "short_name": "South Sudan"
   },
   {
     "name": "sudan",
@@ -720,14 +715,9 @@ const regions = [
     "short_name": "Turkmenistan"
   },
   {
-    "name": "uae",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/middle-east/ae.json",
-    "short_name": "none"
-  },
-  {
-    "name": "uk",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/uk.json",
-    "short_name": "United Kingdom"
+    "name": "muganda",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/ug.json",
+    "short_name": "Uganda"
   },
   {
     "name": "ukraine",
@@ -735,14 +725,24 @@ const regions = [
     "short_name": "Ukraine"
   },
   {
-    "name": "uruguay",
-    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/south-america/uy.json",
-    "short_name": "Uruguay"
+    "name": "uae",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/middle-east/ae.json",
+    "short_name": "United Arab Emirates"
+  },
+  {
+    "name": "uk",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/europe/uk.json",
+    "short_name": "United Kingdom"
   },
   {
     "name": "usa",
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/north-america/us.json",
     "short_name": "United States"
+  },
+  {
+    "name": "uruguay",
+    "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/south-america/uy.json",
+    "short_name": "Uruguay"
   },
   {
     "name": "uzbekistan",
@@ -774,7 +774,7 @@ const regions = [
     "url": "https://raw.githubusercontent.com/factbook/factbook.json/master/africa/zi.json",
     "short_name": "Zimbabwe"
   }
-]
+];
 
 const vectors = [
   {
