@@ -593,7 +593,6 @@ class Chart {
 
     var label = vis.g.selectAll(".rect-label")
       .data(vis.filteredData.leaves().filter(d => ((d.x1 - d.x0) * (d.y1 - d.y0) > 50) & (d.x1 - d.x0 > 50) & (d.y1 - d.y0 > 50)));
-    console.log(vis.filteredData.leaves());
 
     label.enter().append("text")
       .attr("class", "rect-label");
