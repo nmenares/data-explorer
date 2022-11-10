@@ -804,7 +804,7 @@ const vectors = [
     ],
     "units": [
       {
-        "label": "MJ",
+        "label": "TJ",
         "factor": 1.0
       },
       {
