@@ -158,8 +158,8 @@ body {
   overflow: scroll;
   background: var(--ei-100);
   border-bottom: 1px solid #165163;
-  top: calc(100% - 4px);
-  right: 0;
+  top: calc(100% + 2px);
+  right: -24px;
   border: 1px solid var(--ei-350);
   padding: 20px 20px 10px;
   width: 400px;
