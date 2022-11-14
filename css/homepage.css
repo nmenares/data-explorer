@@ -161,7 +161,7 @@ body {
   top: calc(100% - 4px);
   right: 0;
   border: 1px solid var(--ei-350);
-  padding: 10px 20px;
+  padding: 20px 20px 10px;
   width: 400px;
 }
 
@@ -186,6 +186,16 @@ body {
 
 #about-details a:hover {
   color: var(--ei-500);
+}
+
+#close {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
 }
 
 .btn-ei {

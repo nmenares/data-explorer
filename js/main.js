@@ -8,11 +8,14 @@ let state = {
   chart: 'line'
 }
 
-d3.select("#dropdown-about")
+d3.select("#about-button")
   .on("click", function(d){
     document.getElementById("about-details").classList.toggle("show");
-    // chart.hideRule();
-    // chart.tooltip.hide();
+  });
+
+d3.select("#close")
+  .on("click", function(d){
+    document.getElementById("about-details").classList.toggle("show");
   });
 
 const CIAFields = {
@@ -351,6 +354,13 @@ window.onclick = function(event) {
     filter.classed("checked", !filter.classed("checked"));
 
     document.getElementById("graph-filters").classList.toggle("show");
+  }
+
+  if (!event.target.matches('#about-button') && !event.path.includes(document.getElementById('about-details'))) {
+    var dropdown = document.getElementById("about-details");
+    if (dropdown.classList.contains('show')) {
+      dropdown.classList.remove('show');
+    }
   }
 }
 
