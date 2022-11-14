@@ -8,6 +8,13 @@ let state = {
   chart: 'line'
 }
 
+d3.select("#dropdown-about")
+  .on("click", function(d){
+    document.getElementById("about-details").classList.toggle("show");
+    // chart.hideRule();
+    // chart.tooltip.hide();
+  });
+
 const CIAFields = {
   'Economy': ["Real GDP per capita", "Real GDP growth rate", "Inflation rate (consumer prices)", "Unemployment rate"],
   'Energy': ["Electricity access", "Carbon dioxide emissions", "Energy consumption per capita"],
