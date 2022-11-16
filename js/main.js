@@ -333,15 +333,6 @@ d3.select("#dropbtn-region")
     chart.tooltip.hide();
   });
 updateDropdownLabel("#dropdown-region", state.region.short_name);
-// selectRegion.selectAll("a").on("click", (event, d) => {
-//   if (d.name !== state.region.name) {
-//     state.region = d;
-//     getCIA(d.url);
-//     updateDropdownLabel("#dropdown-region", state.region.short_name);
-//     d3.select("#chart svg").selectAll("g").remove();
-//     loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
-//   }
-// });
 
 searchBox
   .on("click", (event) => {
@@ -356,8 +347,14 @@ searchBox
     } else {
       updateRegions(regions);
     }
-  })
+  });
 
+d3.select("#reset-search")
+  .on("click", () => {
+    searchBox.property("value", '')
+      .attr("placeholder", "Search...");
+    updateRegions(regions);
+  });
 
 let selectVector = d3.select("#buttons-vector");
 

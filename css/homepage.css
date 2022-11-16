@@ -151,13 +151,14 @@ body {
 }
 
 #regions-menu {
-  top: calc(100% + 44px);
+  top: 100%;
 }
 
 #regions-search {
   border-bottom: none;
   padding: 10px 10px 10px 20px;
   top: 100%;
+  position: relative;
 }
 
 #search-box {
@@ -193,6 +194,13 @@ body {
 
 input[type="text"]:focus {
   outline: none;
+}
+
+#reset-search {
+  position: absolute;
+  right: 40px;
+  top: 14px;
+  cursor: pointer;
 }
 
 #about-details {
