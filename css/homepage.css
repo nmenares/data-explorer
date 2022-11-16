@@ -18,7 +18,7 @@ body {
   color: inherit;
 }
 
-.header-item, .header-item a {
+.dropdown-about, .header-item, .header-item a {
   font-size: 16px;
   font-weight: 400;
   text-transform: uppercase;
@@ -117,6 +117,10 @@ body {
   width: 250px;
 }
 
+#dropdown-about {
+  position: relative;
+}
+
 /* Dropdown Content (Hidden by Default) */
 .dropdown-content {
   display: none;
@@ -144,6 +148,54 @@ body {
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {
   background-color: var(--ei-200);
+}
+
+#about-details {
+  display: none;
+  position: absolute;
+  /* box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); */
+  z-index: 1000000;
+  overflow: scroll;
+  background: var(--ei-100);
+  border-bottom: 1px solid #165163;
+  top: calc(100% + 2px);
+  right: -24px;
+  border: 1px solid var(--ei-350);
+  padding: 20px 20px 10px;
+  width: 400px;
+}
+
+#about-details p {
+  line-height: 20px;
+  font-size: 16px;
+}
+
+#about-details p.about-subtitle {
+  color: var(--ei-title);
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 14px;
+  margin-bottom: 0.3rem;
+}
+
+#about-details a {
+  text-decoration: none;
+  color: var(--ei-400);
+}
+
+#about-details a:hover {
+  color: var(--ei-500);
+}
+
+#close {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
 }
 
 .btn-ei {

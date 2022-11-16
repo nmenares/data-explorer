@@ -8,6 +8,16 @@ let state = {
   chart: 'line'
 }
 
+d3.select("#about-button")
+  .on("click", function(d){
+    document.getElementById("about-details").classList.toggle("show");
+  });
+
+d3.select("#close")
+  .on("click", function(d){
+    document.getElementById("about-details").classList.toggle("show");
+  });
+
 const CIAFields = {
   'Economy': ["Real GDP per capita", "Real GDP growth rate", "Inflation rate (consumer prices)", "Unemployment rate"],
   'Energy': ["Electricity access", "Carbon dioxide emissions", "Energy consumption per capita"],
@@ -344,6 +354,13 @@ window.onclick = function(event) {
     filter.classed("checked", !filter.classed("checked"));
 
     document.getElementById("graph-filters").classList.toggle("show");
+  }
+
+  if (!event.target.matches('#about-button') && !event.path.includes(document.getElementById('about-details'))) {
+    var dropdown = document.getElementById("about-details");
+    if (dropdown.classList.contains('show')) {
+      dropdown.classList.remove('show');
+    }
   }
 }
 
