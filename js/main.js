@@ -290,40 +290,72 @@ function showCountryDivs() {
 }
 
 let selectRegion = d3.select("#regions-menu");
+let searchBox = d3.select("#search-box");
 
-let optionsRegion = selectRegion.selectAll("a").data(regions);
+function updateRegions(regionsData) {
 
-optionsRegion.html(d => d.short_name);
+  let optionsRegion = selectRegion.selectAll("a").data(regionsData);
 
-optionsRegion.enter().append("a")
-  .html(d => d.short_name);
+  optionsRegion.html(d => d.short_name)
+    .on("click", (event, d) => {
+      if (d.name !== state.region.name) {
+        state.region = d;
+        getCIA(d.url);
+        updateDropdownLabel("#dropdown-region", state.region.short_name);
+        d3.select("#chart svg").selectAll("g").remove();
+        loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
+      }
+    });
 
-optionsRegion.exit().remove();
+  optionsRegion.enter().append("a")
+    .html(d => d.short_name)
+    .on("click", (event, d) => {
+      if (d.name !== state.region.name) {
+        state.region = d;
+        getCIA(d.url);
+        updateDropdownLabel("#dropdown-region", state.region.short_name);
+        d3.select("#chart svg").selectAll("g").remove();
+        loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
+      }
+    });
+
+  optionsRegion.exit().remove();
+}
+
+updateRegions(regions);
 
 d3.select("#dropbtn-region")
   .on("click", function(d){
     document.getElementById("regions-menu").classList.toggle("show");
     document.getElementById("regions-search").classList.toggle("show");
+    searchBox.attr("placeholder", "Search...");
     chart.hideRule();
     chart.tooltip.hide();
   });
 updateDropdownLabel("#dropdown-region", state.region.short_name);
-selectRegion.selectAll("a").on("click", (event, d) => {
-  if (d.name !== state.region.name) {
-    state.region = d;
-    getCIA(d.url);
-    updateDropdownLabel("#dropdown-region", state.region.short_name);
-    d3.select("#chart svg").selectAll("g").remove();
-    loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
-  }
-});
+// selectRegion.selectAll("a").on("click", (event, d) => {
+//   if (d.name !== state.region.name) {
+//     state.region = d;
+//     getCIA(d.url);
+//     updateDropdownLabel("#dropdown-region", state.region.short_name);
+//     d3.select("#chart svg").selectAll("g").remove();
+//     loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
+//   }
+// });
 
-d3.select("#search-box")
+searchBox
   .on("click", (event) => {
-    event.preventDefault();
+    searchBox.attr("placeholder", "");
   })
-  .on("change",  (event) => {
-    event.preventDefault();
+  .on("keyup",  (event) => {
+    let searchLabel = searchBox.property("value");
+
+    if (searchLabel.length > 0) {
+      let regionsData = regions.filter(d => d.short_name.toLowerCase().includes(searchLabel.toLowerCase()));
+      updateRegions(regionsData);
+    } else {
+      updateRegions(regions);
+    }
   })
 
 
@@ -351,9 +383,7 @@ selectVector.selectAll(".btn-ei").on("click", (event, d) => {
 
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = function(event) {
-  console.log(event.target)
   if (!event.target.matches('#dropbtn-region') && !event.path.includes(document.getElementById('regions-search'))) {
-    console.log('here')
     var dropdown = document.getElementById("regions-menu");
     var box = document.getElementById("regions-search");
     if (dropdown.classList.contains('show')) {
