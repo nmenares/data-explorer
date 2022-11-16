@@ -150,6 +150,60 @@ body {
   background-color: var(--ei-200);
 }
 
+#regions-menu {
+  top: 100%;
+}
+
+#regions-search {
+  border-bottom: none;
+  padding: 10px 10px 10px 20px;
+  top: 100%;
+  position: relative;
+}
+
+#search-box {
+  width: 90%;
+  color: var(--bs-gray-500);
+  background-color: var(--ei-100);
+  padding: 4px 8px;
+  border: 1.5px solid var(--ei-350);
+  border-radius: 5px;
+  font-style: italic;
+}
+
+::-webkit-input-placeholder {
+  font-style: italic;
+  color: var(--bs-gray-500);
+  font-weight: 300;
+}
+:-moz-placeholder {
+  font-style: italic;
+  color: var(--bs-gray-500);
+  font-weight: 300;
+}
+::-moz-placeholder {
+  font-style: italic;
+  color: var(--bs-gray-500);
+  font-weight: 300;
+}
+:-ms-input-placeholder {
+  font-style: italic;
+  color: var(--bs-gray-500);
+  font-weight: 300;
+}
+
+input[type="text"]:focus {
+  outline: none;
+}
+
+#reset-search {
+  display: none;
+  position: absolute;
+  right: 40px;
+  top: 14px;
+  cursor: pointer;
+}
+
 #about-details {
   display: none;
   position: absolute;
