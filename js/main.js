@@ -303,6 +303,7 @@ optionsRegion.exit().remove();
 d3.select("#dropdown-region")
   .on("click", function(d){
     document.getElementById("regions-menu").classList.toggle("show");
+    document.getElementById("regions-search").classList.toggle("show");
     chart.hideRule();
     chart.tooltip.hide();
   });
