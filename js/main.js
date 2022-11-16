@@ -291,6 +291,7 @@ function showCountryDivs() {
 
 let selectRegion = d3.select("#regions-menu");
 let searchBox = d3.select("#search-box");
+let searchReset = d3.select("#reset-search");
 
 function updateRegions(regionsData) {
 
@@ -342,17 +343,20 @@ searchBox
     let searchLabel = searchBox.property("value");
 
     if (searchLabel.length > 0) {
+      searchReset.classed("show", true);
       let regionsData = regions.filter(d => d.short_name.toLowerCase().includes(searchLabel.toLowerCase()));
       updateRegions(regionsData);
     } else {
+      searchReset.classed("show", false);
       updateRegions(regions);
     }
   });
 
-d3.select("#reset-search")
+searchReset
   .on("click", () => {
     searchBox.property("value", '')
       .attr("placeholder", "Search...");
+    searchReset.classed("show", false);
     updateRegions(regions);
   });
 

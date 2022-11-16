@@ -197,6 +197,7 @@ input[type="text"]:focus {
 }
 
 #reset-search {
+  display: none;
   position: absolute;
   right: 40px;
   top: 14px;
