@@ -300,7 +300,7 @@ optionsRegion.enter().append("a")
 
 optionsRegion.exit().remove();
 
-d3.select("#dropdown-region")
+d3.select("#dropbtn-region")
   .on("click", function(d){
     document.getElementById("regions-menu").classList.toggle("show");
     document.getElementById("regions-search").classList.toggle("show");
@@ -317,6 +317,14 @@ selectRegion.selectAll("a").on("click", (event, d) => {
     loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
   }
 });
+
+d3.select("#search-box")
+  .on("click", (event) => {
+    event.preventDefault();
+  })
+  .on("change",  (event) => {
+    event.preventDefault();
+  })
 
 
 let selectVector = d3.select("#buttons-vector");
@@ -343,10 +351,14 @@ selectVector.selectAll(".btn-ei").on("click", (event, d) => {
 
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = function(event) {
-  if (!event.target.matches('#dropbtn-region')) {
+  console.log(event.target)
+  if (!event.target.matches('#dropbtn-region') && !event.path.includes(document.getElementById('regions-search'))) {
+    console.log('here')
     var dropdown = document.getElementById("regions-menu");
+    var box = document.getElementById("regions-search");
     if (dropdown.classList.contains('show')) {
       dropdown.classList.remove('show');
+      box.classList.remove('show');
     }
   }
 
@@ -496,13 +508,13 @@ function loadData(path, type='csv') {
         if (state[s] === 'All') {
           let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
 
-          let selectRegion = addOptions(s+"-menu", uniqueItems)
+          let selectOption = addOptions(s+"-menu", uniqueItems)
           d3.select("#"+s+"-dropdown")
             .on("click", function(d){
               document.getElementById(s+"-menu").classList.toggle("show");
             });
           updateDropdownLabel("#"+s+"-dropdown", state[s]);
-          selectRegion.selectAll("a").on("click", (event, d) => {
+          selectOption.selectAll("a").on("click", (event, d) => {
             if (d !== state[s]) {
               state[s] = d;
               chart.hideRule();

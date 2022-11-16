@@ -167,27 +167,32 @@ body {
   padding: 4px 8px;
   border: 1.5px solid;
   border-radius: 5px;
+  z-index: 10000000000;
 }
 
 ::-webkit-input-placeholder {
   font-style: italic;
-  color: var(--bs-light);
+  color: var(--bs-gray-500);
   font-weight: 300;
 }
 :-moz-placeholder {
   font-style: italic;
-  color: var(--bs-light);
+  color: var(--bs-gray-500);
   font-weight: 300;
 }
 ::-moz-placeholder {
   font-style: italic;
-  color: var(--bs-light);
+  color: var(--bs-gray-500);
   font-weight: 300;
 }
 :-ms-input-placeholder {
   font-style: italic;
-  color: var(--bs-light);
+  color: var(--bs-gray-500);
   font-weight: 300;
+}
+
+input[type="text"]:focus {
+  outline: none;
 }
 
 #about-details {
