@@ -673,7 +673,7 @@ input[type="text"]:focus {
   color: #FFF;
   font-size: 32px;
   height: 42px;
-  margin: 6px 0;
+  margin: 6px 0 !important;
 }
 
 #mobile-title span {
