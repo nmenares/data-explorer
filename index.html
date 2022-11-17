@@ -13,9 +13,22 @@
 	<link rel="stylesheet" href="css/homepage.css">
 </head>
 <body>
-  <div class="row">
-		<!-- HEADER -->
-    <div class="row header">
+	<div id="mobile-popup">
+		<div class="row" id="mobile-logo">
+			<a href="https://epicinstitute.org/" target="_blank">
+				<img src='img/epic-logo.png' />
+			</a>
+		</div>
+		<div class="row" id="mobile-title">
+			<span>Data Explorer</span>
+		</div>
+		<div class="row" id="mobile-text">
+			<p>Visit on a larger screen <br> to explore the data</p>
+		</div>	
+	</div>
+	<div class="row" id="data-explorer">
+			<!-- HEADER -->
+		<div class="row header">
 			<div class="col-2 icon-col">
 				<a href="https://epicinstitute.org/" target="_blank">
 					<img src='img/epic-logo.png' />
@@ -125,7 +138,7 @@
 				<div class="row" id="chart"></div>
 			</div>
 		</div>
-  </div>
+	</div>
 
   	<script src="js/bootstrap.bundle.min.js"></script>
 	<script src="js/d3.min.js"></script>
