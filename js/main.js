@@ -434,7 +434,7 @@ const dateParse = d3.timeParse("%Y");
 
 let chart;
 
-loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
+if (window.innerWidth >= 1040) loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
 
 function loadData(path, type='csv') {
   let loaded;
