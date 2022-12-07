@@ -740,6 +740,8 @@ function loadData(path, type='csv') {
             updatePlot();
           }
         });
+
+        graphFilters.selectAll(".groupby-menu").raise();
       }
     }
     updateGroupByMenu();
