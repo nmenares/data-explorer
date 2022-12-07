@@ -5,6 +5,7 @@ let state = {
   vector: vectors[0],
   result: vectors[0],
   filteredData: null,
+  rawData: null,
   chart: 'line'
 }
 
@@ -465,6 +466,7 @@ function loadData(path, type='csv') {
     });
 
     state.filteredData = energyDemandPathway;
+    state.rawData = energyDemandPathway;
 
     let secondaryMenus = state.result.columns;
 
@@ -536,29 +538,27 @@ function loadData(path, type='csv') {
 
       secondaryMenus.forEach(sm => {
         let s = sm.name;
-        if (state[s] === 'All') {
-          let uniqueItems = ['All', ...getUniquesMenu(state.filteredData, s)];
+        let uniqueItems = state[s] === 'All' ? ['All', ...getUniquesMenu(state.filteredData, s)] : [...getUniquesMenu(state.rawData, s)];
 
-          let selectOption = addOptions(s+"-menu", uniqueItems)
-          d3.select("#"+s+"-dropdown")
-            .on("click", function(d){
-              document.getElementById(s+"-menu").classList.toggle("show");
-            });
-          updateDropdownLabel("#"+s+"-dropdown", state[s]);
-          selectOption.selectAll("a").on("click", (event, d) => {
-            if (d !== state[s]) {
-              state[s] = d;
-              chart.hideRule();
-              chart.tooltip.hide();
-              updateDropdownLabel("#"+s+"-dropdown", state[s]);
-              updateGroupByMenu();
-              filterData();
-              getMenuOptions();
-              updatePlot();
-              document.getElementById(s+"-menu").classList.toggle("show");
-            }
+        let selectOption = addOptions(s+"-menu", uniqueItems)
+        d3.select("#"+s+"-dropdown")
+          .on("click", function(d){
+            document.getElementById(s+"-menu").classList.toggle("show");
           });
-        }
+        updateDropdownLabel("#"+s+"-dropdown", state[s]);
+        selectOption.selectAll("a").on("click", (event, d) => {
+          if (d !== state[s]) {
+            state[s] = d;
+            chart.hideRule();
+            chart.tooltip.hide();
+            updateDropdownLabel("#"+s+"-dropdown", state[s]);
+            updateGroupByMenu();
+            filterData();
+            getMenuOptions();
+            updatePlot();
+            document.getElementById(s+"-menu").classList.toggle("show");
+          }
+        });
       });
 
       d3.select("#show-filters")
@@ -575,7 +575,7 @@ function loadData(path, type='csv') {
     }
 
     function resetOptions(){
-      secondaryMenus.forEach(d => state[d.name] = 'All');
+      secondaryMenus.forEach(d => state.chart === 'area' && d.name === 'flow_category' ? state[d.name] = 'Final consumption' : state[d.name] = 'All');
       getMenuOptions()
     }
 
