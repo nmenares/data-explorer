@@ -480,7 +480,7 @@ class Chart {
             return obj;
           });
 
-          let legendHtml = dataValues.sort((a,b) => b.y - a.y)
+          let legendHtml = dataValues.sort((a,b) => vis.type === 'area' ? a.y - b.y : b.y - a.y)
             .map((d,i) => {
               let spanCircle = `<span class="legend-circle">${getCircleHtml(d.color)}</span>`,
                   spanName = `<span class="legend-name">${d.name}</span>`,
