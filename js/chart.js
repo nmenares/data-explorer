@@ -479,8 +479,9 @@ class Chart {
             obj.color = curveColor(d, i);
             return obj;
           });
+          console.log(dataValues);
 
-          let legendHtml = dataValues.sort((a,b) => vis.type === 'area' ? a.y - b.y : b.y - a.y)
+          let legendHtml = dataValues.sort((a,b) => vis.type === 'area' ? b.y1 - a.y1 : b.y - a.y)
             .map((d,i) => {
               let spanCircle = `<span class="legend-circle">${getCircleHtml(d.color)}</span>`,
                   spanName = `<span class="legend-name">${d.name}</span>`,
