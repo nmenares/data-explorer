@@ -575,7 +575,14 @@ function loadData(path, type='csv') {
     }
 
     function resetOptions(){
-      secondaryMenus.forEach(d => state.chart === 'area' && d.name === 'flow_category' ? state[d.name] = 'Final consumption' : state[d.name] = 'All');
+      secondaryMenus.forEach(d => {
+        if (state.chart === 'area' && d.name === 'flow_category') {
+          let flowOptions = getUniquesMenu(state.rawData, d.name);
+          state[d.name] = flowOptions.length === 1 ? flowOptions[0] : flowOptions.includes('Final consumption') ? 'Final consumption' : 'All';
+        } else {
+          state[d.name] = 'All';
+        }
+      });
       getMenuOptions()
     }
 
