@@ -479,7 +479,6 @@ class Chart {
             obj.color = curveColor(d, i);
             return obj;
           });
-          console.log(dataValues);
 
           let legendHtml = dataValues.sort((a,b) => vis.type === 'area' ? b.y1 - a.y1 : b.y - a.y)
             .map((d,i) => {
