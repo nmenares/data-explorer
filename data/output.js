@@ -845,7 +845,7 @@ const vectors = [
   },
   {
     "name": "Emissions",
-    "folder": "emissions",
+    "folder": "emissions_co2e",
     "columns": [
       {
         "name": "sector",
