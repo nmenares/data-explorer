@@ -234,12 +234,26 @@ function addOptions(id, values) {
   var element = d3.select("#"+id);
   var options = element.selectAll("a").data(values);
 
-  options.html(d => d);
-
-  options.enter().append("a")
-    .html(d => d);
+  options.enter().append("a");
 
   options.exit().remove();
+
+  var optionsCheckboxes = element.selectAll("a").selectAll("input").data(d => [d]);
+
+  // Checkboxes
+  optionsCheckboxes.enter().append("input")
+    .attr("type", "checkbox")
+    .attr("id", d => nameNoSpaces(d));
+
+  optionsCheckboxes.exit().remove();
+
+  var optionsLabels = element.selectAll("a").selectAll("label").data(d => [d]);
+
+  optionsLabels.enter().append("label")
+    .attr("for", d => nameNoSpaces(d))
+    .html(d => d);
+
+  optionsLabels.exit().remove();
 
   return element;
 }
@@ -576,11 +590,11 @@ function loadData(path, type='csv') {
 
     function resetOptions(){
       secondaryMenus.forEach(d => {
+        let menuOptions = getUniquesMenu(state.rawData, d.name);
         if (state.chart === 'area' && d.name === 'flow_category') {
-          let flowOptions = getUniquesMenu(state.rawData, d.name);
-          state[d.name] = flowOptions.length === 1 ? flowOptions[0] : flowOptions.includes('Final consumption') ? 'Final consumption' : 'All';
+          state[d.name] = menuOptions.includes('Final consumption') ? ['Final consumption'] : menuOptions;
         } else {
-          state[d.name] = 'All';
+          state[d.name] = menuOptions;
         }
       });
       getMenuOptions()
@@ -602,12 +616,13 @@ function loadData(path, type='csv') {
     filterData = function(){
       state.filteredData = energyDemandPathway.filter((d, i) => {
         let filtered = secondaryMenus.map(s => {
-          return state[s.name] === 'All' ? true : d[s.name] === state[s.name];
+          return state[s.name].includes(d[s.name]);
         });
         return ((d.scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
       })
       state.dataToPlot = {};
       state.dataToPlot.lines = [];
+      console.log(state)
       let uniqueGroupBy = getUniquesMenu(state.filteredData, state.groupBy.name);
 
       // LINE PLOT
@@ -711,10 +726,10 @@ function loadData(path, type='csv') {
 
       groupByMenuDropcontent.exit().remove();
 
-      let groupByOptions = [];
-      secondaryMenus.forEach(s => {
-        if (state[s.name] === 'All') groupByOptions.push(s)
-      })
+      let groupByOptions = secondaryMenus;
+      // secondaryMenus.forEach(s => {
+      //   if (state[s.name] === 'All') groupByOptions.push(s)
+      // })
 
       if (groupByOptions.length === 0) {
         d3.select(".groupby-menu")
