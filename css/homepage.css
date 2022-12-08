@@ -573,6 +573,10 @@ input[type=checkbox]:checked:after {
   left: 6px;
 }
 
+label {
+  display: inline;
+}
+
 /* CIA factbook */
 
 #region-name {
