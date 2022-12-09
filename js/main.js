@@ -577,6 +577,7 @@ function loadData(path, type='csv') {
       secondaryMenus.forEach(sm => {
         let s = sm.name;
         state.filteredUniqueItems[s] = getUniquesMenu(state.filteredData, s);
+        state.rawUniqueItems[s].forEach(d => d.selected = state.filteredUniqueItems[s].includes(d.name));
 
         let selectOption = addOptions(s+"-menu", state.rawUniqueItems[sm.name]);
         d3.select("#"+s+"-dropdown")
@@ -587,6 +588,7 @@ function loadData(path, type='csv') {
         selectOption.selectAll("a").selectAll("input").on("change", (event, d) => {
           let index = state.rawUniqueItems[s].filter(item => item.name === d.name);
           if (index.length === 1) index[0].selected = !index[0].selected; 
+          console.log(state.rawUniqueItems[sm.name]);
           chart.hideRule();
           chart.tooltip.hide();
           updateDropdownLabel("#"+s+"-dropdown", `${state.rawUniqueItems[s].filter(d => d.selected === true).length} selected`);
