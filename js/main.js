@@ -235,6 +235,26 @@ function updateRegionInfo() {
 
 function addOptions(id, rawValues) {
   var element = d3.select("#"+id);
+
+  var buttonsDiv = element.selectAll("div").data([["Select all", "Deselect all"]]);
+
+  buttonsDiv.enter().append("div")
+    .attr("class", "buttons-container");
+
+  buttonsDiv
+    .attr("class", "buttons-container");
+
+  buttonsDiv.exit().remove();
+
+  var buttons = element.selectAll("div").selectAll("span").data(d => d);
+
+  buttons.enter().append("span")
+    .html(d => d);
+
+  buttons.html(d => d);
+
+  buttons.exit().remove();
+
   var options = element.selectAll("a").data(rawValues);
 
   options.enter().append("a");
@@ -584,6 +604,19 @@ function loadData(path, type='csv') {
             document.getElementById(s+"-menu").classList.toggle("show");
           });
         updateDropdownLabel("#"+s+"-dropdown", `${state.rawUniqueItems[s].filter(d => d.selected === true).length} selected`);
+        selectOption.selectAll("span").on("click", (event, d) => {
+          if (d === 'Select all') {
+            state.rawUniqueItems[s].forEach(ui => ui.selected = true);
+          } else if (d === 'Deselect all') {
+            state.rawUniqueItems[s].forEach(ui => ui.selected = false);
+          }
+          chart.hideRule();
+          chart.tooltip.hide();
+          updateGroupByMenu();
+          filterData();
+          getMenuOptions();
+          updatePlot();
+        })
         selectOption.selectAll("a").selectAll("input").on("change", (event, d) => {
           state.rawUniqueItems[s].filter(item => item.name === d.name)[0].selected = !d.selected;
           chart.hideRule();

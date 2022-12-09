@@ -541,6 +541,19 @@ input[type="text"]:focus {
   line-height: 26px;
 }
 
+.buttons-container {
+  text-align: right;
+}
+
+.buttons-container span {
+  font-style: italic;
+  color: var(--bs-gray-500);
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 10px;
+  text-decoration: underline;
+}
+
 input[type=checkbox] {
   position: relative;
   cursor: pointer;
