@@ -7,7 +7,9 @@ let state = {
   filteredData: null,
   rawData: null,
   chart: 'line',
-  groupBy: null
+  groupBy: null,
+  rawUniqueItems: {},
+  filteredUniqueItems: {}
 }
 
 d3.select("#about-button")
@@ -231,9 +233,9 @@ function updateRegionInfo() {
   indicatorValuesNames.exit().remove();
 }
 
-function addOptions(id, values) {
+function addOptions(id, rawValues) {
   var element = d3.select("#"+id);
-  var options = element.selectAll("a").data(values);
+  var options = element.selectAll("a").data(rawValues);
 
   options.enter().append("a");
 
@@ -244,13 +246,18 @@ function addOptions(id, values) {
   // Checkboxes
   optionsCheckboxes.enter().append("input")
     .attr("type", "checkbox")
-    .attr("id", d => nameNoSpaces(d))
-    .attr("checked", true);
+    .attr("id", d => nameNoSpaces(d.name))
+    .property("checked", d => d.selected);
+
+  optionsCheckboxes
+    .attr("type", "checkbox")
+    .attr("id", d => nameNoSpaces(d.name))
+    .property("checked", d => d.selected);
 
   optionsCheckboxes.exit().remove();
 
   // Labels
-  var optionsLabels = element.selectAll("a").selectAll("label").data(d => [d]);
+  var optionsLabels = element.selectAll("a").selectAll("label").data(d => [d.name]);
 
   optionsLabels.enter().append("label")
     .attr("for", d => nameNoSpaces(d))
@@ -486,6 +493,19 @@ function loadData(path, type='csv') {
     state.rawData = energyDemandPathway;
 
     let secondaryMenus = state.result.columns;
+    state.rawUniqueItems = {};
+    state.filteredUniqueItems = {};
+
+    secondaryMenus.forEach(sm => {
+      let s = sm.name;
+      state.filteredUniqueItems[s] = getUniquesMenu(state.filteredData, s);
+      state.rawUniqueItems[s] = getUniquesMenu(state.rawData, s).map(d => {
+        let obj = {};
+        obj.name = d;
+        obj.selected = state.filteredUniqueItems[sm.name].includes(d);
+        return obj;
+      });
+    })
 
     updatePlot = function() {
       chart.updateData(state.dataToPlot);
@@ -553,26 +573,23 @@ function loadData(path, type='csv') {
 
       graphMenuDropcontent.exit().remove();
 
+      state.filteredUniqueItems = {};
       secondaryMenus.forEach(sm => {
         let s = sm.name;
-        let uniqueItems = state[s] === 'All' ? ['All', ...getUniquesMenu(state.filteredData, s)] : [...getUniquesMenu(state.rawData, s)];
+        state.filteredUniqueItems[s] = getUniquesMenu(state.filteredData, s);
 
-        let selectOption = addOptions(s+"-menu", uniqueItems);
+        let selectOption = addOptions(s+"-menu", state.rawUniqueItems[sm.name]);
         d3.select("#"+s+"-dropdown")
           .on("click", function(d){
             document.getElementById(s+"-menu").classList.toggle("show");
           });
-        updateDropdownLabel("#"+s+"-dropdown", `${state[s].length} selected`);
+        updateDropdownLabel("#"+s+"-dropdown", `${state.rawUniqueItems[s].filter(d => d.selected === true).length} selected`);
         selectOption.selectAll("a").selectAll("input").on("change", (event, d) => {
-          let index = state[s].indexOf(d);
-          if (index < 0) {
-            state[s].push(d);
-          } else {
-            state[s].splice(index, 1);
-          }
+          let index = state.rawUniqueItems[s].filter(item => item.name === d.name);
+          if (index.length === 1) index[0].selected = !index[0].selected; 
           chart.hideRule();
           chart.tooltip.hide();
-          updateDropdownLabel("#"+s+"-dropdown", `${state[s].length} selected`);
+          updateDropdownLabel("#"+s+"-dropdown", `${state.rawUniqueItems[s].filter(d => d.selected === true).length} selected`);
           updateGroupByMenu();
           filterData();
           getMenuOptions();
@@ -620,7 +637,7 @@ function loadData(path, type='csv') {
 
     filterData = function(){
       state.filteredData = energyDemandPathway.filter((d, i) => {
-        let filtered = secondaryMenus.map(s => state[s.name].includes(d[s.name]));
+        let filtered = secondaryMenus.map(s => state.rawUniqueItems[s.name].filter(item => item.name === d[s.name])[0].selected);
         return ((d.scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
       })
       state.dataToPlot = {};
