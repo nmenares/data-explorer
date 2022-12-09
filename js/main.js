@@ -6,7 +6,8 @@ let state = {
   result: vectors[0],
   filteredData: null,
   rawData: null,
-  chart: 'line'
+  chart: 'line',
+  groupBy: null
 }
 
 d3.select("#about-button")
@@ -754,7 +755,7 @@ function loadData(path, type='csv') {
           .on("click", function(d){
             document.getElementById("groupby-menu").classList.toggle("show");
           });
-        state.groupBy = groupByOptions[0];
+        if (state.groupBy === null) state.groupBy = groupByOptions[0];
         updateDropdownLabel("#groupby-dropdown", state.groupBy.longName);
         groupByOps.selectAll("a").on("click", (event, d) => {
           if (d !== state.groupBy) {
