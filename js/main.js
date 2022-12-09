@@ -576,8 +576,9 @@ function loadData(path, type='csv') {
       state.filteredUniqueItems = {};
       secondaryMenus.forEach(sm => {
         let s = sm.name;
-        state.filteredUniqueItems[s] = getUniquesMenu(state.filteredData, s);
-        state.rawUniqueItems[s].forEach(d => d.selected = state.filteredUniqueItems[s].includes(d.name));
+        // state.filteredUniqueItems[s] = getUniquesMenu(state.filteredData, s);
+        // console.log(state.filteredUniqueItems[s]);
+        // state.rawUniqueItems[s].forEach(d => d.selected = state.filteredUniqueItems[s].includes(d.name));
 
         let selectOption = addOptions(s+"-menu", state.rawUniqueItems[sm.name]);
         d3.select("#"+s+"-dropdown")
@@ -586,12 +587,19 @@ function loadData(path, type='csv') {
           });
         updateDropdownLabel("#"+s+"-dropdown", `${state.rawUniqueItems[s].filter(d => d.selected === true).length} selected`);
         selectOption.selectAll("a").selectAll("input").on("change", (event, d) => {
-          let index = state.rawUniqueItems[s].filter(item => item.name === d.name);
-          if (index.length === 1) index[0].selected = !index[0].selected; 
-          console.log(state.rawUniqueItems[sm.name]);
+          // console.log(event, d);
+          // let selected = JSON.parse(JSON.stringify(state.rawUniqueItems[s].filter(item => item.name === d.name)[0].selected));;
+          // state.rawUniqueItems[s].forEach(item => {
+          //   console.log(item.name, d.name, item.selected, !d.selected)
+          //   if (item.name === d.name) item.selected = !d.selected;
+          //   // d.selected = state.filteredUniqueItems[s].includes(d.name)
+          // });
+          // state.rawUniqueItems[s].filter(item => item.name === d.name)[0].selected = !d.selected;
+          state.rawUniqueItems[s].filter(item => item.name === d.name)[0].selected = !d.selected;
+          // console.log(state.rawUniqueItems[s]);
           chart.hideRule();
           chart.tooltip.hide();
-          updateDropdownLabel("#"+s+"-dropdown", `${state.rawUniqueItems[s].filter(d => d.selected === true).length} selected`);
+          // updateDropdownLabel("#"+s+"-dropdown", `${state.rawUniqueItems[s].filter(d => d.selected === true).length} selected`);
           updateGroupByMenu();
           filterData();
           getMenuOptions();
@@ -644,7 +652,6 @@ function loadData(path, type='csv') {
       })
       state.dataToPlot = {};
       state.dataToPlot.lines = [];
-      console.log(state)
       let uniqueGroupBy = getUniquesMenu(state.filteredData, state.groupBy.name);
 
       // LINE PLOT
