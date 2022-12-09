@@ -243,10 +243,12 @@ function addOptions(id, values) {
   // Checkboxes
   optionsCheckboxes.enter().append("input")
     .attr("type", "checkbox")
-    .attr("id", d => nameNoSpaces(d));
+    .attr("id", d => nameNoSpaces(d))
+    .attr("checked", true);
 
   optionsCheckboxes.exit().remove();
 
+  // Labels
   var optionsLabels = element.selectAll("a").selectAll("label").data(d => [d]);
 
   optionsLabels.enter().append("label")
@@ -554,24 +556,26 @@ function loadData(path, type='csv') {
         let s = sm.name;
         let uniqueItems = state[s] === 'All' ? ['All', ...getUniquesMenu(state.filteredData, s)] : [...getUniquesMenu(state.rawData, s)];
 
-        let selectOption = addOptions(s+"-menu", uniqueItems)
+        let selectOption = addOptions(s+"-menu", uniqueItems);
         d3.select("#"+s+"-dropdown")
           .on("click", function(d){
             document.getElementById(s+"-menu").classList.toggle("show");
           });
-        updateDropdownLabel("#"+s+"-dropdown", state[s]);
-        selectOption.selectAll("a").on("click", (event, d) => {
-          if (d !== state[s]) {
-            state[s] = d;
-            chart.hideRule();
-            chart.tooltip.hide();
-            updateDropdownLabel("#"+s+"-dropdown", state[s]);
-            updateGroupByMenu();
-            filterData();
-            getMenuOptions();
-            updatePlot();
-            document.getElementById(s+"-menu").classList.toggle("show");
+        updateDropdownLabel("#"+s+"-dropdown", `${state[s].length} selected`);
+        selectOption.selectAll("a").selectAll("input").on("change", (event, d) => {
+          let index = state[s].indexOf(d);
+          if (index < 0) {
+            state[s].push(d);
+          } else {
+            state[s].splice(index, 1);
           }
+          chart.hideRule();
+          chart.tooltip.hide();
+          updateDropdownLabel("#"+s+"-dropdown", `${state[s].length} selected`);
+          updateGroupByMenu();
+          filterData();
+          getMenuOptions();
+          updatePlot();
         });
       });
 
@@ -615,9 +619,7 @@ function loadData(path, type='csv') {
 
     filterData = function(){
       state.filteredData = energyDemandPathway.filter((d, i) => {
-        let filtered = secondaryMenus.map(s => {
-          return state[s.name].includes(d[s.name]);
-        });
+        let filtered = secondaryMenus.map(s => state[s.name].includes(d[s.name]));
         return ((d.scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
       })
       state.dataToPlot = {};

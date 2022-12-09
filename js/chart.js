@@ -110,8 +110,8 @@ class Chart {
         return obj2;
       })
       vis.filteredData = d3.hierarchy(obj)
-        .sum(function(d) { return  d.value})
-        .sort(function(a, b){ return b.height - a.height || b.value - a.value});
+        .sum(function(d) { return d.value })
+        .sort(function(a, b){ return b.height - a.height || b.value - a.value });
 
     } else {
       const [minYear, maxYear] = vis.year.map(d => d3.timeParse("%Y")(d));
