@@ -429,6 +429,7 @@ selectVector.selectAll(".btn-ei").on("click", (event, d) => {
 
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = function(event) {
+  // Region dropdown menu
   if (!event.target.matches('#dropbtn-region') && !event.path.includes(document.getElementById('regions-search'))) {
     var dropdown = document.getElementById("regions-menu");
     var box = document.getElementById("regions-search");
@@ -438,6 +439,7 @@ window.onclick = function(event) {
     }
   }
 
+  // Graph options dropdown menus
   if (!event.path.includes(document.getElementById("filters-col")) && document.getElementById("show-filters").classList.contains("checked")) {
     let filter = d3.select("#show-filters");
     filter.classed("checked", !filter.classed("checked"));
@@ -445,6 +447,7 @@ window.onclick = function(event) {
     document.getElementById("graph-filters").classList.toggle("show");
   }
 
+  // About popup
   if (!event.target.matches('#about-button') && !event.path.includes(document.getElementById('about-details'))) {
     var dropdown = document.getElementById("about-details");
     if (dropdown.classList.contains('show')) {
@@ -625,6 +628,7 @@ function loadData(path, type='csv') {
           filterData();
           getMenuOptions();
           updatePlot();
+          d3.select(event.target).node().parentNode.parentNode.classList.add("show");
         });
       });
 
