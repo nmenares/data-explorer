@@ -603,7 +603,8 @@ function loadData(path, type='csv') {
 
         let selectOption = addOptions(s+"-menu", state.rawUniqueItems[sm.name]);
         d3.select("#"+s+"-dropbtn")
-          .on("click", function(d){
+          .on("click", function(event, d){
+            d3.selectAll(".dropdown-content").filter(e => e !== d).classed("show", false);
             document.getElementById(s+"-menu").classList.toggle("show");
           });
         updateDropdownLabel("#"+s+"-dropdown", `${state.rawUniqueItems[s].filter(d => d.selected === true).length} selected`);
