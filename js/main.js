@@ -468,6 +468,7 @@ let plot = d3.select("#chart")
     .attr("height", plotHeight);
 
 let tooltipDiv = d3.select("body").append("div");
+let popupDiv = d3.select("body").append("div");
 let timeSliderDiv = d3.select("#time-slider");
 
 let margin = {top: 20, right: 30, bottom: 20, left: 30},
@@ -839,6 +840,7 @@ function loadData(path, type='csv') {
                       height,
                       margin,
                       'linear',
+                      popupDiv,
                       tooltipDiv,
                       timeSliderDiv,
                       yAxisUnit,

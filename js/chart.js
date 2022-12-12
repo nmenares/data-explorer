@@ -1,5 +1,5 @@
 class Chart {
-  constructor(data, svg, width, height, margin, scale, tooltipDiv, timeSliderDiv, yAxisTitle, type='line') {
+  constructor(data, svg, width, height, margin, scale, popupDiv, tooltipDiv, timeSliderDiv, yAxisTitle, type='line') {
     const vis = this;
 
     vis.data = data;
@@ -9,6 +9,7 @@ class Chart {
     vis.margin = margin;
     vis.scale = scale;
     vis.tooltip = new Tooltip(tooltipDiv);
+    vis.popup = new Popup(popupDiv);
     vis.yAxisTitle = yAxisTitle;
     vis.type = type;
     vis.formatValue = d3.format(".2s");
@@ -162,10 +163,22 @@ class Chart {
 
     vis.filterData();
 
-    if (vis.type === 'treemap') {
+    if (vis.data.lines.length === 0) {
+      vis.svg.style("opacity", 0);
+      let offset = vis.svg.node().getBoundingClientRect();
+      console.log(offset.left, vis.margin.left, vis.width / 2)
+      vis.popup.update('<div class="legend"><div class="legend-header">No data matches current selection</div></div>',
+                        offset.left + vis.margin.left + vis.width / 2,
+                        vis.margin.top + offset.top + vis.height / 2);
+      d3.selectAll(".rule")
+        .style("opacity", 0);
+      vis.tooltip.hide();
+    } else if (vis.type === 'treemap') {
+      vis.svg.style("opacity", 1);
       vis.treemap(vis.filteredData);
       vis.updateRects();
     } else {
+      vis.svg.style("opacity", 1);
       vis.updateAxes();
       vis.updateCurves();
     }
@@ -456,8 +469,8 @@ class Chart {
 
       function left() {
         d3.selectAll(".rule")
-            .style("opacity", 0);
-          vis.tooltip.hide();
+          .style("opacity", 0);
+        vis.tooltip.hide();
       }
 
       function moved(event) {
