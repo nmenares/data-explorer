@@ -141,7 +141,6 @@ body {
   padding: 12px 16px;
   text-decoration: none;
   display: block;
-  cursor: pointer;
 }
 
 /* Change color of dropdown links on hover */
@@ -586,6 +585,7 @@ input[type=checkbox]:checked:after {
 
 label {
   display: inline;
+  cursor: pointer;
 }
 
 /* CIA factbook */

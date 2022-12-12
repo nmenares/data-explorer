@@ -602,7 +602,7 @@ function loadData(path, type='csv') {
         state.filteredUniqueItems[s] = getUniquesMenu(state.filteredData, s);
 
         let selectOption = addOptions(s+"-menu", state.rawUniqueItems[sm.name]);
-        d3.select("#"+s+"-dropdown")
+        d3.select("#"+s+"-dropbtn")
           .on("click", function(d){
             document.getElementById(s+"-menu").classList.toggle("show");
           });
