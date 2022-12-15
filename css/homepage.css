@@ -747,7 +747,7 @@ label {
   font-size: 18px;
 }
 
-.graph-menu-detail {
+.graph-menu-detail, .groupby-menu-detail {
   position: relative;
   display: inline-block;
   text-align: center;
@@ -762,20 +762,20 @@ label {
   margin-left: 10px;
 }
 
-.graph-menu-detail:before {
+.graph-menu-detail:before, .groupby-menu-detail:before {
   content:'?';
   font-weight: 400;
   color:var(--ei-title);
 }
 
-.graph-menu-detail:hover p {
+.graph-menu-detail:hover p, .groupby-menu-detail:hover p {
   display: block;
   transform-origin: 100% 100%;
   -webkit-animation: fadeIn 0.3s ease-in-out;
   animation: fadeIn 0.3s ease-in-out;
 }
 
-.graph-menu-detail p{
+.graph-menu-detail p, .groupby-menu-detail p {
   display: none;
   text-align: left;
   background-color: var(--ei-background);

@@ -557,7 +557,7 @@ function loadData(path, type='csv') {
       graphMenusInfo.enter().append("div")
         .attr("class", "graph-menu-info");
 
-        graphMenusInfo.exit().remove();
+      graphMenusInfo.exit().remove();
 
       let graphMenuTitle = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info").selectAll(".graph-menu-title")
         .data(d => [d])
@@ -575,17 +575,11 @@ function loadData(path, type='csv') {
         .data(d => [d])
 
       graphMenuDetail.attr("class", "graph-menu-detail")
-        .html(d => `<p>${d.description}</p>`)
-        // .on("mouseover", (event, d) => {
-        //   console.log(d.description)
-        // });
+        .html(d => `<p>${d.description}</p>`);
 
       graphMenuDetail.enter().append("span")
         .attr("class", "graph-menu-detail")
-        .html(d => `<p>${d.description}</p>`)
-        // .on("mouseover", (event, d) => {
-        //   console.log(d.description)
-        // });;
+        .html(d => `<p>${d.description}</p>`);
 
       graphMenuDetail.exit().remove();
 
@@ -753,7 +747,7 @@ function loadData(path, type='csv') {
       let graphFilters = d3.select("#graph-filters");
 
       let groupByMenus = graphFilters.selectAll(".groupby-menu")
-        .data(['Group by']);
+        .data([{'name': 'Group by', 'description': "The group by filter is offered to enable visualizations that 'bundle up' output into categories defined by any one of the previous filters."}]);
 
       groupByMenus.attr("class", "groupby-menu");
 
@@ -762,17 +756,39 @@ function loadData(path, type='csv') {
 
       groupByMenus.exit().remove();
 
-      let groupByMenuTitle = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-title")
+      let groupByMenuInfo = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info")
+        .data(d => [d])
+
+      groupByMenuInfo.attr("class", "groupby-menu-info");
+
+      groupByMenuInfo.enter().append("div")
+        .attr("class", "groupby-menu-info");
+
+      groupByMenuInfo.exit().remove();
+
+      let groupByMenuTitle = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info").selectAll(".groupby-menu-title")
         .data(d => [d])
 
       groupByMenuTitle.attr("class", "groupby-menu-title")
-        .html(d => d);
+        .html(d => d.name);
 
       groupByMenuTitle.enter().append("span")
         .attr("class", "groupby-menu-title")
-        .html(d => d);
+        .html(d => d.name);
 
       groupByMenuTitle.exit().remove();
+
+      let groupByMenuDetail = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info").selectAll(".groupby-menu-detail")
+        .data(d => [d])
+
+      groupByMenuDetail.attr("class", "groupby-menu-detail")
+        .html(d => `<p>${d.description}</p>`);
+
+      groupByMenuDetail.enter().append("span")
+        .attr("class", "groupby-menu-detail")
+        .html(d => `<p>${d.description}</p>`);
+
+      groupByMenuDetail.exit().remove();
 
       let groupByMenuDropdown = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown")
         .data(d => [d]);
