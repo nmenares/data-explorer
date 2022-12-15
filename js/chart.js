@@ -276,21 +276,27 @@ class Chart {
     vis.gXAxis.selectAll(".domain").remove();
     vis.gYAxis.selectAll(".domain").remove();
 
-    vis.gXAxis.selectAll(".tick").attr("class", d => {
-      if (d.getFullYear() % 10 === 0) {
-        return 'tick big-tick';
-      } else {
-        return 'tick small-tick';
-      }
-    });
+    vis.gXAxis.selectAll(".tick")
+      .attr("class", d => {
+        if (d.getFullYear() % 10 === 0) {
+          return 'tick big-tick';
+        } else {
+          return 'tick small-tick';
+        }
+      });
+    vis.gXAxis.selectAll(".tick text").attr("fill", "white");
+    vis.gXAxis.selectAll(".tick line").attr("stroke", "white");
 
-    vis.gYAxis.selectAll(".tick").attr("class", d => {
-      if (yValues.includes(d)) {
-        return 'tick big-tick';
-      } else {
-        return 'tick small-tick';
-      }
-    });
+    vis.gYAxis.selectAll(".tick")
+      .attr("class", d => {
+        if (yValues.includes(d)) {
+          return 'tick big-tick';
+        } else {
+          return 'tick small-tick';
+        }
+      });
+    vis.gYAxis.selectAll(".tick text").attr("fill", "white");
+    vis.gYAxis.selectAll(".tick line").attr("stroke", "white");
 
     vis.gXAxis.selectAll(".small-tick").select("line")
       .attr("y2", 4)

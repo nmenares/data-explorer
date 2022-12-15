@@ -349,7 +349,7 @@ input[type="text"]:focus {
 }
 /* CHART ICONS */
 
-#select-chart, #chart-types, #filters-col {
+#select-chart, #chart-types, #filters-col, #download {
   line-height: 54px;
   display: inline-block;
   margin-right: 12px;
@@ -361,6 +361,24 @@ input[type="text"]:focus {
 
 #filters-col {
   text-align: left;
+}
+
+#download {
+  color: var(--ei-title);
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 16px;
+  border: 1px solid var(--ei-350);
+  padding: 12px 14px;
+  line-height: 32px;
+  height: 53px;
+  cursor: pointer;
+}
+
+#download svg {
+  margin-left: 5px;
+  margin-top: -5px;
 }
 
 #chart-options {

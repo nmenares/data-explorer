@@ -22,6 +22,11 @@ d3.select("#close")
     document.getElementById("about-details").classList.toggle("show");
   });
 
+d3.select("#download")
+  .on("click", function(d){
+    saveSvgAsPng(document.getElementById("chart-svg"), "diagram.png");
+  });
+
 const CIAFields = {
   'Economy': ["Real GDP per capita", "Real GDP growth rate", "Inflation rate (consumer prices)", "Unemployment rate"],
   'Energy': ["Electricity access", "Carbon dioxide emissions", "Energy consumption per capita"],
@@ -477,7 +482,9 @@ let margin = {top: 20, right: 30, bottom: 20, left: 30},
 
 let svg = plot.append("svg")
     .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("id", "chart-svg")
+    .style("background-color", "#1c2137");
 
 const dateParse = d3.timeParse("%Y");
 
