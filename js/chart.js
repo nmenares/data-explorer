@@ -1,5 +1,5 @@
 class Chart {
-  constructor(data, svg, width, height, margin, scale, popupDiv, tooltipDiv, timeSliderDiv, yAxisTitle, type='line') {
+  constructor(data, svg, width, height, margin, scale, popupDiv, tooltipDiv, timeSliderDiv, yAxisTitle, darkMode=true, type='line') {
     const vis = this;
 
     vis.data = data;
@@ -14,6 +14,7 @@ class Chart {
     vis.type = type;
     vis.formatValue = d3.format(".2s");
     vis.nodata = false;
+    vis.darkMode = darkMode;
 
     vis.colors = ["#00e3e6", "#6797fd", "#6bd384", "#954e9f",
                   "#a84857", "#cce982", "#eba562"]
@@ -48,7 +49,7 @@ class Chart {
       .on('onchange', val => {
         vis.year = val;
         vis.filterData();
-        vis.updatePlot();
+        vis.updatePlot(vis.darkMode);
       })
 
     vis.timeslider.call(vis.slider);
@@ -132,6 +133,12 @@ class Chart {
 
     vis.data = newData;
     vis.filteredData = vis.data;
+  }
+
+  updateDarkMode(darkMode) {
+    const vis = this;
+
+    vis.darkMode = darkMode;
   }
 
   initPlot() {
@@ -284,8 +291,8 @@ class Chart {
           return 'tick small-tick';
         }
       });
-    vis.gXAxis.selectAll(".tick text").attr("fill", "white");
-    vis.gXAxis.selectAll(".tick line").attr("stroke", "white");
+    vis.gXAxis.selectAll(".tick text").attr("fill", vis.darkMode === true ? "white" : "black");
+    vis.gXAxis.selectAll(".tick line").attr("stroke", vis.darkMode === true ? "white" : "black");
 
     vis.gYAxis.selectAll(".tick")
       .attr("class", d => {
@@ -295,8 +302,8 @@ class Chart {
           return 'tick small-tick';
         }
       });
-    vis.gYAxis.selectAll(".tick text").attr("fill", "white");
-    vis.gYAxis.selectAll(".tick line").attr("stroke", "white");
+    vis.gYAxis.selectAll(".tick text").attr("fill", vis.darkMode === true ? "white" : "black");
+    vis.gYAxis.selectAll(".tick line").attr("stroke", vis.darkMode === true ? "white" : "black");
 
     vis.gXAxis.selectAll(".small-tick").select("line")
       .attr("y2", 4)

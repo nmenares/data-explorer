@@ -1,4 +1,5 @@
 let state = {
+  darkMode: true,
   region: regions[0],
   region_info: null,
   scenario: 'baseline',
@@ -539,7 +540,9 @@ function loadData(path, type='csv') {
     })
 
     updatePlot = function() {
+      svg.style("background-color", state.darkMode === true ? "#1c2137" : "white");
       chart.updateData(state.dataToPlot);
+      chart.updateDarkMode(state.darkMode);
       chart.updatePlot();
     }
 
@@ -895,6 +898,7 @@ function loadData(path, type='csv') {
                       tooltipDiv,
                       timeSliderDiv,
                       yAxisUnit,
+                      darkMode=state.darkMode,
                       type=state.chart);
     chart.updatePlot();
 
