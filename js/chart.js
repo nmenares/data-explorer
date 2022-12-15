@@ -1,5 +1,5 @@
 class Chart {
-  constructor(data, svg, width, height, margin, scale, tooltipDiv, timeSliderDiv, yAxisTitle, type='line') {
+  constructor(data, svg, width, height, margin, scale, popupDiv, tooltipDiv, timeSliderDiv, yAxisTitle, type='line') {
     const vis = this;
 
     vis.data = data;
@@ -9,9 +9,11 @@ class Chart {
     vis.margin = margin;
     vis.scale = scale;
     vis.tooltip = new Tooltip(tooltipDiv);
+    vis.popup = new Popup(popupDiv);
     vis.yAxisTitle = yAxisTitle;
     vis.type = type;
     vis.formatValue = d3.format(".2s");
+    vis.nodata = false;
 
     vis.colors = ["#00e3e6", "#6797fd", "#6bd384", "#954e9f",
                   "#a84857", "#cce982", "#eba562"]
@@ -110,8 +112,8 @@ class Chart {
         return obj2;
       })
       vis.filteredData = d3.hierarchy(obj)
-        .sum(function(d) { return  d.value})
-        .sort(function(a, b){ return b.height - a.height || b.value - a.value});
+        .sum(function(d) { return d.value })
+        .sort(function(a, b){ return b.height - a.height || b.value - a.value });
 
     } else {
       const [minYear, maxYear] = vis.year.map(d => d3.timeParse("%Y")(d));
@@ -162,10 +164,22 @@ class Chart {
 
     vis.filterData();
 
-    if (vis.type === 'treemap') {
+    vis.nodata = vis.data.lines.length === 0;
+
+    if (vis.nodata === true) {
+      vis.svg.style("opacity", 0);
+      let offset = vis.svg.node().getBoundingClientRect();
+      vis.popup.update('<div class="legend"><div class="legend-header">No data matches current selection</div></div>',
+                        offset.left + vis.margin.left + vis.width / 2,
+                        vis.margin.top + offset.top + vis.height / 2);
+    } else if (vis.type === 'treemap') {
+      vis.svg.style("opacity", 1);
+      vis.popup.hide();
       vis.treemap(vis.filteredData);
       vis.updateRects();
     } else {
+      vis.svg.style("opacity", 1);
+      vis.popup.hide();
       vis.updateAxes();
       vis.updateCurves();
     }
@@ -456,75 +470,77 @@ class Chart {
 
       function left() {
         d3.selectAll(".rule")
-            .style("opacity", 0);
-          vis.tooltip.hide();
+          .style("opacity", 0);
+        vis.tooltip.hide();
       }
 
       function moved(event) {
-        let thisX = d3.pointer(event, this)[0] - vis.margin.left;
-        if ((vis.margin.left < thisX) && (thisX < vis.width - vis.margin.right)) {
-          const xm = vis.xScale.invert(thisX),
-            xYear = xm.getFullYear(),
-            xPoint = new Date(xYear, 1, 1);
-          let dataValues = vis.data.lines.map((d, i) => {
-            let obj = {};
-            obj.name = d.name;
-            let filteredValue = d.values.filter(v => v.x.getFullYear() === xYear)[0];
+        if (vis.nodata === false) {
+          let thisX = d3.pointer(event, this)[0] - vis.margin.left;
+          if ((vis.margin.left < thisX) && (thisX < vis.width - vis.margin.right)) {
+            const xm = vis.xScale.invert(thisX),
+              xYear = xm.getFullYear(),
+              xPoint = new Date(xYear, 1, 1);
+            let dataValues = vis.data.lines.map((d, i) => {
+              let obj = {};
+              obj.name = d.name;
+              let filteredValue = d.values.filter(v => v.x.getFullYear() === xYear)[0];
+              if (vis.type === 'line') {
+                obj.y = filteredValue.y;
+              } else if (vis.type === 'area') {
+                obj.y = filteredValue.y1 - filteredValue.y0;
+                obj.y1 = filteredValue.y1;
+              }
+              obj.color = curveColor(d, i);
+              return obj;
+            });
+
+            let legendHtml = dataValues.sort((a,b) => vis.type === 'area' ? b.y1 - a.y1 : b.y - a.y)
+              .map((d,i) => {
+                let spanCircle = `<span class="legend-circle">${getCircleHtml(d.color)}</span>`,
+                    spanName = `<span class="legend-name">${d.name}</span>`,
+                    spanNumber = `<span class="legend-value">${vis.formatValue(d.y)}</span>`;
+
+                return `<div class="legend-item">${spanCircle}${spanName}${spanNumber}</div>`;
+              })
+              .reduce((a,b) => a + b, "");
+
+            d3.selectAll(".rule")
+              .attr("transform", `translate(${vis.xScale(xPoint)},0)`)
+              .style("opacity", 1);
+
             if (vis.type === 'line') {
-              obj.y = filteredValue.y;
-            } else if (vis.type === 'area') {
-              obj.y = filteredValue.y1 - filteredValue.y0;
-              obj.y1 = filteredValue.y1;
+              let dots = vis.rule.selectAll(".circle-plot")
+                .data(dataValues);
+
+              dots.enter().append("circle")
+                .attr("class", "circle-plot")
+                .attr("cx", 0)
+                .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
+                .attr("r", circleRadius)
+                .attr("fill", d => d.color)
+
+              dots.attr("class", "circle-plot")
+                .attr("cx", 0)
+                .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
+                .attr("r", circleRadius)
+                .attr("fill", d => d.color)
+
+              dots.exit().remove();
             }
-            obj.color = curveColor(d, i);
-            return obj;
-          });
 
-          let legendHtml = dataValues.sort((a,b) => vis.type === 'area' ? b.y1 - a.y1 : b.y - a.y)
-            .map((d,i) => {
-              let spanCircle = `<span class="legend-circle">${getCircleHtml(d.color)}</span>`,
-                  spanName = `<span class="legend-name">${d.name}</span>`,
-                  spanNumber = `<span class="legend-value">${vis.formatValue(d.y)}</span>`;
-
-              return `<div class="legend-item">${spanCircle}${spanName}${spanNumber}</div>`;
-            })
-            .reduce((a,b) => a + b, "");
-
-          d3.selectAll(".rule")
-            .attr("transform", `translate(${vis.xScale(xPoint)},0)`)
-            .style("opacity", 1);
-
-          if (vis.type === 'line') {
-            let dots = vis.rule.selectAll(".circle-plot")
-              .data(dataValues);
-
-            dots.enter().append("circle")
-              .attr("class", "circle-plot")
-              .attr("cx", 0)
-              .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
-              .attr("r", circleRadius)
-              .attr("fill", d => d.color)
-
-            dots.attr("class", "circle-plot")
-              .attr("cx", 0)
-              .attr("cy", d => vis.type === 'line' ? vis.yScale(d.y) : vis.yScale(d.y1))
-              .attr("r", circleRadius)
-              .attr("fill", d => d.color)
-
-            dots.exit().remove();
+            let offset = vis.svg.node().getBoundingClientRect();
+            vis.tooltip.update(`<div class="legend"><div class="legend-header">${xYear}</div><div class="legend-body">${legendHtml}</div></div>`,
+                                offset.left + vis.margin.left + vis.xScale(xPoint),
+                                document.documentElement.scrollTop + vis.margin.top + offset.top,
+                                'right');
+          } else {
+            d3.selectAll(".rule")
+              .style("opacity", 0);
+            vis.tooltip.hide();
           }
-
-          let offset = vis.svg.node().getBoundingClientRect();
-          vis.tooltip.update(`<div class="legend"><div class="legend-header">${xYear}</div><div class="legend-body">${legendHtml}</div></div>`,
-                              offset.left + vis.margin.left + vis.xScale(xPoint),
-                              document.documentElement.scrollTop + vis.margin.top + offset.top,
-                              'right');
-        } else {
-          d3.selectAll(".rule")
-            .style("opacity", 0);
-          vis.tooltip.hide();
         }
-      }
+      }  
     }
   } // updateCurves
 

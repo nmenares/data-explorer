@@ -6,7 +6,10 @@ let state = {
   result: vectors[0],
   filteredData: null,
   rawData: null,
-  chart: 'line'
+  chart: 'line',
+  groupBy: null,
+  rawUniqueItems: {},
+  filteredUniqueItems: {}
 }
 
 d3.select("#about-button")
@@ -230,16 +233,57 @@ function updateRegionInfo() {
   indicatorValuesNames.exit().remove();
 }
 
-function addOptions(id, values) {
+function addOptions(id, rawValues) {
   var element = d3.select("#"+id);
-  var options = element.selectAll("a").data(values);
 
-  options.html(d => d);
+  var buttonsDiv = element.selectAll("div").data([["Select all", "Deselect all"]]);
 
-  options.enter().append("a")
+  buttonsDiv.enter().append("div")
+    .attr("class", "buttons-container");
+
+  buttonsDiv
+    .attr("class", "buttons-container");
+
+  buttonsDiv.exit().remove();
+
+  var buttons = element.selectAll("div").selectAll("span").data(d => d);
+
+  buttons.enter().append("span")
     .html(d => d);
 
+  buttons.html(d => d);
+
+  buttons.exit().remove();
+
+  var options = element.selectAll("a").data(rawValues);
+
+  options.enter().append("a");
+
   options.exit().remove();
+
+  var optionsCheckboxes = element.selectAll("a").selectAll("input").data(d => [d]);
+
+  // Checkboxes
+  optionsCheckboxes.enter().append("input")
+    .attr("type", "checkbox")
+    .attr("id", d => nameNoSpaces(d.name))
+    .property("checked", d => d.selected);
+
+  optionsCheckboxes
+    .attr("type", "checkbox")
+    .attr("id", d => nameNoSpaces(d.name))
+    .property("checked", d => d.selected);
+
+  optionsCheckboxes.exit().remove();
+
+  // Labels
+  var optionsLabels = element.selectAll("a").selectAll("label").data(d => [d.name]);
+
+  optionsLabels.enter().append("label")
+    .attr("for", d => nameNoSpaces(d))
+    .html(d => d);
+
+  optionsLabels.exit().remove();
 
   return element;
 }
@@ -385,6 +429,7 @@ selectVector.selectAll(".btn-ei").on("click", (event, d) => {
 
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = function(event) {
+  // Region dropdown menu
   if (!event.target.matches('#dropbtn-region') && !event.path.includes(document.getElementById('regions-search'))) {
     var dropdown = document.getElementById("regions-menu");
     var box = document.getElementById("regions-search");
@@ -394,6 +439,7 @@ window.onclick = function(event) {
     }
   }
 
+  // Graph options dropdown menus
   if (!event.path.includes(document.getElementById("filters-col")) && document.getElementById("show-filters").classList.contains("checked")) {
     let filter = d3.select("#show-filters");
     filter.classed("checked", !filter.classed("checked"));
@@ -401,6 +447,7 @@ window.onclick = function(event) {
     document.getElementById("graph-filters").classList.toggle("show");
   }
 
+  // About popup
   if (!event.target.matches('#about-button') && !event.path.includes(document.getElementById('about-details'))) {
     var dropdown = document.getElementById("about-details");
     if (dropdown.classList.contains('show')) {
@@ -421,6 +468,7 @@ let plot = d3.select("#chart")
     .attr("height", plotHeight);
 
 let tooltipDiv = d3.select("body").append("div");
+let popupDiv = d3.select("body").append("div");
 let timeSliderDiv = d3.select("#time-slider");
 
 let margin = {top: 20, right: 30, bottom: 20, left: 30},
@@ -469,6 +517,19 @@ function loadData(path, type='csv') {
     state.rawData = energyDemandPathway;
 
     let secondaryMenus = state.result.columns;
+    state.rawUniqueItems = {};
+    state.filteredUniqueItems = {};
+
+    secondaryMenus.forEach(sm => {
+      let s = sm.name;
+      state.filteredUniqueItems[s] = getUniquesMenu(state.filteredData, s);
+      state.rawUniqueItems[s] = getUniquesMenu(state.rawData, s).map(d => {
+        let obj = {};
+        obj.name = d;
+        obj.selected = state.filteredUniqueItems[sm.name].includes(d);
+        return obj;
+      });
+    })
 
     updatePlot = function() {
       chart.updateData(state.dataToPlot);
@@ -536,28 +597,40 @@ function loadData(path, type='csv') {
 
       graphMenuDropcontent.exit().remove();
 
+      state.filteredUniqueItems = {};
       secondaryMenus.forEach(sm => {
         let s = sm.name;
-        let uniqueItems = state[s] === 'All' ? ['All', ...getUniquesMenu(state.filteredData, s)] : [...getUniquesMenu(state.rawData, s)];
+        state.filteredUniqueItems[s] = getUniquesMenu(state.filteredData, s);
 
-        let selectOption = addOptions(s+"-menu", uniqueItems)
-        d3.select("#"+s+"-dropdown")
-          .on("click", function(d){
+        let selectOption = addOptions(s+"-menu", state.rawUniqueItems[sm.name]);
+        d3.select("#"+s+"-dropbtn")
+          .on("click", function(event, d){
+            d3.selectAll(".dropdown-content").filter(e => e !== d).classed("show", false);
             document.getElementById(s+"-menu").classList.toggle("show");
           });
-        updateDropdownLabel("#"+s+"-dropdown", state[s]);
-        selectOption.selectAll("a").on("click", (event, d) => {
-          if (d !== state[s]) {
-            state[s] = d;
-            chart.hideRule();
-            chart.tooltip.hide();
-            updateDropdownLabel("#"+s+"-dropdown", state[s]);
-            updateGroupByMenu();
-            filterData();
-            getMenuOptions();
-            updatePlot();
-            document.getElementById(s+"-menu").classList.toggle("show");
+        updateDropdownLabel("#"+s+"-dropdown", `${state.rawUniqueItems[s].filter(d => d.selected === true).length} selected`);
+        selectOption.selectAll("span").on("click", (event, d) => {
+          if (d === 'Select all') {
+            state.rawUniqueItems[s].forEach(ui => ui.selected = true);
+          } else if (d === 'Deselect all') {
+            state.rawUniqueItems[s].forEach(ui => ui.selected = false);
           }
+          chart.hideRule();
+          chart.tooltip.hide();
+          updateGroupByMenu();
+          filterData();
+          getMenuOptions();
+          updatePlot();
+        })
+        selectOption.selectAll("a").selectAll("input").on("change", (event, d) => {
+          state.rawUniqueItems[s].filter(item => item.name === d.name)[0].selected = !d.selected;
+          chart.hideRule();
+          chart.tooltip.hide();
+          updateGroupByMenu();
+          filterData();
+          getMenuOptions();
+          updatePlot();
+          d3.select(event.target).node().parentNode.parentNode.classList.add("show");
         });
       });
 
@@ -576,11 +649,11 @@ function loadData(path, type='csv') {
 
     function resetOptions(){
       secondaryMenus.forEach(d => {
+        let menuOptions = getUniquesMenu(state.rawData, d.name);
         if (state.chart === 'area' && d.name === 'flow_category') {
-          let flowOptions = getUniquesMenu(state.rawData, d.name);
-          state[d.name] = flowOptions.length === 1 ? flowOptions[0] : flowOptions.includes('Final consumption') ? 'Final consumption' : 'All';
+          state[d.name] = menuOptions.includes('Final consumption') ? ['Final consumption'] : menuOptions;
         } else {
-          state[d.name] = 'All';
+          state[d.name] = menuOptions;
         }
       });
       getMenuOptions()
@@ -601,9 +674,7 @@ function loadData(path, type='csv') {
 
     filterData = function(){
       state.filteredData = energyDemandPathway.filter((d, i) => {
-        let filtered = secondaryMenus.map(s => {
-          return state[s.name] === 'All' ? true : d[s.name] === state[s.name];
-        });
+        let filtered = secondaryMenus.map(s => state.rawUniqueItems[s.name].filter(item => item.name === d[s.name])[0].selected);
         return ((d.scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
       })
       state.dataToPlot = {};
@@ -711,10 +782,10 @@ function loadData(path, type='csv') {
 
       groupByMenuDropcontent.exit().remove();
 
-      let groupByOptions = [];
-      secondaryMenus.forEach(s => {
-        if (state[s.name] === 'All') groupByOptions.push(s)
-      })
+      let groupByOptions = secondaryMenus;
+      // secondaryMenus.forEach(s => {
+      //   if (state[s.name] === 'All') groupByOptions.push(s)
+      // })
 
       if (groupByOptions.length === 0) {
         d3.select(".groupby-menu")
@@ -737,7 +808,7 @@ function loadData(path, type='csv') {
           .on("click", function(d){
             document.getElementById("groupby-menu").classList.toggle("show");
           });
-        state.groupBy = groupByOptions[0];
+        if (state.groupBy === null) state.groupBy = groupByOptions[0];
         updateDropdownLabel("#groupby-dropdown", state.groupBy.longName);
         groupByOps.selectAll("a").on("click", (event, d) => {
           if (d !== state.groupBy) {
@@ -769,6 +840,7 @@ function loadData(path, type='csv') {
                       height,
                       margin,
                       'linear',
+                      popupDiv,
                       tooltipDiv,
                       timeSliderDiv,
                       yAxisUnit,

@@ -95,11 +95,10 @@ body {
   padding: 8px 12px;
   line-height: 150%;
   font-size: 14px;
-  border-bottom: 2px solid #165163;
+  border: 1px solid #165163;
   background-color: var(--ei-100);
   cursor: pointer;
   width: auto;
-  /* background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='28' viewBox='0 0 28 28' width='28' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>"); */
   background-image: url("../img/icon-dropdown.svg");
   background-repeat: no-repeat;
   background-position-x: calc(100% - 12px);
@@ -128,11 +127,10 @@ body {
   position: absolute;
   width: 250px;
   max-height: 360px;
-  /* box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); */
   z-index: 10;
   overflow: scroll;
   background: var(--ei-100);
-  border-bottom: 1px solid #165163;
+  border: 1px solid #165163;
   top: calc(100% - 2px);
 }
 
@@ -143,7 +141,6 @@ body {
   padding: 12px 16px;
   text-decoration: none;
   display: block;
-  cursor: pointer;
 }
 
 /* Change color of dropdown links on hover */
@@ -442,6 +439,16 @@ input[type="text"]:focus {
   border: 1px solid var(--ei-200);
 }
 
+.ei-popup {
+  max-width: 450px;
+  background-color: var(--ei-100);
+  padding: 10px 15px;
+  position: absolute;
+  pointer-events: none;
+  border: 1px solid var(--ei-200);
+  text-align: center;
+}
+
 .legend-header{
   font-size: 16px;
   font-weight: 500;
@@ -532,8 +539,63 @@ input[type="text"]:focus {
   z-index: 2;
 }
 
+#graph-filters a {
+  padding: 6px 16px;
+}
+
+
 .graph-menu, .groupby-menu {
   line-height: 26px;
+}
+
+.buttons-container {
+  text-align: right;
+}
+
+.buttons-container span {
+  font-style: italic;
+  color: var(--bs-gray-500);
+  cursor: pointer;
+  display: inline-block;
+  margin-right: 10px;
+  text-decoration: underline;
+}
+
+input[type=checkbox] {
+  position: relative;
+  cursor: pointer;
+  margin-right: 12px;
+}
+input[type=checkbox]:before {
+  content: "";
+  display: block;
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  top: 0;
+  left: 0;
+  border: 1px solid var(--ei-title);
+  border-radius: 2px;
+  background-color: var(--ei-100);
+}
+input[type=checkbox]:checked:after {
+  content: "";
+  display: block;
+  width: 5px;
+  height: 10px;
+  border: solid var(--ei-title);
+  border-width: 0 2px 2px 0;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  position: absolute;
+  top: 2px;
+  left: 6px;
+}
+
+label {
+  display: inline;
+  cursor: pointer;
 }
 
 /* CIA factbook */
