@@ -549,7 +549,17 @@ function loadData(path, type='csv') {
 
       graphMenus.exit().remove();
 
-      let graphMenuTitle = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-title")
+      let graphMenusInfo = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info")
+        .data(d => [d]);
+
+      graphMenusInfo.attr("class", "graph-menu-info");
+
+      graphMenusInfo.enter().append("div")
+        .attr("class", "graph-menu-info");
+
+        graphMenusInfo.exit().remove();
+
+      let graphMenuTitle = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info").selectAll(".graph-menu-title")
         .data(d => [d])
 
       graphMenuTitle.attr("class", "graph-menu-title")
@@ -560,6 +570,24 @@ function loadData(path, type='csv') {
         .html(d => d.longName);
 
       graphMenuTitle.exit().remove();
+
+      let graphMenuDetail = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info").selectAll(".graph-menu-detail")
+        .data(d => [d])
+
+      graphMenuDetail.attr("class", "graph-menu-detail")
+        .html(d => `<p>${d.description}</p>`)
+        // .on("mouseover", (event, d) => {
+        //   console.log(d.description)
+        // });
+
+      graphMenuDetail.enter().append("span")
+        .attr("class", "graph-menu-detail")
+        .html(d => `<p>${d.description}</p>`)
+        // .on("mouseover", (event, d) => {
+        //   console.log(d.description)
+        // });;
+
+      graphMenuDetail.exit().remove();
 
       let graphMenuDropdown = graphFilters.selectAll(".graph-menu").selectAll(".dropdown")
         .data(d => [d.name]);
