@@ -783,23 +783,28 @@ const vectors = [
     "columns": [
       {
         "name": "sector",
-        "longName": "Sector"
+        "longName": "Sector",
+        "description": "A category of industries or ecosystems that share common characteristics."
       },
       {
         "name": "product_category",
-        "longName": "Product category"
+        "longName": "Product category",
+        "description": "The product category filter is offered to enable visualizations that are simplified by 'bundling up' products with similar characteristics into a smaller number of categories."
       },
       {
         "name": "product_long",
-        "longName": "Product"
+        "longName": "Product",
+        "description": "A good or service, which may be tangible (e.g. coal) or intangible (e.g. avoided peat impacts)"
       },
       {
         "name": "flow_category",
-        "longName": "Flow category"
+        "longName": "Flow category",
+        "description": "The flow category filter is offered to enable visualizations that are simplified by 'bundling up' flows with similar characteristics into a smaller number of categories."
       },
       {
         "name": "flow_long",
-        "longName": "Flow"
+        "longName": "Flow",
+        "description": "The path that a product takes. It can be thought of as 'where the product ends up when it is used'."
       }
     ],
     "units": [
@@ -820,19 +825,23 @@ const vectors = [
     "columns": [
       {
         "name": "sector",
-        "longName": "Sector"
+        "longName": "Sector",
+        "description": "A category of industries or ecosystems that share common characteristics."
       },
       {
         "name": "product_long",
-        "longName": "Product"
+        "longName": "Product",
+        "description": "A good or service, which may be tangible (e.g. coal) or intangible (e.g. avoided peat impacts)"
       },
       {
         "name": "flow_category",
-        "longName": "Flow category"
+        "longName": "Flow category",
+        "description": "The flow category filter is offered to enable visualizations that are simplified by 'bundling up' flows with similar characteristics into a smaller number of categories."
       },
       {
         "name": "flow_long",
-        "longName": "Flow"
+        "longName": "Flow",
+        "description": "The path that a product takes. It can be thought of as 'where the product ends up when it is used'."
       }
     ],
     "units": [
@@ -849,19 +858,23 @@ const vectors = [
     "columns": [
       {
         "name": "sector",
-        "longName": "Sector"
+        "longName": "Sector",
+        "description": "A category of industries or ecosystems that share common characteristics."
       },
       {
         "name": "product_long",
-        "longName": "Product"
+        "longName": "Product",
+        "description": "A good or service, which may be tangible (e.g. coal) or intangible (e.g. avoided peat impacts)"
       },
       {
         "name": "flow_category",
-        "longName": "Flow category"
+        "longName": "Flow category",
+        "description": "The flow category filter is offered to enable visualizations that are simplified by 'bundling up' flows with similar characteristics into a smaller number of categories."
       },
       {
         "name": "flow_long",
-        "longName": "Flow"
+        "longName": "Flow",
+        "description": "The path that a product takes. It can be thought of as 'where the product ends up when it is used'."
       }
     ],
     "units": [
