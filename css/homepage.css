@@ -86,6 +86,10 @@ body {
   font-size: 16px;
 }
 
+.select-label.light {
+  color: black;
+}
+
 .select-vector {
   display: none;
 }
@@ -104,6 +108,11 @@ body {
   background-position-x: calc(100% - 12px);
   background-position-y: 50%;
   background-size: 16px;
+}
+
+.dropbtn.light {
+  background-color: var(--ei-450);
+  color: var(--bs-dark);
 }
 
 .dropbtn svg {
@@ -134,6 +143,10 @@ body {
   top: calc(100% - 2px);
 }
 
+.dropdown-content.light {
+  background-color: var(--ei-450);
+}
+
 /* Links inside the dropdown */
 .dropdown-content a {
   font-size: 14px;
@@ -141,6 +154,11 @@ body {
   padding: 12px 16px;
   text-decoration: none;
   display: block;
+}
+
+.dropdown-content.light a {
+  color: var(--bs-dark);
+  background-color: white;
 }
 
 /* Change color of dropdown links on hover */
@@ -285,6 +303,24 @@ input[type="text"]:focus {
   color: var(--ei-400);
   border: 2.5px solid var(--ei-400);
   font-weight: 600;
+}
+
+.btn-ei.light {
+  background-color: transparent;
+  border: 0.5px solid var(--bs-dark);
+  color: var(--bs-dark);
+}
+
+.btn-ei.light:hover {
+  background-color: var(--ei-400);
+  color: var(--ei-200);
+  border-color: var(--ei-200);
+}
+
+.btn-ei-selected.light {
+  background-color: transparent;
+  color: var(--ei-200);
+  border: 2.5px solid var(--ei-200);
 }
 
 /* TIME SLIDER */
