@@ -25,7 +25,9 @@ d3.select("#close")
 
 d3.select("#download")
   .on("click", function(d){
-    saveSvgAsPng(document.getElementById("chart-svg"), "diagram.png");
+    // saveSvgAsPng(document.getElementById("chart-svg"), "diagram.png");
+    state.darkMode = !state.darkMode;
+    updatePlot();
   });
 
 const CIAFields = {

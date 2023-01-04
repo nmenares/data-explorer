@@ -313,7 +313,7 @@ class Chart {
     vis.yLabel
       .attr("text-anchor", "start")
       .style("font-size", "12px")
-      .attr("fill", "white")
+      .attr("fill", vis.darkMode === true ? "white" : "black")
       .attr("transform", "translate(-20, -5)")
       .text(vis.yAxisTitle);
 
@@ -362,7 +362,7 @@ class Chart {
         .attr("class", "projection-label")
         .attr('x', d => vis.xScale(d[0]) + 14)
         .attr('y', 20)      
-        .attr("fill", 'lightgray')
+        .attr("fill", state.darkMode === true ? 'lightgray' : 'black')
         .text("Projection");
   
       vis.label
@@ -371,7 +371,7 @@ class Chart {
         .attr("class", "projection-label")
         .attr('x', d => vis.xScale(d[0]) + 14)
         .attr('y', 20)      
-        .attr("fill", 'lightgray')
+        .attr("fill", state.darkMode === true ? 'lightgray' : 'black')
         .text("Projection");
   
       vis.label.exit().remove();
@@ -422,7 +422,7 @@ class Chart {
         .attr('y1', 0)
         .attr('x2', d => vis.xScale(d))
         .attr('y2', vis.height - vis.margin.bottom)     
-        .attr("stroke", 'lightgray')
+        .attr("stroke", state.darkMode === true ? 'lightgray' : 'black')
         .attr("stroke-dasharray", "4,4")
         .attr("stroke-width", 0.5);
 
@@ -434,7 +434,7 @@ class Chart {
         .attr('y1', 0)
         .attr('x2', d => vis.xScale(d))
         .attr('y2', vis.height - vis.margin.bottom)     
-        .attr("stroke", 'lightgray')
+        .attr("stroke", state.darkMode === true ? 'lightgray' : 'black')
         .attr("stroke-dasharray", "4,4")
         .attr("stroke-width", 0.5);
 
