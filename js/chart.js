@@ -353,6 +353,35 @@ class Chart {
         .attr("opacity", 0.2);
   
       vis.rect.exit().remove();
+
+      const guideDate = histDate - firstDate === 0 ? firstDate : [];
+      vis.guideline = vis.g.selectAll(".projection-line").data([guideDate]);
+    
+      vis.guideline.enter().append('line')
+        .transition()
+        .duration(vis.transition)
+        .attr("class", "projection-line")
+        .attr('x1', d => vis.xScale(d))
+        .attr('y1', 0)
+        .attr('x2', d => vis.xScale(d))
+        .attr('y2', vis.height - vis.margin.bottom)     
+        .attr("stroke", state.darkMode === true ? 'lightgray' : 'black')
+        .attr("stroke-dasharray", "4,4")
+        .attr("stroke-width", 0.5);
+
+      vis.guideline
+        .transition()
+        .duration(vis.transition)
+        .attr("class", "projection-line")
+        .attr('x1', d => vis.xScale(d))
+        .attr('y1', 0)
+        .attr('x2', d => vis.xScale(d))
+        .attr('y2', vis.height - vis.margin.bottom)     
+        .attr("stroke", state.darkMode === true ? 'lightgray' : 'black')
+        .attr("stroke-dasharray", "4,4")
+        .attr("stroke-width", 0.5);
+
+      vis.guideline.exit().remove();
   
       vis.label = vis.g.selectAll(".projection-label").data([[firstDate, lastDate]]);
       
@@ -378,6 +407,7 @@ class Chart {
     } else {
       vis.rect.remove();
       vis.label.remove();
+      vis.guideline.remove();
     }
     
 
@@ -409,39 +439,6 @@ class Chart {
       .attr("d", d => vis.type === 'line' ? vis.line(d.values) : vis.type === 'area' ? vis.area(d.values) : null);
 
     vis.path.exit().remove();
-
-    if (dataProjection) {
-      const guideDate = histDate - firstDate === 0 ? firstDate : [];
-      vis.guideline = vis.g.selectAll(".projection-line").data([guideDate]);
-    
-      vis.guideline.enter().append('line')
-        .transition()
-        .duration(vis.transition)
-        .attr("class", "projection-line")
-        .attr('x1', d => vis.xScale(d))
-        .attr('y1', 0)
-        .attr('x2', d => vis.xScale(d))
-        .attr('y2', vis.height - vis.margin.bottom)     
-        .attr("stroke", state.darkMode === true ? 'lightgray' : 'black')
-        .attr("stroke-dasharray", "4,4")
-        .attr("stroke-width", 0.5);
-
-      vis.guideline
-        .transition()
-        .duration(vis.transition)
-        .attr("class", "projection-line")
-        .attr('x1', d => vis.xScale(d))
-        .attr('y1', 0)
-        .attr('x2', d => vis.xScale(d))
-        .attr('y2', vis.height - vis.margin.bottom)     
-        .attr("stroke", state.darkMode === true ? 'lightgray' : 'black')
-        .attr("stroke-dasharray", "4,4")
-        .attr("stroke-width", 0.5);
-
-      vis.guideline.exit().remove();
-    } else {
-      vis.guideline.remove();
-    }
     
     vis.rule.raise();
     if (vis.type !== 'treemap') vis.svg.call(hover, vis.path);
