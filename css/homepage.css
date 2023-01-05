@@ -144,7 +144,7 @@ body {
 }
 
 .dropdown-content.light {
-  background-color: var(--ei-450);
+  background-color: white;
 }
 
 /* Links inside the dropdown */
@@ -167,14 +167,14 @@ body {
 }
 
 #regions-menu {
-  top: 100%;
+  top: calc(100% + 53px);
 }
 
 #regions-search {
   border-bottom: none;
   padding: 10px 10px 10px 20px;
   top: 100%;
-  position: relative;
+  position: absolute;
 }
 
 #search-box {
@@ -185,6 +185,12 @@ body {
   border: 1.5px solid var(--ei-350);
   border-radius: 5px;
   font-style: italic;
+}
+
+#search-box.light {
+  color: var(--bs-gray-700);
+  background-color: white;
+  border: 1.5px solid var(--ei-350);
 }
 
 ::-webkit-input-placeholder {
