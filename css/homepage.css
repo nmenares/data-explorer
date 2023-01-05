@@ -78,6 +78,11 @@ body.light {
   margin: 5px auto;
 }
 
+.icon-col.light img {
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
+}
+
 .title span {
   font-size: 38px;
   margin-left: 20px;

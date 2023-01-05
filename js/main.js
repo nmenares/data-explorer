@@ -553,6 +553,7 @@ function loadData(path, type='csv') {
       d3.select("#about-details").classed("light", !state.darkMode);
       d3.selectAll(".graph-menu-detail").classed("light", !state.darkMode);
       d3.selectAll(".groupby-menu-detail").classed("light", !state.darkMode);
+      d3.selectAll(".icon-col").classed("light", !state.darkMode);
       svg.style("background-color", state.darkMode === true ? "#1c2137" : "white");
       chart.updateData(state.dataToPlot);
       chart.updateDarkMode(state.darkMode);
