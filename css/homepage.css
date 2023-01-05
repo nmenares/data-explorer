@@ -609,6 +609,13 @@ input[type="text"]:focus {
   z-index: 2;
 }
 
+#graph-filters.light {
+  background-color: white;
+  /* border-left: 1px solid var(--ei-350);
+  border-right: 1px solid var(--ei-350);
+  border-bottom: 1px solid var(--ei-350); */
+}
+
 #graph-filters a {
   padding: 6px 16px;
 }
