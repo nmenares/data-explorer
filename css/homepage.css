@@ -242,13 +242,17 @@ input[type="text"]:focus {
   /* box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); */
   z-index: 10;
   overflow: scroll;
-  background: var(--ei-100);
+  background-color: var(--ei-100);
   border-bottom: 1px solid #165163;
   top: calc(100% + 2px);
   right: -24px;
   border: 1px solid var(--ei-350);
   padding: 20px 20px 10px;
   width: 400px;
+}
+
+#about-details.light {
+  background-color: white;
 }
 
 #about-details p {
@@ -865,6 +869,10 @@ label {
   font-size: 14px;
   line-height: 1.4;
   z-index: 100;
+}
+
+.graph-menu-detail.light p, .groupby-menu-detail.light p {
+  background-color: white;
 }
 
 @media (max-width:  1040px) {

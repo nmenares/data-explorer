@@ -550,6 +550,9 @@ function loadData(path, type='csv') {
       d3.selectAll(".dropdown-content").classed("light", !state.darkMode);
       d3.select("#search-box").classed("light", !state.darkMode);
       d3.select("#graph-filters").classed("light", !state.darkMode);
+      d3.select("#about-details").classed("light", !state.darkMode);
+      d3.selectAll(".graph-menu-detail").classed("light", !state.darkMode);
+      d3.selectAll(".groupby-menu-detail").classed("light", !state.darkMode);
       svg.style("background-color", state.darkMode === true ? "#1c2137" : "white");
       chart.updateData(state.dataToPlot);
       chart.updateDarkMode(state.darkMode);
@@ -595,10 +598,12 @@ function loadData(path, type='csv') {
         .data(d => [d])
 
       graphMenuDetail.attr("class", "graph-menu-detail")
+        .classed("light", !state.darkMode)
         .html(d => `<p>${d.description}</p>`);
 
       graphMenuDetail.enter().append("span")
         .attr("class", "graph-menu-detail")
+        .classed("light", !state.darkMode)
         .html(d => `<p>${d.description}</p>`);
 
       graphMenuDetail.exit().remove();
@@ -619,10 +624,12 @@ function loadData(path, type='csv') {
         .data(d => [d]);
 
       graphMenuDropbtn.attr("class", "dropbtn")
+        .classed("light", !state.darkMode)
         .attr("id", d => d+'-dropbtn');
 
       graphMenuDropbtn.enter().append("div")
         .attr("class", "dropbtn")
+        .classed("light", !state.darkMode)
         .attr("id", d => d+'-dropbtn');
 
       graphMenuDropbtn.exit().remove();
@@ -631,10 +638,12 @@ function loadData(path, type='csv') {
         .data(d => [d]);
 
       graphMenuDropcontent.attr("class", "dropdown-content")
+        .classed("light", !state.darkMode)
         .attr("id", d => d+'-menu');
 
       graphMenuDropcontent.enter().append("div")
         .attr("class", "dropdown-content")
+        .classed("light", !state.darkMode)
         .attr("id", d => d+'-menu');
 
       graphMenuDropcontent.exit().remove();
@@ -802,10 +811,12 @@ function loadData(path, type='csv') {
         .data(d => [d])
 
       groupByMenuDetail.attr("class", "groupby-menu-detail")
+        .classed("light", !state.darkMode)
         .html(d => `<p>${d.description}</p>`);
 
       groupByMenuDetail.enter().append("span")
         .attr("class", "groupby-menu-detail")
+        .classed("light", !state.darkMode)
         .html(d => `<p>${d.description}</p>`);
 
       groupByMenuDetail.exit().remove();
@@ -826,10 +837,12 @@ function loadData(path, type='csv') {
         .data(d => [d]);
 
       groupByMenuDropbtn.attr("class", "dropbtn")
+        .classed("light", !state.darkMode)
         .attr("id", d => 'groupby-dropbtn');
 
       groupByMenuDropbtn.enter().append("div")
         .attr("class", "dropbtn")
+        .classed("light", !state.darkMode)
         .attr("id", d => 'groupby-dropbtn');
 
       groupByMenuDropbtn.exit().remove();
@@ -838,10 +851,12 @@ function loadData(path, type='csv') {
         .data(d => [d]);
 
       groupByMenuDropcontent.attr("class", "dropdown-content")
+        .classed("light", !state.darkMode)
         .attr("id", d => 'groupby-menu');
 
       groupByMenuDropcontent.enter().append("div")
         .attr("class", "dropdown-content")
+        .classed("light", !state.darkMode)
         .attr("id", d => 'groupby-menu');
 
       groupByMenuDropcontent.exit().remove();
