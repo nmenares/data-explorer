@@ -8,11 +8,21 @@ body {
   margin: 0 auto;
 }
 
+body.light {
+  color: var(--bs-dark);
+  background-color: white;
+}
+
 .header {
   font-family: 'Josefin Sans', sans-serif;
   color: #FFF;
   height: 64px;
 }
+
+.header.light {
+  color: var(--bs-dark);
+}
+
 .header-item a {
   text-decoration: none;
   color: inherit;

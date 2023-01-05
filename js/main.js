@@ -542,7 +542,8 @@ function loadData(path, type='csv') {
     })
 
     updatePlot = function() {
-      d3.select("body").style("background-color", state.darkMode === true ? "#1c2137" : "white");
+      d3.select("body").classed("light", !state.darkMode);
+      d3.selectAll(".header").classed("light", !state.darkMode);
       d3.selectAll(".select-label").classed("light", !state.darkMode);
       d3.selectAll(".btn-ei").classed("light", !state.darkMode);
       d3.selectAll(".dropbtn").classed("light", !state.darkMode);
