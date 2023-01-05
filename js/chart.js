@@ -340,7 +340,7 @@ class Chart {
         .attr('width', d => vis.xScale(d[1]) - vis.xScale(d[0]))
         .attr('height', vis.height - vis.margin.bottom)
         .attr("fill", '#165163')
-        .attr("opacity", 0.2);
+        .attr("opacity", state.darkMode === true ? 0.2 : 0.1);
   
       vis.rect
         .transition()
@@ -350,7 +350,7 @@ class Chart {
         .attr('width', d => vis.xScale(d[1]) - vis.xScale(d[0]))
         .attr('height', vis.height - vis.margin.bottom)
         .attr("fill", '#165163')
-        .attr("opacity", 0.2);
+        .attr("opacity", state.darkMode === true ? 0.2 : 0.1);
   
       vis.rect.exit().remove();
 
@@ -409,7 +409,6 @@ class Chart {
       vis.label.remove();
       vis.guideline.remove();
     }
-    
 
     vis.path = vis.g.selectAll("path").data(vis.filteredData.lines);
 
