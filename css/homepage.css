@@ -65,6 +65,12 @@ body.light {
   height: 4px;
 }
 
+.ei-border-bottom.light {
+  background: url("../img/border-line-horizontal.png") repeat-x;
+  height: 2px;
+  opacity: 0.7;
+}
+
 .title {
   line-height: 64px;
 }
