@@ -668,6 +668,10 @@ input[type="text"]:focus {
   text-decoration: underline;
 }
 
+.buttons-container.light span {
+  color: var(--bs-gray-600);
+}
+
 input[type=checkbox] {
   position: relative;
   cursor: pointer;
@@ -683,7 +687,13 @@ input[type=checkbox]:before {
   left: 0;
   border: 1px solid var(--ei-title);
   border-radius: 2px;
-  background-color: var(--ei-100);
+  background-color: var(--ei-150);
+}
+.dropdown-content.light a input[type=checkbox]:before {
+  background-color: white;
+}
+.dropdown-content.light a:hover input[type=checkbox]:before {
+  background-color: var(--ei-150);
 }
 input[type=checkbox]:checked:after {
   content: "";
@@ -873,6 +883,10 @@ label {
   content:'?';
   font-weight: 400;
   color:var(--ei-title);
+}
+
+.graph-menu-detail.light:before, .groupby-menu-detail.light:before {
+  color:var(--ei-300);
 }
 
 .graph-menu-detail:hover p, .groupby-menu-detail:hover p {
