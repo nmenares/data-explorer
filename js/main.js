@@ -555,6 +555,8 @@ function loadData(path, type='csv') {
       d3.selectAll(".groupby-menu-detail").classed("light", !state.darkMode);
       d3.selectAll(".icon-col").classed("light", !state.darkMode);
       d3.selectAll(".ei-border-bottom").classed("light", !state.darkMode);
+      d3.selectAll(".chart-icon").classed("light", !state.darkMode);
+      d3.selectAll(".ei-tooltip").classed("light", !state.darkMode);
       svg.style("background-color", state.darkMode === true ? "#1c2137" : "white");
       chart.updateData(state.dataToPlot);
       chart.updateDarkMode(state.darkMode);
@@ -929,5 +931,6 @@ function loadData(path, type='csv') {
                       type=state.chart);
     chart.updatePlot();
 
+    tooltipDiv.classed("light", !state.darkMode);
   })
 }

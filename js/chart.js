@@ -163,13 +163,15 @@ class Chart {
     vis.rule.append("line")
       .attr("y1", 0)
       .attr("y2", vis.height - vis.margin.bottom)
-      .attr("stroke", "lightgray");
+      
   }
 
   updatePlot() {
     const vis = this;
 
     vis.filterData();
+
+    vis.rule.select("line").attr("stroke", vis.darkMode === true ? 'lightgray' : 'darkgray');
 
     vis.nodata = vis.data.lines.length === 0;
 
@@ -340,7 +342,7 @@ class Chart {
         .attr('width', d => vis.xScale(d[1]) - vis.xScale(d[0]))
         .attr('height', vis.height - vis.margin.bottom)
         .attr("fill", '#165163')
-        .attr("opacity", state.darkMode === true ? 0.2 : 0.1);
+        .attr("opacity", vis.darkMode === true ? 0.2 : 0.1);
   
       vis.rect
         .transition()
@@ -350,7 +352,7 @@ class Chart {
         .attr('width', d => vis.xScale(d[1]) - vis.xScale(d[0]))
         .attr('height', vis.height - vis.margin.bottom)
         .attr("fill", '#165163')
-        .attr("opacity", state.darkMode === true ? 0.2 : 0.1);
+        .attr("opacity", vis.darkMode === true ? 0.2 : 0.1);
   
       vis.rect.exit().remove();
 
@@ -365,7 +367,7 @@ class Chart {
         .attr('y1', 0)
         .attr('x2', d => vis.xScale(d))
         .attr('y2', vis.height - vis.margin.bottom)     
-        .attr("stroke", state.darkMode === true ? 'lightgray' : 'black')
+        .attr("stroke", vis.darkMode === true ? 'lightgray' : 'black')
         .attr("stroke-dasharray", "4,4")
         .attr("stroke-width", 0.5);
 
@@ -377,7 +379,7 @@ class Chart {
         .attr('y1', 0)
         .attr('x2', d => vis.xScale(d))
         .attr('y2', vis.height - vis.margin.bottom)     
-        .attr("stroke", state.darkMode === true ? 'lightgray' : 'black')
+        .attr("stroke", vis.darkMode === true ? 'lightgray' : 'black')
         .attr("stroke-dasharray", "4,4")
         .attr("stroke-width", 0.5);
 
@@ -391,7 +393,7 @@ class Chart {
         .attr("class", "projection-label")
         .attr('x', d => vis.xScale(d[0]) + 14)
         .attr('y', 20)      
-        .attr("fill", state.darkMode === true ? 'lightgray' : 'black')
+        .attr("fill", vis.darkMode === true ? 'lightgray' : 'black')
         .text("Projection");
   
       vis.label
@@ -400,7 +402,7 @@ class Chart {
         .attr("class", "projection-label")
         .attr('x', d => vis.xScale(d[0]) + 14)
         .attr('y', 20)      
-        .attr("fill", state.darkMode === true ? 'lightgray' : 'black')
+        .attr("fill", vis.darkMode === true ? 'lightgray' : 'black')
         .text("Projection");
   
       vis.label.exit().remove();

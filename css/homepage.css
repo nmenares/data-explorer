@@ -187,6 +187,11 @@ body.light {
   background-color: var(--ei-200);
 }
 
+.dropdown-content.light a:hover {
+  color: white;
+  background-color: var(--ei-150);
+}
+
 #regions-menu {
   top: calc(100% + 53px);
 }
@@ -338,14 +343,14 @@ input[type="text"]:focus {
 
 .btn-ei.light {
   background-color: transparent;
-  border: 0.5px solid var(--bs-dark);
+  border: 0.5px solid var(--ei-200);
   color: var(--bs-dark);
 }
 
 .btn-ei.light:hover {
-  background-color: var(--ei-400);
-  color: var(--ei-200);
-  border-color: var(--ei-200);
+  background-color: var(--ei-150);
+  color: white;
+  border-color: var(--ei-150);
 }
 
 .btn-ei-selected.light {
@@ -467,6 +472,11 @@ input[type="text"]:focus {
   background-color: var(--ei-100);
 }
 
+.chart-icon.light:hover {
+  color: white;
+  background-color: var(--ei-150);
+}
+
 .chart-icon img {
   padding: 0;
   margin-top: -18px;
@@ -522,6 +532,11 @@ input[type="text"]:focus {
   position: absolute;
   pointer-events: none;
   border: 1px solid var(--ei-200);
+}
+
+.ei-tooltip.light {
+  background-color: white;
+  color: var(--bs-dark);
 }
 
 .ei-popup {
