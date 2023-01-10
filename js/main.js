@@ -558,6 +558,7 @@ function loadData(path, type='csv') {
       d3.selectAll(".chart-icon").classed("light", !state.darkMode);
       d3.selectAll(".ei-tooltip").classed("light", !state.darkMode);
       d3.selectAll(".buttons-container").classed("light", !state.darkMode);
+      d3.selectAll(".parameter-value").classed("light", !state.darkMode);
       svg.style("background-color", state.darkMode === true ? "#1c2137" : "white");
       chart.updateData(state.dataToPlot);
       chart.updateDarkMode(state.darkMode);

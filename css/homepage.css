@@ -269,6 +269,7 @@ input[type="text"]:focus {
 
 #about-details.light {
   background-color: white;
+  top: 100%;
 }
 
 #about-details p {
@@ -367,7 +368,12 @@ input[type="text"]:focus {
 
 .parameter-value text {
   fill: var(--ei-400);
-  font-size: 12px;;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.parameter-value.light text {
+  fill: var(--ei-600);
 }
 
 .outputs {
