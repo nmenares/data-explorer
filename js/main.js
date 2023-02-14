@@ -562,6 +562,7 @@ function loadData(path, type='csv') {
       d3.selectAll(".buttons-container").classed("light", !state.darkMode);
       d3.selectAll(".parameter-value").classed("light", !state.darkMode);
       d3.selectAll("#toggle").classed("light", !state.darkMode);
+      d3.selectAll("#download").classed("light", !state.darkMode);
       svg.style("background-color", state.darkMode === true ? "#1c2137" : "white");
       chart.updateData(state.dataToPlot);
       chart.updateDarkMode(state.darkMode);
@@ -760,7 +761,7 @@ function loadData(path, type='csv') {
         const series = d3.stack()
            .keys(uniqueGroupBy)
            .value((year, key) => state.dataToPlot.lines.filter(l => l.name === key)[0].values.filter(v => v.x - year === 0)[0].y)
-           .order(d3.stackOrderNone)
+           .order(d3.stackOrderDescending)
            .offset(null) // d3.stackOffsetExpand for normalized
            (years.map(y => dateParse(y)));
 

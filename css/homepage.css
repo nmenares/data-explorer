@@ -454,6 +454,10 @@ input[type="text"]:focus {
   cursor: pointer;
 }
 
+#download.light {
+  color: var(--ei-200);
+}
+
 #download svg {
   margin-left: 5px;
   margin-top: -5px;
