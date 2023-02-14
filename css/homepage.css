@@ -8,11 +8,21 @@ body {
   margin: 0 auto;
 }
 
+body.light {
+  color: var(--ei-background);
+  background-color: white;
+}
+
 .header {
   font-family: 'Josefin Sans', sans-serif;
   color: #FFF;
   height: 64px;
 }
+
+.header.light {
+  color: var(--bs-dark);
+}
+
 .header-item a {
   text-decoration: none;
   color: inherit;
@@ -55,6 +65,12 @@ body {
   height: 4px;
 }
 
+.ei-border-bottom.light {
+  background: url("../img/border-line-horizontal.png") repeat-x;
+  height: 1px;
+  opacity: 0.7;
+}
+
 .title {
   line-height: 64px;
 }
@@ -66,6 +82,11 @@ body {
 .icon-col img {
   max-height: 52px;
   margin: 5px auto;
+}
+
+.icon-col.light img {
+  -webkit-filter: invert(100%);
+  filter: invert(100%);
 }
 
 .title span {
@@ -86,6 +107,10 @@ body {
   font-size: 16px;
 }
 
+.select-label.light {
+  color: var(--ei-200);
+}
+
 .select-vector {
   display: none;
 }
@@ -104,6 +129,11 @@ body {
   background-position-x: calc(100% - 12px);
   background-position-y: 50%;
   background-size: 16px;
+}
+
+.dropbtn.light {
+  background-color: var(--ei-450);
+  color: var(--bs-dark);
 }
 
 .dropbtn svg {
@@ -134,6 +164,10 @@ body {
   top: calc(100% - 2px);
 }
 
+.dropdown-content.light {
+  background-color: white;
+}
+
 /* Links inside the dropdown */
 .dropdown-content a {
   font-size: 14px;
@@ -143,20 +177,30 @@ body {
   display: block;
 }
 
+.dropdown-content.light a {
+  color: var(--bs-dark);
+  background-color: white;
+}
+
 /* Change color of dropdown links on hover */
 .dropdown-content a:hover {
   background-color: var(--ei-200);
 }
 
+.dropdown-content.light a:hover {
+  color: white;
+  background-color: var(--ei-150);
+}
+
 #regions-menu {
-  top: 100%;
+  top: calc(100% + 53px);
 }
 
 #regions-search {
   border-bottom: none;
   padding: 10px 10px 10px 20px;
   top: 100%;
-  position: relative;
+  position: absolute;
 }
 
 #search-box {
@@ -167,6 +211,12 @@ body {
   border: 1.5px solid var(--ei-350);
   border-radius: 5px;
   font-style: italic;
+}
+
+#search-box.light {
+  color: var(--bs-gray-700);
+  background-color: white;
+  border: 1.5px solid var(--ei-350);
 }
 
 ::-webkit-input-placeholder {
@@ -208,13 +258,18 @@ input[type="text"]:focus {
   /* box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2); */
   z-index: 10;
   overflow: scroll;
-  background: var(--ei-100);
+  background-color: var(--ei-100);
   border-bottom: 1px solid #165163;
   top: calc(100% + 2px);
   right: -24px;
   border: 1px solid var(--ei-350);
   padding: 20px 20px 10px;
   width: 400px;
+}
+
+#about-details.light {
+  background-color: white;
+  top: 100%;
 }
 
 #about-details p {
@@ -287,6 +342,24 @@ input[type="text"]:focus {
   font-weight: 600;
 }
 
+.btn-ei.light {
+  background-color: transparent;
+  border: 0.5px solid var(--ei-200);
+  color: var(--bs-dark);
+}
+
+.btn-ei.light:hover {
+  background-color: var(--ei-600);
+  color: white;
+  border-color: var(--ei-600);
+}
+
+.btn-ei-selected.light {
+  background-color: var(--ei-150);
+  color: white;
+  border: 2.5px solid var(--ei-150);
+}
+
 /* TIME SLIDER */
 
 #time-slider .tick text {
@@ -295,7 +368,12 @@ input[type="text"]:focus {
 
 .parameter-value text {
   fill: var(--ei-400);
-  font-size: 12px;;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.parameter-value.light text {
+  fill: var(--ei-600);
 }
 
 .outputs {
@@ -349,7 +427,7 @@ input[type="text"]:focus {
 }
 /* CHART ICONS */
 
-#select-chart, #chart-types, #filters-col {
+#select-chart, #chart-types, #filters-col, #download {
   line-height: 54px;
   display: inline-block;
   margin-right: 12px;
@@ -361,6 +439,24 @@ input[type="text"]:focus {
 
 #filters-col {
   text-align: left;
+}
+
+#download {
+  color: var(--ei-title);
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 16px;
+  border: 1px solid var(--ei-350);
+  padding: 12px 14px;
+  line-height: 32px;
+  height: 53px;
+  cursor: pointer;
+}
+
+#download svg {
+  margin-left: 5px;
+  margin-top: -5px;
 }
 
 #chart-options {
@@ -380,6 +476,11 @@ input[type="text"]:focus {
 
 .chart-icon:hover {
   background-color: var(--ei-100);
+}
+
+.chart-icon.light:hover {
+  color: white;
+  background-color: var(--ei-150);
 }
 
 .chart-icon img {
@@ -437,6 +538,11 @@ input[type="text"]:focus {
   position: absolute;
   pointer-events: none;
   border: 1px solid var(--ei-200);
+}
+
+.ei-tooltip.light {
+  background-color: white;
+  color: var(--bs-dark);
 }
 
 .ei-popup {
@@ -539,6 +645,13 @@ input[type="text"]:focus {
   z-index: 2;
 }
 
+#graph-filters.light {
+  background-color: white;
+  /* border-left: 1px solid var(--ei-350);
+  border-right: 1px solid var(--ei-350);
+  border-bottom: 1px solid var(--ei-350); */
+}
+
 #graph-filters a {
   padding: 6px 16px;
 }
@@ -561,6 +674,10 @@ input[type="text"]:focus {
   text-decoration: underline;
 }
 
+.buttons-container.light span {
+  color: var(--bs-gray-600);
+}
+
 input[type=checkbox] {
   position: relative;
   cursor: pointer;
@@ -576,7 +693,13 @@ input[type=checkbox]:before {
   left: 0;
   border: 1px solid var(--ei-title);
   border-radius: 2px;
-  background-color: var(--ei-100);
+  background-color: var(--ei-150);
+}
+.dropdown-content.light a input[type=checkbox]:before {
+  background-color: white;
+}
+.dropdown-content.light a:hover input[type=checkbox]:before {
+  background-color: var(--ei-150);
 }
 input[type=checkbox]:checked:after {
   content: "";
@@ -768,6 +891,10 @@ label {
   color:var(--ei-title);
 }
 
+.graph-menu-detail.light:before, .groupby-menu-detail.light:before {
+  color:var(--ei-300);
+}
+
 .graph-menu-detail:hover p, .groupby-menu-detail:hover p {
   display: block;
   transform-origin: 100% 100%;
@@ -788,6 +915,87 @@ label {
   font-size: 14px;
   line-height: 1.4;
   z-index: 100;
+}
+
+.graph-menu-detail.light p, .groupby-menu-detail.light p {
+  background-color: white;
+}
+
+#toggle {
+  line-height: 64px;
+}
+
+#toggle svg, #toggle span {
+  display: inline;
+}
+
+#toggle.light svg {
+  fill: var(--bs-dark);
+}
+
+/* Toggle */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 36px;
+  height: 10px;
+}
+
+/* Hide default HTML checkbox */
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider */
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #088184;
+  -webkit-transition: .4s;
+  transition: .4s;
+  transform: translateY(28px);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 20px;
+  bottom: -4px;
+  background-color: white;
+  border: 1px solid #777;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+input:checked + .toggle-slider {
+  background-color: #088184;
+}
+
+input:focus + .toggle-slider {
+  box-shadow: 0 0 1px #088184;
+}
+
+input:checked + .toggle-slider:before {
+  -webkit-transform: translateX(-20px);
+  -ms-transform: translateX(-20px);
+  transform: translateX(-20px);
+}
+
+/* Rounded sliders */
+.toggle-slider.round {
+  border-radius: 26px;
+}
+
+.toggle-slider.round:before {
+  border-radius: 50%;
 }
 
 @media (max-width:  1040px) {

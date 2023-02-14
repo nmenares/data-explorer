@@ -1,4 +1,5 @@
 let state = {
+  darkMode: true,
   region: regions[0],
   region_info: null,
   scenario: 'baseline',
@@ -20,6 +21,15 @@ d3.select("#about-button")
 d3.select("#close")
   .on("click", function(d){
     document.getElementById("about-details").classList.toggle("show");
+  });
+d3.select(".toggle-slider")
+  .on("click", function(d){
+    state.darkMode = !state.darkMode;
+    updatePlot();
+  })
+d3.select("#download")
+  .on("click", function(d){
+    saveSvgAsPng(document.getElementById("chart-svg"), "epic-data-explorer-plot.png");
   });
 
 const CIAFields = {
@@ -477,7 +487,9 @@ let margin = {top: 20, right: 30, bottom: 20, left: 30},
 
 let svg = plot.append("svg")
     .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom);
+    .attr("height", height + margin.top + margin.bottom)
+    .attr("id", "chart-svg")
+    .style("background-color", "#1c2137");
 
 const dateParse = d3.timeParse("%Y");
 
@@ -532,7 +544,27 @@ function loadData(path, type='csv') {
     })
 
     updatePlot = function() {
+      d3.select("body").classed("light", !state.darkMode);
+      d3.selectAll(".header").classed("light", !state.darkMode);
+      d3.selectAll(".select-label").classed("light", !state.darkMode);
+      d3.selectAll(".btn-ei").classed("light", !state.darkMode);
+      d3.selectAll(".dropbtn").classed("light", !state.darkMode);
+      d3.selectAll(".dropdown-content").classed("light", !state.darkMode);
+      d3.select("#search-box").classed("light", !state.darkMode);
+      d3.select("#graph-filters").classed("light", !state.darkMode);
+      d3.select("#about-details").classed("light", !state.darkMode);
+      d3.selectAll(".graph-menu-detail").classed("light", !state.darkMode);
+      d3.selectAll(".groupby-menu-detail").classed("light", !state.darkMode);
+      d3.selectAll(".icon-col").classed("light", !state.darkMode);
+      d3.selectAll(".ei-border-bottom").classed("light", !state.darkMode);
+      d3.selectAll(".chart-icon").classed("light", !state.darkMode);
+      d3.selectAll(".ei-tooltip").classed("light", !state.darkMode);
+      d3.selectAll(".buttons-container").classed("light", !state.darkMode);
+      d3.selectAll(".parameter-value").classed("light", !state.darkMode);
+      d3.selectAll("#toggle").classed("light", !state.darkMode);
+      svg.style("background-color", state.darkMode === true ? "#1c2137" : "white");
       chart.updateData(state.dataToPlot);
+      chart.updateDarkMode(state.darkMode);
       chart.updatePlot();
     }
 
@@ -575,10 +607,12 @@ function loadData(path, type='csv') {
         .data(d => [d])
 
       graphMenuDetail.attr("class", "graph-menu-detail")
+        .classed("light", !state.darkMode)
         .html(d => `<p>${d.description}</p>`);
 
       graphMenuDetail.enter().append("span")
         .attr("class", "graph-menu-detail")
+        .classed("light", !state.darkMode)
         .html(d => `<p>${d.description}</p>`);
 
       graphMenuDetail.exit().remove();
@@ -599,10 +633,12 @@ function loadData(path, type='csv') {
         .data(d => [d]);
 
       graphMenuDropbtn.attr("class", "dropbtn")
+        .classed("light", !state.darkMode)
         .attr("id", d => d+'-dropbtn');
 
       graphMenuDropbtn.enter().append("div")
         .attr("class", "dropbtn")
+        .classed("light", !state.darkMode)
         .attr("id", d => d+'-dropbtn');
 
       graphMenuDropbtn.exit().remove();
@@ -611,10 +647,12 @@ function loadData(path, type='csv') {
         .data(d => [d]);
 
       graphMenuDropcontent.attr("class", "dropdown-content")
+        .classed("light", !state.darkMode)
         .attr("id", d => d+'-menu');
 
       graphMenuDropcontent.enter().append("div")
         .attr("class", "dropdown-content")
+        .classed("light", !state.darkMode)
         .attr("id", d => d+'-menu');
 
       graphMenuDropcontent.exit().remove();
@@ -782,10 +820,12 @@ function loadData(path, type='csv') {
         .data(d => [d])
 
       groupByMenuDetail.attr("class", "groupby-menu-detail")
+        .classed("light", !state.darkMode)
         .html(d => `<p>${d.description}</p>`);
 
       groupByMenuDetail.enter().append("span")
         .attr("class", "groupby-menu-detail")
+        .classed("light", !state.darkMode)
         .html(d => `<p>${d.description}</p>`);
 
       groupByMenuDetail.exit().remove();
@@ -806,10 +846,12 @@ function loadData(path, type='csv') {
         .data(d => [d]);
 
       groupByMenuDropbtn.attr("class", "dropbtn")
+        .classed("light", !state.darkMode)
         .attr("id", d => 'groupby-dropbtn');
 
       groupByMenuDropbtn.enter().append("div")
         .attr("class", "dropbtn")
+        .classed("light", !state.darkMode)
         .attr("id", d => 'groupby-dropbtn');
 
       groupByMenuDropbtn.exit().remove();
@@ -818,10 +860,12 @@ function loadData(path, type='csv') {
         .data(d => [d]);
 
       groupByMenuDropcontent.attr("class", "dropdown-content")
+        .classed("light", !state.darkMode)
         .attr("id", d => 'groupby-menu');
 
       groupByMenuDropcontent.enter().append("div")
         .attr("class", "dropdown-content")
+        .classed("light", !state.darkMode)
         .attr("id", d => 'groupby-menu');
 
       groupByMenuDropcontent.exit().remove();
@@ -888,8 +932,10 @@ function loadData(path, type='csv') {
                       tooltipDiv,
                       timeSliderDiv,
                       yAxisUnit,
+                      darkMode=state.darkMode,
                       type=state.chart);
     chart.updatePlot();
 
+    tooltipDiv.classed("light", !state.darkMode);
   })
 }
