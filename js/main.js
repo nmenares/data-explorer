@@ -760,7 +760,7 @@ function loadData(path, type='csv') {
         const series = d3.stack()
            .keys(uniqueGroupBy)
            .value((year, key) => state.dataToPlot.lines.filter(l => l.name === key)[0].values.filter(v => v.x - year === 0)[0].y)
-           .order(d3.stackOrderNone)
+           .order(d3.stackOrderDescending)
            .offset(null) // d3.stackOffsetExpand for normalized
            (years.map(y => dateParse(y)));
 
