@@ -22,12 +22,14 @@ d3.select("#close")
   .on("click", function(d){
     document.getElementById("about-details").classList.toggle("show");
   });
-
-d3.select("#download")
+d3.select(".toggle-slider")
   .on("click", function(d){
-    // saveSvgAsPng(document.getElementById("chart-svg"), "diagram.png");
     state.darkMode = !state.darkMode;
     updatePlot();
+  })
+d3.select("#download")
+  .on("click", function(d){
+    saveSvgAsPng(document.getElementById("chart-svg"), "epic-data-explorer-plot.png");
   });
 
 const CIAFields = {
