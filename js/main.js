@@ -609,12 +609,12 @@ function loadData(path, type='csv') {
 
       graphMenuDetail.attr("class", "graph-menu-detail")
         .classed("light", !state.darkMode)
-        .html(d => `<p>${d.description}</p>`);
+        .html(d => `<p>${d.description} For more details, you can read the about section.</p>`);
 
       graphMenuDetail.enter().append("span")
         .attr("class", "graph-menu-detail")
         .classed("light", !state.darkMode)
-        .html(d => `<p>${d.description}</p>`);
+        .html(d => `<p>${d.description} For more details, you can read the about section.</p>`);
 
       graphMenuDetail.exit().remove();
 
