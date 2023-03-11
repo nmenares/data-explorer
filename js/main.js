@@ -509,7 +509,7 @@ function loadData(path, type='csv') {
     // console.log(energyDemandPathway);
 
     let scenarios = getUniquesMenu(energyDemandPathway, 'scenario');
-    state.scenario = scenarios[0];
+    state.scenario = scenarios.includes("pathway") ? "pathway" : scenarios[0];
 
     let selectScenario = addButtons("buttons-scenario", scenarios)
     updateSelectedButton(selectScenario, state.scenario);
