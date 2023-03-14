@@ -446,30 +446,44 @@ selectVector.selectAll("a").on("click", (event, d) => {
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = function(event) {
   // Region dropdown menu
-  if (!event.target.matches('#dropbtn-region') && !event.path.includes(document.getElementById('regions-search'))) {
-    var dropdown = document.getElementById("regions-menu");
-    var box = document.getElementById("regions-search");
+  // if (!event.target.matches('#dropbtn-region') && !event.path.includes(document.getElementById('regions-search'))) {
+  //   var dropdown = document.getElementById("regions-menu");
+  //   var box = document.getElementById("regions-search");
+  //   if (dropdown.classList.contains('show')) {
+  //     dropdown.classList.remove('show');
+  //     box.classList.remove('show');
+  //   }
+  // }
+
+  if (!event.target.matches('#dropbtn-vector')) {
+    var dropdown = document.getElementById("vector-content");
     if (dropdown.classList.contains('show')) {
       dropdown.classList.remove('show');
-      box.classList.remove('show');
+    }
+  }
+
+  if (!event.target.matches('#dropbtn-scenario')) {
+    var dropdown = document.getElementById("scenario-content");
+    if (dropdown.classList.contains('show')) {
+      dropdown.classList.remove('show');
     }
   }
 
   // Graph options dropdown menus
-  if (!event.path.includes(document.getElementById("filters-col")) && document.getElementById("show-filters").classList.contains("checked")) {
-    let filter = d3.select("#show-filters");
-    filter.classed("checked", !filter.classed("checked"));
+  // if (!event.path.includes(document.getElementById("filters-col")) && document.getElementById("show-filters").classList.contains("checked")) {
+  //   let filter = d3.select("#show-filters");
+  //   filter.classed("checked", !filter.classed("checked"));
 
-    document.getElementById("graph-filters").classList.toggle("show");
-  }
+  //   document.getElementById("graph-filters").classList.toggle("show");
+  // }
 
   // About popup
-  if (!event.target.matches('#about-button') && !event.path.includes(document.getElementById('about-details'))) {
-    var dropdown = document.getElementById("about-details");
-    if (dropdown.classList.contains('show')) {
-      dropdown.classList.remove('show');
-    }
-  }
+  // if (!event.target.matches('#about-button') && !event.path.includes(document.getElementById('about-details'))) {
+  //   var dropdown = document.getElementById("about-details");
+  //   if (dropdown.classList.contains('show')) {
+  //     dropdown.classList.remove('show');
+  //   }
+  // }
 }
 
 const plotWidth = d3.select("#chart").node().getBoundingClientRect().width,
