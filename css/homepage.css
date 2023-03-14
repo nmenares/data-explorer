@@ -193,7 +193,7 @@ body.light {
 }
 
 #regions-menu {
-  top: calc(100% + 53px);
+  top: calc(100% + 52px);
 }
 
 #regions-search {
@@ -250,6 +250,10 @@ input[type="text"]:focus {
   right: 40px;
   top: 14px;
   cursor: pointer;
+}
+
+#scenario-content {
+  width: 100% !important;
 }
 
 #about-details {

@@ -302,12 +302,12 @@ function addStandardOptions(id, values, attrs=values.map(d => null)) {
   var element = d3.select("#"+id);
   var options = element.selectAll("option").data(values);
 
-  options.enter().append("option")
+  options.enter().append("a")
     .attr("value", (d,i) => attrs[i])
-    .html(d => d);
+    .html(d => capitalize(d));
 
   options.attr("value", (d,i) => attrs[i])
-    .html(d => d);
+    .html(d => capitalize(d));
 
   options.exit().remove();
 
@@ -414,22 +414,28 @@ searchReset
     searchReset.classed("show", false);
     updateRegions(regions);
   });
+    
+let selectVector = d3.select("#vector-content");
 
-let selectVector = d3.select("#buttons-vector");
+let options = selectVector.selectAll("option").data(vectors);
 
-let options = selectVector.selectAll("button").data(vectors);
+options.enter().append("a")
+  .html(d => capitalize(d.name));
 
-options.enter().append("button")
-  .attr("class", "btn-ei")
-  .html(d => d.name);
+options
+  .html(d => capitalize(d.name));
 
 options.exit().remove();
 
-updateSelectedButton(selectVector, state.result);
-selectVector.selectAll(".btn-ei").on("click", (event, d) => {
+d3.select("#dropdown-vector")
+  .on("click", function(d){
+    document.getElementById("vector-content").classList.toggle("show");
+  });
+d3.select("#dropbtn-vector").html(capitalize(state.result.name));
+selectVector.selectAll("a").on("click", (event, d) => {
   if (state.result !== d) {
     state.result = d;
-    updateSelectedButton(selectVector, state.result);
+    d3.select("#dropbtn-vector").html(capitalize(state.result.name));
     chart.hideRule();
     chart.tooltip.hide();
     d3.select("#chart svg").selectAll("g").remove();
@@ -440,30 +446,44 @@ selectVector.selectAll(".btn-ei").on("click", (event, d) => {
 // Close the dropdown menu if the user clicks outside of it
 window.onclick = function(event) {
   // Region dropdown menu
-  if (!event.target.matches('#dropbtn-region') && !event.path.includes(document.getElementById('regions-search'))) {
-    var dropdown = document.getElementById("regions-menu");
-    var box = document.getElementById("regions-search");
+  // if (!event.target.matches('#dropbtn-region') && !event.path.includes(document.getElementById('regions-search'))) {
+  //   var dropdown = document.getElementById("regions-menu");
+  //   var box = document.getElementById("regions-search");
+  //   if (dropdown.classList.contains('show')) {
+  //     dropdown.classList.remove('show');
+  //     box.classList.remove('show');
+  //   }
+  // }
+
+  if (!event.target.matches('#dropbtn-vector')) {
+    var dropdown = document.getElementById("vector-content");
     if (dropdown.classList.contains('show')) {
       dropdown.classList.remove('show');
-      box.classList.remove('show');
+    }
+  }
+
+  if (!event.target.matches('#dropbtn-scenario')) {
+    var dropdown = document.getElementById("scenario-content");
+    if (dropdown.classList.contains('show')) {
+      dropdown.classList.remove('show');
     }
   }
 
   // Graph options dropdown menus
-  if (!event.path.includes(document.getElementById("filters-col")) && document.getElementById("show-filters").classList.contains("checked")) {
-    let filter = d3.select("#show-filters");
-    filter.classed("checked", !filter.classed("checked"));
+  // if (!event.path.includes(document.getElementById("filters-col")) && document.getElementById("show-filters").classList.contains("checked")) {
+  //   let filter = d3.select("#show-filters");
+  //   filter.classed("checked", !filter.classed("checked"));
 
-    document.getElementById("graph-filters").classList.toggle("show");
-  }
+  //   document.getElementById("graph-filters").classList.toggle("show");
+  // }
 
   // About popup
-  if (!event.target.matches('#about-button') && !event.path.includes(document.getElementById('about-details'))) {
-    var dropdown = document.getElementById("about-details");
-    if (dropdown.classList.contains('show')) {
-      dropdown.classList.remove('show');
-    }
-  }
+  // if (!event.target.matches('#about-button') && !event.path.includes(document.getElementById('about-details'))) {
+  //   var dropdown = document.getElementById("about-details");
+  //   if (dropdown.classList.contains('show')) {
+  //     dropdown.classList.remove('show');
+  //   }
+  // }
 }
 
 const plotWidth = d3.select("#chart").node().getBoundingClientRect().width,
@@ -509,16 +529,20 @@ function loadData(path, type='csv') {
     // console.log(energyDemandPathway);
 
     let scenarios = getUniquesMenu(energyDemandPathway, 'scenario');
-    state.scenario = scenarios[0];
+    state.scenario = scenarios.includes("pathway") ? "pathway" : scenarios[0];
 
-    let selectScenario = addButtons("buttons-scenario", scenarios)
-    updateSelectedButton(selectScenario, state.scenario);
-    selectScenario.selectAll(".btn-ei").on("click", (event, d) => {
+    let selectScenario = addStandardOptions("scenario-content", scenarios);
+    d3.select("#dropdown-scenario")
+      .on("click", function(d){
+        document.getElementById("scenario-content").classList.toggle("show");
+      });
+    d3.select("#dropbtn-scenario").html(capitalize(state.scenario));
+    selectScenario.selectAll("a").on("click", (event, d) => {
       if (d !== state.scenario) {
         state.scenario = d;
         chart.hideRule();
         chart.tooltip.hide();
-        updateSelectedButton(selectScenario, state.scenario);
+        d3.select("#dropbtn-scenario").html(capitalize(state.scenario));
         filterData();
         getMenuOptions();
         updatePlot();
