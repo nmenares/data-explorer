@@ -302,12 +302,12 @@ function addStandardOptions(id, values, attrs=values.map(d => null)) {
   var element = d3.select("#"+id);
   var options = element.selectAll("option").data(values);
 
-  options.enter().append("option")
+  options.enter().append("a")
     .attr("value", (d,i) => attrs[i])
-    .html(d => d);
+    .html(d => capitalize(d));
 
   options.attr("value", (d,i) => attrs[i])
-    .html(d => d);
+    .html(d => capitalize(d));
 
   options.exit().remove();
 
@@ -511,14 +511,18 @@ function loadData(path, type='csv') {
     let scenarios = getUniquesMenu(energyDemandPathway, 'scenario');
     state.scenario = scenarios.includes("pathway") ? "pathway" : scenarios[0];
 
-    let selectScenario = addButtons("buttons-scenario", scenarios)
-    updateSelectedButton(selectScenario, state.scenario);
-    selectScenario.selectAll(".btn-ei").on("click", (event, d) => {
+    let selectScenario = addStandardOptions("scenario-content", scenarios);
+    d3.select("#dropdown-scenario")
+      .on("click", function(d){
+        document.getElementById("scenario-content").classList.toggle("show");
+      });
+    d3.select("#dropbtn-scenario").html(capitalize(state.scenario));
+    selectScenario.selectAll("a").on("click", (event, d) => {
       if (d !== state.scenario) {
         state.scenario = d;
         chart.hideRule();
         chart.tooltip.hide();
-        updateSelectedButton(selectScenario, state.scenario);
+        d3.select("#dropbtn-scenario").html(capitalize(state.scenario));
         filterData();
         getMenuOptions();
         updatePlot();
