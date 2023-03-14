@@ -293,6 +293,10 @@ function addOptions(id, rawValues) {
     .attr("for", d => nameNoSpaces(d))
     .html(d => d);
 
+  optionsLabels
+    .attr("for", d => nameNoSpaces(d))
+    .html(d => d);
+
   optionsLabels.exit().remove();
 
   return element;
