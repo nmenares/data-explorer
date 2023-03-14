@@ -414,22 +414,28 @@ searchReset
     searchReset.classed("show", false);
     updateRegions(regions);
   });
+    
+let selectVector = d3.select("#vector-content");
 
-let selectVector = d3.select("#buttons-vector");
+let options = selectVector.selectAll("option").data(vectors);
 
-let options = selectVector.selectAll("button").data(vectors);
+options.enter().append("a")
+  .html(d => capitalize(d.name));
 
-options.enter().append("button")
-  .attr("class", "btn-ei")
-  .html(d => d.name);
+options
+  .html(d => capitalize(d.name));
 
 options.exit().remove();
 
-updateSelectedButton(selectVector, state.result);
-selectVector.selectAll(".btn-ei").on("click", (event, d) => {
+d3.select("#dropdown-vector")
+  .on("click", function(d){
+    document.getElementById("vector-content").classList.toggle("show");
+  });
+d3.select("#dropbtn-vector").html(capitalize(state.result.name));
+selectVector.selectAll("a").on("click", (event, d) => {
   if (state.result !== d) {
     state.result = d;
-    updateSelectedButton(selectVector, state.result);
+    d3.select("#dropbtn-vector").html(capitalize(state.result.name));
     chart.hideRule();
     chart.tooltip.hide();
     d3.select("#chart svg").selectAll("g").remove();

@@ -107,9 +107,12 @@
 		<div class="row filters">
 			<div class="col-12">
 				<div class="row select">
-					<div class="col-4 select-output">
-						<span class="select-label">Positive Disruption model output</span>
-						<div class="buttons" id="buttons-vector"></div>
+					<div class="col-3 select-output">
+						<span class="select-label">Model output</span>
+						<div class="dropdown" id="dropdown-vector">
+							<div class="dropbtn" id="dropbtn-vector"></div>
+							<div id="vector-content" class="dropdown-content"></div>
+						</div>
 					</div>
 					<div class="col-3 select-country">
 						<span class="select-label">Region</span>
@@ -133,7 +136,7 @@
 							<div id="scenario-content" class="dropdown-content"></div>
 						</div>
 					</div>
-					<div class="col-3 select-scenario">
+					<div class="col-4 select-scenario">
 						<span class="select-label">Date</span>
 						<div class="buttons" id="time-slider"></div>
 					</div>
