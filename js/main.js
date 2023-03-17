@@ -40,17 +40,27 @@ const CIAFields = {
 
 const graphTypes = ['line', 'area', 'treemap'];
 
-let graphs = d3.select('#chart-types').selectAll("div")
+const graphs = d3.select('#chart-types').selectAll("div")
   .data(graphTypes);
 
 graphs.enter().append("div")
-  .attr("class", "chart-icon col-2")
+  .attr("class", (d) => {
+    const baseClass = "chart-icon col-2";
+    if (state.chart === d) {
+       return baseClass + " selected";
+    }
+    return baseClass;
+  })
   .html(d => `<img src="img/chart-icons/${d}.svg" /><span class="icon-name">${d.split("_").join(' ')}</span>`)
   .on("click", (event, d) => {
     if (state.chart !== d) {
       state.chart = d;
       d3.select("#chart svg").selectAll("g").remove();
       loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
+      d3.selectAll(".chart-icon")
+          .classed("selected", false);
+      const target = d3.select(event.target.parentNode);
+      target.classed("selected", true);
     }
   });
 
