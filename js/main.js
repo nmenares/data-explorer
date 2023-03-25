@@ -358,24 +358,25 @@ function showCountryDivs() {
   d3.select(".select-vector").style("display", "block");
 }
 
-let selectRegion = d3.select("#regions-menu");
-let searchBox = d3.select("#search-box");
-let searchReset = d3.select("#reset-search");
+const selectRegion = d3.select("#regions-menu");
+const searchBox = d3.select("#search-box");
+const searchReset = d3.select("#reset-search");
 
-function updateRegions(regionsData) {
+const toggleRegionMenu = () => {
+  document.getElementById("regions-menu").classList.toggle("show");
+  document.getElementById("regions-search").classList.toggle("show");
+};
 
-  let optionsRegion = selectRegion.selectAll("a").data(regionsData);
+const resetSearchBox = () => {
+  searchBox.property("value", '')
+  .attr("placeholder", "Search...");
+  searchReset.classed("show", false);
+  updateRegions(regions);
+};
 
-  optionsRegion.html(d => d.short_name)
-    .on("click", (event, d) => {
-      if (d.name !== state.region.name) {
-        state.region = d;
-        getCIA(d.url);
-        updateDropdownLabel("#dropdown-region", state.region.short_name);
-        d3.select("#chart svg").selectAll("g").remove();
-        loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
-      }
-    });
+const updateRegions = (regionsData) => {
+  selectRegion.selectAll("a").remove();
+  const optionsRegion = selectRegion.selectAll("a").data(regionsData);
 
   optionsRegion.enter().append("a")
     .html(d => d.short_name)
@@ -384,20 +385,19 @@ function updateRegions(regionsData) {
         state.region = d;
         getCIA(d.url);
         updateDropdownLabel("#dropdown-region", state.region.short_name);
+        toggleRegionMenu();
+        resetSearchBox();
         d3.select("#chart svg").selectAll("g").remove();
         loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
       }
     });
-
-  optionsRegion.exit().remove();
-}
+};
 
 updateRegions(regions);
 
 d3.select("#dropbtn-region")
   .on("click", function(d){
-    document.getElementById("regions-menu").classList.toggle("show");
-    document.getElementById("regions-search").classList.toggle("show");
+    toggleRegionMenu();
     searchBox.attr("placeholder", "Search...");
     chart.hideRule();
     chart.tooltip.hide();
@@ -406,14 +406,18 @@ updateDropdownLabel("#dropdown-region", state.region.short_name);
 
 searchBox
   .on("click", (event) => {
+    event.preventDefault();
     searchBox.attr("placeholder", "");
   })
   .on("keyup",  (event) => {
-    let searchLabel = searchBox.property("value");
+    event.preventDefault();
+    const searchLabel = searchBox.property("value");
 
     if (searchLabel.length > 0) {
       searchReset.classed("show", true);
-      let regionsData = regions.filter(d => d.short_name.toLowerCase().includes(searchLabel.toLowerCase()));
+      const regionsData = regions.filter((d) => {
+        return d.short_name.toLowerCase().includes(searchLabel.toLowerCase());
+      });
       updateRegions(regionsData);
     } else {
       searchReset.classed("show", false);
@@ -421,13 +425,7 @@ searchBox
     }
   });
 
-searchReset
-  .on("click", () => {
-    searchBox.property("value", '')
-      .attr("placeholder", "Search...");
-    searchReset.classed("show", false);
-    updateRegions(regions);
-  });
+searchReset.on("click", resetSearchBox);
     
 let selectVector = d3.select("#vector-content");
 
