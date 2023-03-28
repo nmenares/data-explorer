@@ -63,19 +63,6 @@ graphs.enter().append("div")
     }
   });
 
-graphs.html(d => `<img src="img/chart-icons/${d}.svg" /><span class="icon-name">${d.split("_").join(' ')}</span>`)
-  .attr("class", "chart-icon col-2")
-  .on("click", (event, d) => {
-    if (state.chart !== d) {
-      state.chart = d;
-      d3.select("#chart svg").selectAll("g").remove();
-      loadData('./data/'+state.result.folder+'/'+state.region.name+'.csv');
-    }
-  });
-
-graphs.exit().remove();
-
-
 function getCIA(url) {
   Promise.all([d3.json(url)]).then(function(data){
     state.region_info = data[0];
@@ -87,7 +74,10 @@ getCIA(state.region.url)
 
 function getHtml(indicator) {
 
-  const text = indicator[Object.keys(indicator)[0]].text;
+  const text = indicator[Object.keys(indicator)[0]].text || indicator.text;
+
+  if (!text) return getNoInfoHtml();
+
   const i = text.indexOf(' ');
 
   const number = Object.keys(indicator)[0] === 'total emissions' ? d3.format(".3s")(+text.slice(0, i).replace(/,/g, '')): text.slice(0, i);
@@ -97,13 +87,8 @@ function getHtml(indicator) {
 
 }
 
-function updateIndicator(id, field) {
-  const economy = state.region_info["Economy"];
-
-  d3.select(id).html(getHtml(economy[field]));
-  const width = d3.select(id).select(".cia-number").node().getBoundingClientRect().width;
-  d3.select(id).select(".cia-est")
-    .style("left", width + 'px');
+function getNoInfoHtml() {
+  return `<span class="cia-number">N/A</span>`
 }
 
 function updateRegionInfo() {
@@ -115,9 +100,7 @@ function updateRegionInfo() {
   ciaDivs.enter().append("div")
     .attr("class", "cia-indicator");
 
-  ciaDivs.attr("class", "cia-indicator");
-
-  ciaDivs.exit().remove();
+  d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-col").remove();
 
   const indicatorName = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-name")
     .data(d => [d]);
@@ -155,48 +138,11 @@ function updateRegionInfo() {
       }
     });
 
-  indicatorName.attr("class", "indicator-name")
-    .html(d => d)
-    .on("click", (event, d) => {
-      const target = d3.select(event.target);
-      const sibling = d3.select(event.target.parentNode).select(".indicator-details");
-      const thisChecked = target.classed("checked");
-
-      if (thisChecked === true) {
-        target.classed("checked", false);
-        sibling.classed("show", false);
-      } else {
-        d3.selectAll(".indicator-name")
-          .classed("checked", c => c === d);
-        d3.selectAll(".indicator-details")
-          .classed("show", c => c === d); 
-
-        d3.select(".cia-indicators")
-          .selectAll(".cia-indicator")
-          .selectAll(".indicator-details")
-          .selectAll(".indicator-col")
-          .selectAll(".indicator-value")
-          .each((d,i,node) => {
-            const thisNode = d3.select(node[0]);
-            const width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
-            thisNode.select(".cia-est")
-              .style("left", width + "px")
-          });
-      }
-    });
-
-  indicatorName.exit().remove();
-
-
   const indicatorDetails = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details")
     .data(d => [d]);
 
   indicatorDetails.enter().append("div")
     .attr("class", "indicator-details row");
-
-  indicatorDetails.attr("class", "indicator-details row");
-
-  indicatorDetails.exit().remove();
 
   const indicatorCol = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col")
     .data(d => CIAFields[d].map(f => [d, f]));
@@ -204,17 +150,12 @@ function updateRegionInfo() {
   indicatorCol.enter().append("div")
     .attr("class", 'indicator-col col-6');
 
-  indicatorCol
-    .attr("class", 'indicator-col col-6');
-
-  indicatorCol.exit().remove();
-
   const indicatorValues = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col").selectAll(".indicator-value")
     .data(d => [d]);
 
   indicatorValues.enter().append("div")
     .attr("class", 'indicator-value row')
-    .html(d => state.region_info[d[0]][d[1]] ? getHtml(state.region_info[d[0]][d[1]]) : '')
+    .html(d => state.region_info[d[0]][d[1]] ? getHtml(state.region_info[d[0]][d[1]]) : getNoInfoHtml())
     .each((d,i,node) => {
       const thisNode = d3.select(node[0]);
       if (thisNode.select(".cia-number").node() !== null) {
@@ -223,33 +164,13 @@ function updateRegionInfo() {
           .style("left", width + "px");
       }
     });
-
-  indicatorValues
-    .attr("class", 'indicator-value row')
-    .html(d => state.region_info[d[0]][d[1]] ? getHtml(state.region_info[d[0]][d[1]]) : '')
-    .each((d,i,node) => {
-      const thisNode = d3.select(node[0]);
-      if (thisNode.select(".cia-number").node() !== null) {
-        const width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
-        thisNode.select(".cia-est")
-          .style("left", width + "px");
-      }
-    });
-
-  indicatorValues.exit().remove();
 
   const indicatorValuesNames = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col").selectAll(".indicator-value-name")
     .data(d => [d]);
 
   indicatorValuesNames.enter().append("div")
     .attr("class", 'indicator-value-name row')
-    .html(d => state.region_info[d[0]][d[1]] === undefined ? '' : `<span class="cia-indicator-name">${d[1]}</span>`)
-
-  indicatorValuesNames
-    .attr("class", 'indicator-value-name row')
-    .html(d => state.region_info[d[0]][d[1]] === undefined ? '' : `<span class="cia-indicator-name">${d[1]}</span>`);
-
-  indicatorValuesNames.exit().remove();
+    .html(d => `<span class="cia-indicator-name">${d[1]}</span>`);
 }
 
 function addOptions(id, rawValues) {
@@ -260,25 +181,14 @@ function addOptions(id, rawValues) {
   buttonsDiv.enter().append("div")
     .attr("class", "buttons-container");
 
-  buttonsDiv
-    .attr("class", "buttons-container");
-
-  buttonsDiv.exit().remove();
-
   const buttons = element.selectAll("div").selectAll("span").data(d => d);
 
   buttons.enter().append("span")
     .html(d => d);
 
-  buttons.html(d => d);
-
-  buttons.exit().remove();
-
   const options = element.selectAll("a").data(rawValues);
 
   options.enter().append("a");
-
-  options.exit().remove();
 
   const optionsCheckboxes = element.selectAll("a").selectAll("input").data(d => [d]);
 
@@ -288,25 +198,12 @@ function addOptions(id, rawValues) {
     .attr("id", d => nameNoSpaces(d.name))
     .property("checked", d => d.selected);
 
-  optionsCheckboxes
-    .attr("type", "checkbox")
-    .attr("id", d => nameNoSpaces(d.name))
-    .property("checked", d => d.selected);
-
-  optionsCheckboxes.exit().remove();
-
   // Labels
   const optionsLabels = element.selectAll("a").selectAll("label").data(d => [d.name]);
 
   optionsLabels.enter().append("label")
     .attr("for", d => nameNoSpaces(d))
     .html(d => d);
-
-  optionsLabels
-    .attr("for", d => nameNoSpaces(d))
-    .html(d => d);
-
-  optionsLabels.exit().remove();
 
   return element;
 }
@@ -319,42 +216,11 @@ function addStandardOptions(id, values, attrs=values.map(d => null)) {
     .attr("value", (d,i) => attrs[i])
     .html(d => capitalize(d));
 
-  options.attr("value", (d,i) => attrs[i])
-    .html(d => capitalize(d));
-
-  options.exit().remove();
-
-  return element;
-}
-
-function addButtons(id, values) {
-  const element = d3.select("#"+id);
-  const options = element.selectAll("button").data(values);
-
-  options.enter().append("button")
-    .attr("class", "btn-ei")
-    .html(d => d);
-
-  options.exit().remove();
-
   return element;
 }
 
 function updateDropdownLabel(id, label) {
   d3.select(id).select(".dropbtn").html(label);
-}
-
-function updateSelectedButton(element, stateVar) {
-  element.selectAll(".btn-ei").filter(d => d !== stateVar).classed("btn-ei-selected", false);
-  element.selectAll(".btn-ei").filter(d => d === stateVar).classed("btn-ei-selected", true);
-}
-
-function hideCountryDivs() {
-  d3.select(".select-vector").style("display", "none");
-}
-
-function showCountryDivs() {
-  d3.select(".select-vector").style("display", "block");
 }
 
 const selectRegion = d3.select("#regions-menu");
@@ -432,11 +298,6 @@ const options = selectVector.selectAll("option").data(vectors);
 
 options.enter().append("a")
   .html(d => capitalize(d.name));
-
-options
-  .html(d => capitalize(d.name));
-
-options.exit().remove();
 
 d3.select("#dropdown-vector")
   .on("click", function(d){
@@ -578,7 +439,7 @@ function loadData(path, type='csv') {
       });
     })
 
-    updatePlot = function() {
+    const updatePlot = () => {
       d3.select("body").classed("light", !state.darkMode);
       d3.selectAll(".header").classed("light", !state.darkMode);
       d3.selectAll(".select-label").classed("light", !state.darkMode);
@@ -610,88 +471,52 @@ function loadData(path, type='csv') {
       const graphMenus = graphFilters.selectAll(".graph-menu")
         .data(secondaryMenus);
 
-      graphMenus.attr("class", "graph-menu");
-
       graphMenus.enter().append("div")
         .attr("class", "graph-menu");
-
-      graphMenus.exit().remove();
 
       const graphMenusInfo = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info")
         .data(d => [d]);
 
-      graphMenusInfo.attr("class", "graph-menu-info");
-
       graphMenusInfo.enter().append("div")
         .attr("class", "graph-menu-info");
 
-      graphMenusInfo.exit().remove();
-
       const graphMenuTitle = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info").selectAll(".graph-menu-title")
         .data(d => [d])
-
-      graphMenuTitle.attr("class", "graph-menu-title")
-        .html(d => d.longName);
 
       graphMenuTitle.enter().append("span")
         .attr("class", "graph-menu-title")
         .html(d => d.longName);
 
-      graphMenuTitle.exit().remove();
-
       const graphMenuDetail = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info").selectAll(".graph-menu-detail")
         .data(d => [d])
-
-      graphMenuDetail.attr("class", "graph-menu-detail")
-        .classed("light", !state.darkMode)
-        .html(d => `<p>${d.description} For more details, you can read the about section.</p>`);
 
       graphMenuDetail.enter().append("span")
         .attr("class", "graph-menu-detail")
         .classed("light", !state.darkMode)
         .html(d => `<p>${d.description} For more details, you can read the about section.</p>`);
 
-      graphMenuDetail.exit().remove();
-
       const graphMenuDropdown = graphFilters.selectAll(".graph-menu").selectAll(".dropdown")
         .data(d => [d.name]);
-
-      graphMenuDropdown.attr("class", "dropdown")
-        .attr("id", d => d+'-dropdown');
 
       graphMenuDropdown.enter().append("div")
         .attr("class", "dropdown")
         .attr("id", d => d+'-dropdown');
 
-      graphMenuDropdown.exit().remove();
-
       const graphMenuDropbtn = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropbtn")
         .data(d => [d]);
-
-      graphMenuDropbtn.attr("class", "dropbtn")
-        .classed("light", !state.darkMode)
-        .attr("id", d => d+'-dropbtn');
 
       graphMenuDropbtn.enter().append("div")
         .attr("class", "dropbtn")
         .classed("light", !state.darkMode)
         .attr("id", d => d+'-dropbtn');
 
-      graphMenuDropbtn.exit().remove();
-
       const graphMenuDropcontent = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropdown-content")
         .data(d => [d]);
-
-      graphMenuDropcontent.attr("class", "dropdown-content")
-        .classed("light", !state.darkMode)
-        .attr("id", d => d+'-menu');
 
       graphMenuDropcontent.enter().append("div")
         .attr("class", "dropdown-content")
         .classed("light", !state.darkMode)
         .attr("id", d => d+'-menu');
-
-      graphMenuDropcontent.exit().remove();
 
       state.filteredUniqueItems = {};
       secondaryMenus.forEach(sm => {
@@ -768,7 +593,7 @@ function loadData(path, type='csv') {
     state.yearsStr = years;
     state.years = years.map(d => dateParse(d));
 
-    filterData = function(){
+    const filterData = () => {
       state.filteredData = energyDemandPathway.filter((d, i) => {
         const filtered = secondaryMenus.map(s => state.rawUniqueItems[s.name].filter(item => item.name === d[s.name])[0].selected);
         return ((d.scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
@@ -823,88 +648,52 @@ function loadData(path, type='csv') {
       const groupByMenus = graphFilters.selectAll(".groupby-menu")
         .data([{'name': 'Group by', 'description': "The group by filter is offered to enable visualizations that 'bundle up' output into categories defined by any one of the previous filters."}]);
 
-      groupByMenus.attr("class", "groupby-menu");
-
       groupByMenus.enter().append("div")
         .attr("class", "groupby-menu");
-
-      groupByMenus.exit().remove();
 
       const groupByMenuInfo = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info")
         .data(d => [d])
 
-      groupByMenuInfo.attr("class", "groupby-menu-info");
-
       groupByMenuInfo.enter().append("div")
         .attr("class", "groupby-menu-info");
 
-      groupByMenuInfo.exit().remove();
-
       const groupByMenuTitle = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info").selectAll(".groupby-menu-title")
         .data(d => [d])
-
-      groupByMenuTitle.attr("class", "groupby-menu-title")
-        .html(d => d.name);
 
       groupByMenuTitle.enter().append("span")
         .attr("class", "groupby-menu-title")
         .html(d => d.name);
 
-      groupByMenuTitle.exit().remove();
-
       const groupByMenuDetail = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info").selectAll(".groupby-menu-detail")
         .data(d => [d])
-
-      groupByMenuDetail.attr("class", "groupby-menu-detail")
-        .classed("light", !state.darkMode)
-        .html(d => `<p>${d.description}</p>`);
 
       groupByMenuDetail.enter().append("span")
         .attr("class", "groupby-menu-detail")
         .classed("light", !state.darkMode)
         .html(d => `<p>${d.description}</p>`);
 
-      groupByMenuDetail.exit().remove();
-
       const groupByMenuDropdown = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown")
         .data(d => [d]);
-
-      groupByMenuDropdown.attr("class", "dropdown")
-        .attr("id", d => 'groupby-dropdown');
 
       groupByMenuDropdown.enter().append("div")
         .attr("class", "dropdown")
         .attr("id", d => 'groupby-dropdown');
 
-      groupByMenuDropdown.exit().remove();
-
       const groupByMenuDropbtn = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropbtn")
         .data(d => [d]);
-
-      groupByMenuDropbtn.attr("class", "dropbtn")
-        .classed("light", !state.darkMode)
-        .attr("id", d => 'groupby-dropbtn');
 
       groupByMenuDropbtn.enter().append("div")
         .attr("class", "dropbtn")
         .classed("light", !state.darkMode)
         .attr("id", d => 'groupby-dropbtn');
 
-      groupByMenuDropbtn.exit().remove();
-
       const groupByMenuDropcontent = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropdown-content")
         .data(d => [d]);
-
-      groupByMenuDropcontent.attr("class", "dropdown-content")
-        .classed("light", !state.darkMode)
-        .attr("id", d => 'groupby-menu');
 
       groupByMenuDropcontent.enter().append("div")
         .attr("class", "dropdown-content")
         .classed("light", !state.darkMode)
         .attr("id", d => 'groupby-menu');
-
-      groupByMenuDropcontent.exit().remove();
 
       const groupByOptions = secondaryMenus;
       // secondaryMenus.forEach(s => {
@@ -921,12 +710,8 @@ function loadData(path, type='csv') {
         const groupByOps = d3.select("#groupby-menu");
         const options = groupByOps.selectAll("a").data(groupByOptions);
 
-        options.html(d => d.longName);
-
         options.enter().append("a")
           .html(d => d.longName);
-
-        options.exit().remove();
 
         d3.select("#groupby-dropdown")
           .on("click", function(d){
