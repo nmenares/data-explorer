@@ -1,4 +1,4 @@
-let state = {
+const state = {
   darkMode: true,
   region: regions[0],
   region_info: null,
@@ -17,7 +17,6 @@ d3.select("#about-button")
   .on("click", function(d){
     document.getElementById("about-details").classList.toggle("show");
   });
-
 d3.select("#close")
   .on("click", function(d){
     document.getElementById("about-details").classList.toggle("show");
@@ -99,10 +98,10 @@ function getHtml(indicator) {
 }
 
 function updateIndicator(id, field) {
-  let economy = state.region_info["Economy"];
+  const economy = state.region_info["Economy"];
 
   d3.select(id).html(getHtml(economy[field]));
-  let width = d3.select(id).select(".cia-number").node().getBoundingClientRect().width;
+  const width = d3.select(id).select(".cia-number").node().getBoundingClientRect().width;
   d3.select(id).select(".cia-est")
     .style("left", width + 'px');
 }
@@ -110,7 +109,7 @@ function updateIndicator(id, field) {
 function updateRegionInfo() {
   d3.select("#region-name").html(state.region.short_name);
 
-  let ciaDivs = d3.select(".cia-indicators").selectAll(".cia-indicator")
+  const ciaDivs = d3.select(".cia-indicators").selectAll(".cia-indicator")
     .data(Object.keys(CIAFields));
 
   ciaDivs.enter().append("div")
@@ -120,16 +119,16 @@ function updateRegionInfo() {
 
   ciaDivs.exit().remove();
 
-  let indicatorName = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-name")
+  const indicatorName = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-name")
     .data(d => [d]);
 
   indicatorName.enter().append("div")
     .attr("class", "indicator-name")
     .html(d => d)
     .on("click", (event, d) => {
-      let target = d3.select(event.target);
-      let sibling = d3.select(event.target.parentNode).select(".indicator-details");
-      let thisChecked = target.classed("checked");
+      const target = d3.select(event.target);
+      const sibling = d3.select(event.target.parentNode).select(".indicator-details");
+      const thisChecked = target.classed("checked");
 
       if (thisChecked === true) {
         target.classed("checked", false);
@@ -146,9 +145,9 @@ function updateRegionInfo() {
           .selectAll(".indicator-col")
           .selectAll(".indicator-value")
           .each((d,i,node) => {
-            let thisNode = d3.select(node[0]);
+            const thisNode = d3.select(node[0]);
             if (thisNode.select(".cia-number").node() !== null) {
-              let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
+              const width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
               thisNode.select(".cia-est")
                 .style("left", width + "px");
             }
@@ -159,9 +158,9 @@ function updateRegionInfo() {
   indicatorName.attr("class", "indicator-name")
     .html(d => d)
     .on("click", (event, d) => {
-      let target = d3.select(event.target);
-      let sibling = d3.select(event.target.parentNode).select(".indicator-details");
-      let thisChecked = target.classed("checked");
+      const target = d3.select(event.target);
+      const sibling = d3.select(event.target.parentNode).select(".indicator-details");
+      const thisChecked = target.classed("checked");
 
       if (thisChecked === true) {
         target.classed("checked", false);
@@ -178,8 +177,8 @@ function updateRegionInfo() {
           .selectAll(".indicator-col")
           .selectAll(".indicator-value")
           .each((d,i,node) => {
-            let thisNode = d3.select(node[0]);
-            let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
+            const thisNode = d3.select(node[0]);
+            const width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
             thisNode.select(".cia-est")
               .style("left", width + "px")
           });
@@ -189,7 +188,7 @@ function updateRegionInfo() {
   indicatorName.exit().remove();
 
 
-  let indicatorDetails = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details")
+  const indicatorDetails = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details")
     .data(d => [d]);
 
   indicatorDetails.enter().append("div")
@@ -199,7 +198,7 @@ function updateRegionInfo() {
 
   indicatorDetails.exit().remove();
 
-  let indicatorCol = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col")
+  const indicatorCol = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col")
     .data(d => CIAFields[d].map(f => [d, f]));
 
   indicatorCol.enter().append("div")
@@ -210,16 +209,16 @@ function updateRegionInfo() {
 
   indicatorCol.exit().remove();
 
-  let indicatorValues = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col").selectAll(".indicator-value")
+  const indicatorValues = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col").selectAll(".indicator-value")
     .data(d => [d]);
 
   indicatorValues.enter().append("div")
     .attr("class", 'indicator-value row')
     .html(d => state.region_info[d[0]][d[1]] ? getHtml(state.region_info[d[0]][d[1]]) : '')
     .each((d,i,node) => {
-      let thisNode = d3.select(node[0]);
+      const thisNode = d3.select(node[0]);
       if (thisNode.select(".cia-number").node() !== null) {
-        let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
+        const width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
         thisNode.select(".cia-est")
           .style("left", width + "px");
       }
@@ -229,9 +228,9 @@ function updateRegionInfo() {
     .attr("class", 'indicator-value row')
     .html(d => state.region_info[d[0]][d[1]] ? getHtml(state.region_info[d[0]][d[1]]) : '')
     .each((d,i,node) => {
-      let thisNode = d3.select(node[0]);
+      const thisNode = d3.select(node[0]);
       if (thisNode.select(".cia-number").node() !== null) {
-        let width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
+        const width = thisNode.select(".cia-number").node().getBoundingClientRect().width;
         thisNode.select(".cia-est")
           .style("left", width + "px");
       }
@@ -239,7 +238,7 @@ function updateRegionInfo() {
 
   indicatorValues.exit().remove();
 
-  let indicatorValuesNames = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col").selectAll(".indicator-value-name")
+  const indicatorValuesNames = d3.select(".cia-indicators").selectAll(".cia-indicator").selectAll(".indicator-details").selectAll(".indicator-col").selectAll(".indicator-value-name")
     .data(d => [d]);
 
   indicatorValuesNames.enter().append("div")
@@ -254,9 +253,9 @@ function updateRegionInfo() {
 }
 
 function addOptions(id, rawValues) {
-  var element = d3.select("#"+id);
+  const element = d3.select("#"+id);
 
-  var buttonsDiv = element.selectAll("div").data([["Select all", "Deselect all"]]);
+  const buttonsDiv = element.selectAll("div").data([["Select all", "Deselect all"]]);
 
   buttonsDiv.enter().append("div")
     .attr("class", "buttons-container");
@@ -266,7 +265,7 @@ function addOptions(id, rawValues) {
 
   buttonsDiv.exit().remove();
 
-  var buttons = element.selectAll("div").selectAll("span").data(d => d);
+  const buttons = element.selectAll("div").selectAll("span").data(d => d);
 
   buttons.enter().append("span")
     .html(d => d);
@@ -275,13 +274,13 @@ function addOptions(id, rawValues) {
 
   buttons.exit().remove();
 
-  var options = element.selectAll("a").data(rawValues);
+  const options = element.selectAll("a").data(rawValues);
 
   options.enter().append("a");
 
   options.exit().remove();
 
-  var optionsCheckboxes = element.selectAll("a").selectAll("input").data(d => [d]);
+  const optionsCheckboxes = element.selectAll("a").selectAll("input").data(d => [d]);
 
   // Checkboxes
   optionsCheckboxes.enter().append("input")
@@ -297,7 +296,7 @@ function addOptions(id, rawValues) {
   optionsCheckboxes.exit().remove();
 
   // Labels
-  var optionsLabels = element.selectAll("a").selectAll("label").data(d => [d.name]);
+  const optionsLabels = element.selectAll("a").selectAll("label").data(d => [d.name]);
 
   optionsLabels.enter().append("label")
     .attr("for", d => nameNoSpaces(d))
@@ -313,8 +312,8 @@ function addOptions(id, rawValues) {
 }
 
 function addStandardOptions(id, values, attrs=values.map(d => null)) {
-  var element = d3.select("#"+id);
-  var options = element.selectAll("option").data(values);
+  const element = d3.select("#"+id);
+  const options = element.selectAll("option").data(values);
 
   options.enter().append("a")
     .attr("value", (d,i) => attrs[i])
@@ -329,8 +328,8 @@ function addStandardOptions(id, values, attrs=values.map(d => null)) {
 }
 
 function addButtons(id, values) {
-  var element = d3.select("#"+id);
-  var options = element.selectAll("button").data(values);
+  const element = d3.select("#"+id);
+  const options = element.selectAll("button").data(values);
 
   options.enter().append("button")
     .attr("class", "btn-ei")
@@ -427,9 +426,9 @@ searchBox
 
 searchReset.on("click", resetSearchBox);
     
-let selectVector = d3.select("#vector-content");
+const selectVector = d3.select("#vector-content");
 
-let options = selectVector.selectAll("option").data(vectors);
+const options = selectVector.selectAll("option").data(vectors);
 
 options.enter().append("a")
   .html(d => capitalize(d.name));
@@ -505,19 +504,19 @@ const plotWidth = d3.select("#chart").node().getBoundingClientRect().width,
                 - d3.select("#chart-options").node().getBoundingClientRect().height
                 - 60;
 
-let plot = d3.select("#chart")
+const plot = d3.select("#chart")
     .attr("width", plotWidth)
     .attr("height", plotHeight);
 
-let tooltipDiv = d3.select("body").append("div");
-let popupDiv = d3.select("body").append("div");
-let timeSliderDiv = d3.select("#time-slider");
+const tooltipDiv = d3.select("body").append("div");
+const popupDiv = d3.select("body").append("div");
+const timeSliderDiv = d3.select("#time-slider");
 
-let margin = {top: 20, right: 30, bottom: 20, left: 30},
+const margin = {top: 20, right: 30, bottom: 20, left: 30},
     width = plotWidth - margin.left - margin.right,
     height = plotHeight - margin.top - margin.bottom;
 
-let svg = plot.append("svg")
+const svg = plot.append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .attr("id", "chart-svg")
@@ -537,13 +536,13 @@ function loadData(path, type='csv') {
     loaded = d3.json(path);
   }
   Promise.all([loaded]).then(function(data){
-    let energyDemandPathway = data[0];
+    const energyDemandPathway = data[0];
     // console.log(energyDemandPathway);
 
-    let scenarios = getUniquesMenu(energyDemandPathway, 'scenario');
+    const scenarios = getUniquesMenu(energyDemandPathway, 'scenario');
     state.scenario = scenarios.includes("pathway") ? "pathway" : scenarios[0];
 
-    let selectScenario = addStandardOptions("scenario-content", scenarios);
+    const selectScenario = addStandardOptions("scenario-content", scenarios);
     d3.select("#dropdown-scenario")
       .on("click", function(d){
         document.getElementById("scenario-content").classList.toggle("show");
@@ -564,15 +563,15 @@ function loadData(path, type='csv') {
     state.filteredData = energyDemandPathway;
     state.rawData = energyDemandPathway;
 
-    let secondaryMenus = state.result.columns;
+    const secondaryMenus = state.result.columns;
     state.rawUniqueItems = {};
     state.filteredUniqueItems = {};
 
     secondaryMenus.forEach(sm => {
-      let s = sm.name;
+      const s = sm.name;
       state.filteredUniqueItems[s] = getUniquesMenu(state.filteredData, s);
       state.rawUniqueItems[s] = getUniquesMenu(state.rawData, s).map(d => {
-        let obj = {};
+        const obj = {};
         obj.name = d;
         obj.selected = state.filteredUniqueItems[sm.name].includes(d);
         return obj;
@@ -606,9 +605,9 @@ function loadData(path, type='csv') {
     }
 
     function getMenuOptions() {
-      let graphFilters = d3.select("#graph-filters");
+      const graphFilters = d3.select("#graph-filters");
 
-      let graphMenus = graphFilters.selectAll(".graph-menu")
+      const graphMenus = graphFilters.selectAll(".graph-menu")
         .data(secondaryMenus);
 
       graphMenus.attr("class", "graph-menu");
@@ -618,7 +617,7 @@ function loadData(path, type='csv') {
 
       graphMenus.exit().remove();
 
-      let graphMenusInfo = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info")
+      const graphMenusInfo = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info")
         .data(d => [d]);
 
       graphMenusInfo.attr("class", "graph-menu-info");
@@ -628,7 +627,7 @@ function loadData(path, type='csv') {
 
       graphMenusInfo.exit().remove();
 
-      let graphMenuTitle = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info").selectAll(".graph-menu-title")
+      const graphMenuTitle = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info").selectAll(".graph-menu-title")
         .data(d => [d])
 
       graphMenuTitle.attr("class", "graph-menu-title")
@@ -640,7 +639,7 @@ function loadData(path, type='csv') {
 
       graphMenuTitle.exit().remove();
 
-      let graphMenuDetail = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info").selectAll(".graph-menu-detail")
+      const graphMenuDetail = graphFilters.selectAll(".graph-menu").selectAll(".graph-menu-info").selectAll(".graph-menu-detail")
         .data(d => [d])
 
       graphMenuDetail.attr("class", "graph-menu-detail")
@@ -654,7 +653,7 @@ function loadData(path, type='csv') {
 
       graphMenuDetail.exit().remove();
 
-      let graphMenuDropdown = graphFilters.selectAll(".graph-menu").selectAll(".dropdown")
+      const graphMenuDropdown = graphFilters.selectAll(".graph-menu").selectAll(".dropdown")
         .data(d => [d.name]);
 
       graphMenuDropdown.attr("class", "dropdown")
@@ -666,7 +665,7 @@ function loadData(path, type='csv') {
 
       graphMenuDropdown.exit().remove();
 
-      let graphMenuDropbtn = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropbtn")
+      const graphMenuDropbtn = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropbtn")
         .data(d => [d]);
 
       graphMenuDropbtn.attr("class", "dropbtn")
@@ -680,7 +679,7 @@ function loadData(path, type='csv') {
 
       graphMenuDropbtn.exit().remove();
 
-      let graphMenuDropcontent = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropdown-content")
+      const graphMenuDropcontent = graphFilters.selectAll(".graph-menu").selectAll(".dropdown").selectAll(".dropdown-content")
         .data(d => [d]);
 
       graphMenuDropcontent.attr("class", "dropdown-content")
@@ -696,10 +695,10 @@ function loadData(path, type='csv') {
 
       state.filteredUniqueItems = {};
       secondaryMenus.forEach(sm => {
-        let s = sm.name;
+        const s = sm.name;
         state.filteredUniqueItems[s] = getUniquesMenu(state.filteredData, s);
 
-        let selectOption = addOptions(s+"-menu", state.rawUniqueItems[sm.name]);
+        const selectOption = addOptions(s+"-menu", state.rawUniqueItems[sm.name]);
         d3.select("#"+s+"-dropbtn")
           .on("click", function(event, d){
             d3.selectAll(".dropdown-content").filter(e => e !== d).classed("show", false);
@@ -737,7 +736,7 @@ function loadData(path, type='csv') {
           chart.hideRule();
           chart.tooltip.hide();
 
-          let filter = d3.select(event.target);
+          const filter = d3.select(event.target);
           filter.classed("checked", !filter.classed("checked"));
 
           document.getElementById("graph-filters").classList.toggle("show");
@@ -746,7 +745,7 @@ function loadData(path, type='csv') {
 
     function resetOptions(){
       secondaryMenus.forEach(d => {
-        let menuOptions = getUniquesMenu(state.rawData, d.name);
+        const menuOptions = getUniquesMenu(state.rawData, d.name);
         if (state.chart === 'area' && d.name === 'flow_category') {
           state[d.name] = menuOptions.includes('Final consumption') ? ['Final consumption'] : menuOptions;
         } else {
@@ -758,7 +757,7 @@ function loadData(path, type='csv') {
 
     resetOptions();
 
-    let years = energyDemandPathway.columns.filter(d => !isNaN(+d));
+    const years = energyDemandPathway.columns.filter(d => !isNaN(+d));
 
     energyDemandPathway.forEach(d => {
       years.forEach(y => {
@@ -771,20 +770,20 @@ function loadData(path, type='csv') {
 
     filterData = function(){
       state.filteredData = energyDemandPathway.filter((d, i) => {
-        let filtered = secondaryMenus.map(s => state.rawUniqueItems[s.name].filter(item => item.name === d[s.name])[0].selected);
+        const filtered = secondaryMenus.map(s => state.rawUniqueItems[s.name].filter(item => item.name === d[s.name])[0].selected);
         return ((d.scenario === state.scenario) && filtered.reduce((a, b) => a && b, true))
       })
       state.dataToPlot = {};
       state.dataToPlot.lines = [];
-      let uniqueGroupBy = getUniquesMenu(state.filteredData, state.groupBy.name);
+      const uniqueGroupBy = getUniquesMenu(state.filteredData, state.groupBy.name);
 
       // LINE PLOT
       uniqueGroupBy.forEach(d => {
-        let obj = {};
+        const obj = {};
         obj.name = d;
-        let thisGroup = state.filteredData.filter(s => s[state.groupBy.name] === d);
+        const thisGroup = state.filteredData.filter(s => s[state.groupBy.name] === d);
         obj.values = years.map(y => {
-          let values = {};
+          const values = {};
           values.x = dateParse(y);
           values.y = thisGroup.reduce((a,b) => a + b[y], 0)
           return values;
@@ -802,10 +801,10 @@ function loadData(path, type='csv') {
            (years.map(y => dateParse(y)));
 
         state.dataToPlot.lines = uniqueGroupBy.map((d,i) => {
-          let obj = {}
+          const obj = {}
           obj.name = d;
           obj.values = series[i].map(s => {
-            let val = {};
+            const val = {};
             val.y0 = s[0];
             val.y1 = s[1];
             val.x = s.data;
@@ -819,9 +818,9 @@ function loadData(path, type='csv') {
 
     function updateGroupByMenu() {
 
-      let graphFilters = d3.select("#graph-filters");
+      const graphFilters = d3.select("#graph-filters");
 
-      let groupByMenus = graphFilters.selectAll(".groupby-menu")
+      const groupByMenus = graphFilters.selectAll(".groupby-menu")
         .data([{'name': 'Group by', 'description': "The group by filter is offered to enable visualizations that 'bundle up' output into categories defined by any one of the previous filters."}]);
 
       groupByMenus.attr("class", "groupby-menu");
@@ -831,7 +830,7 @@ function loadData(path, type='csv') {
 
       groupByMenus.exit().remove();
 
-      let groupByMenuInfo = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info")
+      const groupByMenuInfo = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info")
         .data(d => [d])
 
       groupByMenuInfo.attr("class", "groupby-menu-info");
@@ -841,7 +840,7 @@ function loadData(path, type='csv') {
 
       groupByMenuInfo.exit().remove();
 
-      let groupByMenuTitle = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info").selectAll(".groupby-menu-title")
+      const groupByMenuTitle = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info").selectAll(".groupby-menu-title")
         .data(d => [d])
 
       groupByMenuTitle.attr("class", "groupby-menu-title")
@@ -853,7 +852,7 @@ function loadData(path, type='csv') {
 
       groupByMenuTitle.exit().remove();
 
-      let groupByMenuDetail = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info").selectAll(".groupby-menu-detail")
+      const groupByMenuDetail = graphFilters.selectAll(".groupby-menu").selectAll(".groupby-menu-info").selectAll(".groupby-menu-detail")
         .data(d => [d])
 
       groupByMenuDetail.attr("class", "groupby-menu-detail")
@@ -867,7 +866,7 @@ function loadData(path, type='csv') {
 
       groupByMenuDetail.exit().remove();
 
-      let groupByMenuDropdown = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown")
+      const groupByMenuDropdown = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown")
         .data(d => [d]);
 
       groupByMenuDropdown.attr("class", "dropdown")
@@ -879,7 +878,7 @@ function loadData(path, type='csv') {
 
       groupByMenuDropdown.exit().remove();
 
-      let groupByMenuDropbtn = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropbtn")
+      const groupByMenuDropbtn = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropbtn")
         .data(d => [d]);
 
       groupByMenuDropbtn.attr("class", "dropbtn")
@@ -893,7 +892,7 @@ function loadData(path, type='csv') {
 
       groupByMenuDropbtn.exit().remove();
 
-      let groupByMenuDropcontent = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropdown-content")
+      const groupByMenuDropcontent = graphFilters.selectAll(".groupby-menu").selectAll(".dropdown").selectAll(".dropdown-content")
         .data(d => [d]);
 
       groupByMenuDropcontent.attr("class", "dropdown-content")
@@ -907,7 +906,7 @@ function loadData(path, type='csv') {
 
       groupByMenuDropcontent.exit().remove();
 
-      let groupByOptions = secondaryMenus;
+      const groupByOptions = secondaryMenus;
       // secondaryMenus.forEach(s => {
       //   if (state[s.name] === 'All') groupByOptions.push(s)
       // })
@@ -919,8 +918,8 @@ function loadData(path, type='csv') {
         d3.select(".groupby-menu")
           .style("display", "block");
 
-        let groupByOps = d3.select("#groupby-menu");
-        let options = groupByOps.selectAll("a").data(groupByOptions);
+        const groupByOps = d3.select("#groupby-menu");
+        const options = groupByOps.selectAll("a").data(groupByOptions);
 
         options.html(d => d.longName);
 
@@ -950,9 +949,9 @@ function loadData(path, type='csv') {
     updateGroupByMenu();
     filterData();
 
-    let yAxisUnit = state.result.name + " (" + state.result.units[0].label + ")";
+    const yAxisUnit = state.result.name + " (" + state.result.units[0].label + ")";
 
-    let margin = state.chart == 'treemap' ? {top: 0, right: 0, bottom: 0, left: 0} : {top: 20, right: 30, bottom: 20, left: 30},
+    const margin = state.chart == 'treemap' ? {top: 0, right: 0, bottom: 0, left: 0} : {top: 20, right: 30, bottom: 20, left: 30},
         width = plotWidth - margin.left - margin.right,
         height = plotHeight - margin.top - margin.bottom;
 
